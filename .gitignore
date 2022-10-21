@@ -1,0 +1,6 @@
+# Env dir
+/.vscode
+
+# Build dir
+/bin
+/obj
