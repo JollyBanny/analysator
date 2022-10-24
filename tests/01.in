@@ -1,1 +1,12 @@
-Hello, World!
+{
+    This is the best comment!
+    This is the best comment!
+}
+// Idk wtf that means
+(* sadasd *)
+
+program Hello;
+var a: string;
+begin wRiteln ('Hello World');
+end.
+// Idk wtf that means

@@ -6,6 +6,6 @@
 
 ## Запуск
 
-1. `cd analysator`
+1. `cd compiler`
 
 2. `dotnet run`
