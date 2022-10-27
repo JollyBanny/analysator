@@ -10,10 +10,5 @@ namespace LexicalAnalyzer.utils
             }
             return string.Concat(s[0].ToString().ToUpper(), s.ToLower().AsSpan(1));
         }
-
-        public static int TryParseInteger(this string s, int notation)
-        {
-            return 1;
-        }
     }
 }

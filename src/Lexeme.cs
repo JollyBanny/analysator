@@ -1,4 +1,5 @@
 using LexicalAnalyzer.utils;
+using System.Globalization;
 
 namespace LexicalAnalyzer
 {
@@ -10,9 +11,9 @@ namespace LexicalAnalyzer
 
         literal_begin,
         IDENTIFIRE,
-        T_INT,
-        T_FLOAT,
-        T_STRING,
+        L_INTEGER,
+        L_DOUBLE,
+        L_STRING,
         literal_end,
 
         operator_begin,
@@ -30,10 +31,12 @@ namespace LexicalAnalyzer
         EQUAL,
         LESS,
         MORE,
-
         NOT_EQUAL,
         LESS_EQUAL,
         MORE_EQUAL,
+
+        O_SHL,
+        O_SHR,
         operator_end,
 
         separator_begin,
@@ -51,6 +54,7 @@ namespace LexicalAnalyzer
 
         keyword_begin,
         ARRAY,
+        ASM,
         BEGIN,
         BREAK,
         CASE,
@@ -61,20 +65,26 @@ namespace LexicalAnalyzer
         DOWNTO,
         ELSE,
         END,
+        EXIT,
         FOR,
+        FUNCTION,
         GOTO,
         IF,
         IN,
         INC,
         OF,
+        ON,
         PROGRAM,
+        PROCEDURE,
         READ,
         READLN,
         REPEAT,
         THEN,
         TO,
+        UNTIL,
         VAR,
         WHILE,
+        WITH,
         WRITE,
         WRITELN,
 
@@ -86,12 +96,27 @@ namespace LexicalAnalyzer
         XOR,
         SHL,
         SHR,
+        FALSE,
+        NIL,
+        TRUE,
+        TRY,
 
         INTEGER,
-        REAL,
+        DOUBLE,
         STRING,
         keyword_end,
     }
+
+    // "and", "array", "asm", "begin", "break", "case", "const", "constructor",
+    // "continue", "destructor", "dec", "div", "do", "downto", "else", "end",
+    // "false", "file", "float", "for", "function", "goto", "if", "implementation",
+    // "in", "inc", "inline", "integer", "interface", "label", "mod", "nil", "not",
+    // "object", "of", "on", "operator", "or", "packed", "procedure", "program",
+    // "real", "record", "repeat", "set", "shl", "shr", "string", "then", "to",
+    // "true", "type", "unit", "until", "uses", "var", "while", "with", "xor",
+    // "as", "class", "dispose", "except", "exit", "exports", "finalization",
+    // "finally", "inherited", "initialization", "is", "library", "new", "on",
+    //  "out", "property", "raise", "self", "threadvar", "try"
 
     class Lexeme
     {
@@ -108,64 +133,69 @@ namespace LexicalAnalyzer
         {
             this.pos = pos;
             this.source = source;
-
-            this.value = LexemeValue(token, source);
             this.type = LexemeType(token);
+            this.value = LexemeValue(token, source);
         }
 
-        public void GetInfo()
+        private string LexemeType(Token token) => token switch
         {
-            Console.WriteLine($"{pos.line} \t {pos.ch} \t {type.Capitalize()} \t {value} \t {source}");
-        }
+            // If lexeme token start with "L_" lexeme is literal <type>
+            Token t when isLiteral(t) => (t.ToString().StartsWith("L_") ?
+                t.ToString().Substring(2) : t.ToString()).Capitalize(),
+            Token t when isOperator(t) => "Operator",
+            Token t when isSeparator(t) => "Separator",
+            Token t when isKeyword(t) => "Keyword",
+            Token.EOF => token.ToString(),
+            _ => token.ToString().Capitalize()
+        };
 
-        static public Token LookupKeyword(string keyword)
+        private object LexemeValue(Token token, string source) => token switch
         {
-            for (Token i = Token.keyword_begin; i < Token.keyword_end; ++i)
-                if (i.ToString() == keyword.ToUpper())
-                    return i;
-
-            return Token.IDENTIFIRE;
-        }
-
-        private string LexemeType(Token token)
-        {
-            if (isLiteral(token))
+            Token t when isLiteral(t) => t switch
             {
-                if (token.ToString().StartsWith("T_"))
-                    return token.ToString().Substring(2);
-                return token.ToString();
-            }
-            else if (isOperator(token)) return "OPERATOR";
-            else if (isSeparator(token)) return "SEPARATOR";
-            else if (isKeyword(token)) return "KEYWORD";
-            else return token.ToString();
-        }
+                Token.L_INTEGER or Token.L_DOUBLE => NormalizeNumber(source),
+                Token.L_STRING => source.Substring(1, source.Length - 2),
+                _ => source
+            },
+            // If lexeme token start with "O_" lexeme is operator alias of keyword
+            Token t when isOperator(t) => (t.ToString().StartsWith("O_") ?
+                t.ToString().Substring(2) : t.ToString()).ToLower(),
+            Token.EOF => token.ToString(),
+            _ => token.ToString().Capitalize()
+        };
 
-        private object LexemeValue(Token token, string source)
+        private object NormalizeNumber(string source)
         {
-            if (isLiteral(token))
-                return token switch
+            if (this.type == "Integer")
+            {
+                Int64 result = 0;
+                string hashTable = "0123456789ABCDEF";
+                int notation = source[0] switch
                 {
-                    Token.T_INT => TryParseNumber(source, "integer"),
-                    Token.T_FLOAT => TryParseNumber(source, "float"),
-                    Token.T_STRING => source.Substring(1, source.Length - 2),
-                    _ => source
+                    '%' => 2,
+                    '&' => 8,
+                    '$' => 16,
+                    _ => 10
                 };
+                if (notation != 10)
+                    source = source.Substring(1);
+                foreach (char digit in source)
+                {
+                    int k = hashTable.IndexOf(digit);
+                    result = result * notation + k;
+                    if (result > Int32.MaxValue)
+                        throw new NumberException(pos);
+                }
+                return result;
+            }
             else
-                return token.ToString();
-        }
-
-        private object TryParseNumber(string source, string type)
-        {
-            switch (type)
             {
-                case "integer":
-                    if (int.TryParse(source, out var int_tmp)) return int_tmp;
-                    throw new LexemException(pos, "Integer overflow");
-                case "float":
-                    if (float.TryParse(source, out var float_tmp)) return float_tmp;
-                    throw new LexemException(pos, "Real overflow");
-                default: return "undefined";
+                string source_ = source.Replace('.', ',');
+                if (double.TryParse(source_, NumberStyles.Float, null, out double result))
+                {
+                    return result.ToString("E" + 16, CultureInfo.InvariantCulture);
+                }
+                throw new NumberException(pos);
             }
         }
 
@@ -180,5 +210,12 @@ namespace LexicalAnalyzer
 
         private bool isKeyword(Token token) =>
             Token.keyword_begin < token && token < Token.keyword_end;
+
+        static public Token LookupKeyword(string keyword) =>
+            Enum.TryParse<Token>(keyword, true, out Token result) ?
+                result : Token.IDENTIFIRE;
+
+        public void GetInfo() =>
+            Console.WriteLine($"{pos.line} \t {pos.ch} \t {type} \t {value} \t {source}");
     }
 }

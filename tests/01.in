@@ -1,12 +1,16 @@
 {
-    This is the best comment!
-    This is the best comment!
+
+                            Online Pascal Compiler.
+                Code, Compile, Run and Debug Pascal program online.
+Write your code in this editor and press "Run" button to execute it.
+
 }
-// Idk wtf that means
-(* sadasd *)
+
 
 program Hello;
-var a: string;
-begin wRiteln ('Hello World');
+var a_2132: real;
+begin
+    a:=1.7E308; >> shr
+  writeln (a)
 end.
-// Idk wtf that means
+

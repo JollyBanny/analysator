@@ -1,8 +1,8 @@
 namespace LexicalAnalyzer
 {
-    class LexemException : Exception
+    class LexemeException : Exception
     {
-        public LexemException(Position pos, string message)
+        public LexemeException(Position pos, string message)
             : base($"{pos.line} \t {pos.ch} \t {message}")
         { }
     }

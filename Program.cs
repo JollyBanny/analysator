@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-
 namespace LexicalAnalyzer
 {
     class Program
@@ -22,10 +21,12 @@ namespace LexicalAnalyzer
                     break;
                 }
             }
-            // float result;
-            // Console.WriteLine(float.TryParse("1.234568E+002", out result));
+            // float.TryParse("£1,097.63", NumberStyles.Float | NumberStyles.AllowExponent, CultureInfo.CreateSpecificCulture("en-GB"),
+            //        out float result);
             // Console.WriteLine(result);
-            // Console.WriteLine($"Exponential: {0.1234567890123:E}");
+            // double.TryParse("1,2345E-02", NumberStyles.Float | NumberStyles.AllowExponent, null, out double x);
+            // .ToString("E", CultureInfo.InvariantCulture);
+            // Console.WriteLine(x); // Prints 0.012345
         }
     }
 }
