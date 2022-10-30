@@ -1,221 +1,110 @@
-using LexicalAnalyzer.utils;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using LexicalAnalyzer.Enums;
 
 namespace LexicalAnalyzer
 {
-    public enum Token
-    {
-        EOF = 1,
-        COMMENT,
-        INVALID,
-
-        literal_begin,
-        IDENTIFIRE,
-        L_INTEGER,
-        L_DOUBLE,
-        L_STRING,
-        literal_end,
-
-        operator_begin,
-        ASSIGN,
-        ADD,
-        SUB,
-        MUL,
-        DIV_REAL,
-        ADD_ASSIGN,
-        SUB_ASSIGN,
-        MUL_ASSIGN,
-        DIV_ASSIGN,
-        MOD_ASSIGN,
-
-        EQUAL,
-        LESS,
-        MORE,
-        NOT_EQUAL,
-        LESS_EQUAL,
-        MORE_EQUAL,
-
-        O_SHL,
-        O_SHR,
-        operator_end,
-
-        separator_begin,
-        LPAREN,
-        RPAREN,
-        LBRACK,
-        RBRACK,
-
-        COMMA,
-        DOT,
-        ELLIPSIS,
-        SEMICOLOM,
-        COLON,
-        separator_end,
-
-        keyword_begin,
-        ARRAY,
-        ASM,
-        BEGIN,
-        BREAK,
-        CASE,
-        CONST,
-        CONTINUE,
-        DEC,
-        DO,
-        DOWNTO,
-        ELSE,
-        END,
-        EXIT,
-        FOR,
-        FUNCTION,
-        GOTO,
-        IF,
-        IN,
-        INC,
-        OF,
-        ON,
-        PROGRAM,
-        PROCEDURE,
-        READ,
-        READLN,
-        REPEAT,
-        THEN,
-        TO,
-        UNTIL,
-        VAR,
-        WHILE,
-        WITH,
-        WRITE,
-        WRITELN,
-
-        AND,
-        DIV,
-        NOT,
-        MOD,
-        OR,
-        XOR,
-        SHL,
-        SHR,
-        FALSE,
-        NIL,
-        TRUE,
-        TRY,
-
-        INTEGER,
-        DOUBLE,
-        STRING,
-        keyword_end,
-    }
-
-    // "and", "array", "asm", "begin", "break", "case", "const", "constructor",
-    // "continue", "destructor", "dec", "div", "do", "downto", "else", "end",
-    // "false", "file", "float", "for", "function", "goto", "if", "implementation",
-    // "in", "inc", "inline", "integer", "interface", "label", "mod", "nil", "not",
-    // "object", "of", "on", "operator", "or", "packed", "procedure", "program",
-    // "real", "record", "repeat", "set", "shl", "shr", "string", "then", "to",
-    // "true", "type", "unit", "until", "uses", "var", "while", "with", "xor",
-    // "as", "class", "dispose", "except", "exit", "exports", "finalization",
-    // "finally", "inherited", "initialization", "is", "library", "new", "on",
-    //  "out", "property", "raise", "self", "threadvar", "try"
-
     class Lexeme
     {
         private Position pos;
         public Position Pos { get => pos; }
-        private string type;
-        public string Type { get => type; }
+        private TokenType type;
+        public TokenType Type { get => type; }
         private object value;
         public object Value { get => value; }
         private string source;
         public string Source { get => source; }
 
-        public Lexeme(Position pos, Token token, string source)
+        public Lexeme(Position pos, TokenType type, Token token, string source)
         {
             this.pos = pos;
+            this.type = type;
+            this.value = LexemeValue(type, token, source);
             this.source = source;
-            this.type = LexemeType(token);
-            this.value = LexemeValue(token, source);
         }
 
-        private string LexemeType(Token token) => token switch
+        private object LexemeValue(TokenType type, Token token, string source) =>
+        type switch
         {
-            // If lexeme token start with "L_" lexeme is literal <type>
-            Token t when isLiteral(t) => (t.ToString().StartsWith("L_") ?
-                t.ToString().Substring(2) : t.ToString()).Capitalize(),
-            Token t when isOperator(t) => "Operator",
-            Token t when isSeparator(t) => "Separator",
-            Token t when isKeyword(t) => "Keyword",
-            Token.EOF => token.ToString(),
-            _ => token.ToString().Capitalize()
+            TokenType.Integer => StringToInteger(source),
+            TokenType.Double => StringToDouble(source),
+            TokenType.String => NormalizeString(source),
+            TokenType.Char => NormalizeChar(source),
+            TokenType.Identifire => source,
+            TokenType.EOF => Token.EOF,
+            _ => token,
         };
 
-        private object LexemeValue(Token token, string source) => token switch
+        private string NormalizeString(string source)
         {
-            Token t when isLiteral(t) => t switch
-            {
-                Token.L_INTEGER or Token.L_DOUBLE => NormalizeNumber(source),
-                Token.L_STRING => source.Substring(1, source.Length - 2),
-                _ => source
-            },
-            // If lexeme token start with "O_" lexeme is operator alias of keyword
-            Token t when isOperator(t) => (t.ToString().StartsWith("O_") ?
-                t.ToString().Substring(2) : t.ToString()).ToLower(),
-            Token.EOF => token.ToString(),
-            _ => token.ToString().Capitalize()
+            var controlStrings = Regex.Matches(source, "[0-9]+")
+                                      .Select((x) => x.ToString());
+            foreach (var cs in controlStrings)
+                source = source.Replace(cs, NormalizeChar(cs).ToString());
+            return source.Replace("#", "").Replace("'", "");
+        }
+
+        private char NormalizeChar(string source) =>
+            (char)int.Parse(source.Trim('#'));
+
+        private int DigitValue(char digit) => digit switch
+        {
+            char ch when '0' <= ch && ch <= '9' => (int)(ch - '0'),
+            char ch when 'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'f' =>
+                (int)(char.ToLower(ch) - 'a' + 10),
+            _ => -1
         };
 
-        private object NormalizeNumber(string source)
+        private object StringToInteger(string source)
         {
-            if (this.type == "Integer")
+            int baseNotation = source[0] switch
             {
-                Int64 result = 0;
-                string hashTable = "0123456789ABCDEF";
-                int notation = source[0] switch
-                {
-                    '%' => 2,
-                    '&' => 8,
-                    '$' => 16,
-                    _ => 10
-                };
-                if (notation != 10)
-                    source = source.Substring(1);
-                foreach (char digit in source)
-                {
-                    int k = hashTable.IndexOf(digit);
-                    result = result * notation + k;
-                    if (result > Int32.MaxValue)
-                        throw new NumberException(pos);
-                }
+                '%' => 2,
+                '&' => 8,
+                '$' => 16,
+                _ => 10
+            };
+            Int64 result = 0;
+            for (int i = baseNotation == 10 ? 0 : 1; i < source.Length; i++)
+            {
+                result = result * baseNotation + DigitValue(source[i]); ;
+                if (result > Int32.MaxValue)
+                    throw new OverflowException(pos);
+            }
+            return result;
+        }
+
+        private object StringToDouble(string source)
+        {
+            int baseNotation = source[0] switch
+            {
+                '%' => 2,
+                '&' => 8,
+                '$' => 16,
+                _ => 10
+            };
+            if (baseNotation != 10)
+                source = StringToInteger(source.Split('.')[0]).ToString()! +
+                            source.Split('.')[1];
+
+            if (double.TryParse(source, NumberStyles.Float,
+                            CultureInfo.InvariantCulture, out double result))
                 return result;
-            }
-            else
-            {
-                string source_ = source.Replace('.', ',');
-                if (double.TryParse(source_, NumberStyles.Float, null, out double result))
-                {
-                    return result.ToString("E" + 16, CultureInfo.InvariantCulture);
-                }
-                throw new NumberException(pos);
-            }
+            throw new OverflowException(pos);
         }
 
-        private bool isLiteral(Token token) =>
-            Token.literal_begin < token && token < Token.literal_end;
+        override public string ToString()
+        {
 
-        private bool isOperator(Token token) =>
-            Token.operator_begin < token && token < Token.operator_end;
+            object value_ = type switch
+            {
+                TokenType.Double => ((double)value).ToStringPascal(),
+                TokenType.Operator or TokenType.Keyword or TokenType.Separator =>
+                    value.ToString()!.Capitalize(),
+                _ => value,
+            };
 
-        private bool isSeparator(Token token) =>
-            Token.separator_begin < token && token < Token.separator_end;
-
-        private bool isKeyword(Token token) =>
-            Token.keyword_begin < token && token < Token.keyword_end;
-
-        static public Token LookupKeyword(string keyword) =>
-            Enum.TryParse<Token>(keyword, true, out Token result) ?
-                result : Token.IDENTIFIRE;
-
-        public void GetInfo() =>
-            Console.WriteLine($"{pos.line} \t {pos.ch} \t {type} \t {value} \t {source}");
+            return $"{pos.line} \t {pos.ch} \t {type} \t {value_} \t {source}";
+        }
     }
 }

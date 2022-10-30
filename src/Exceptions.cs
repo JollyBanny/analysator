@@ -7,9 +7,9 @@ namespace LexicalAnalyzer
         { }
     }
 
-    class NumberException : OverflowException
+    class OverflowException : System.OverflowException
     {
-        public NumberException(Position pos)
+        public OverflowException(Position pos)
             : base($"{pos.line} \t {pos.ch} \t Type overflow")
         { }
     }

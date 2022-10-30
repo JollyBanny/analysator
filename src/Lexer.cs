@@ -1,3 +1,5 @@
+using LexicalAnalyzer.Enums;
+
 namespace LexicalAnalyzer
 {
     struct Position
@@ -12,37 +14,111 @@ namespace LexicalAnalyzer
     {
         private StreamReader fstream;
         private Position cursor = new Position();
-        private string buffer = "";
+        private string buffer;
         private char currentChar;
+        private Position lexemePos;
+        private TokenType lexemeType;
+        private Token lexemeToken;
 
-        private Position lexemePos = new Position();
-        private Token lexemeToken = Token.INVALID;
+        public Lexer(StreamReader fstream)
+        {
+            this.fstream = fstream;
+            buffer = "";
+        }
 
-        public Lexer(StreamReader fstream) => this.fstream = fstream;
+        private bool isSpace(char ch) =>
+             ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t';
 
-        private string ScanIdentifier()
+        private bool isLetter(char ch) =>
+            'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'z' || ch == '_';
+
+        private bool isDigit(char ch) => '0' <= ch && ch <= '9';
+
+        private bool isHex(char ch) =>
+            isDigit(ch) || 'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'f';
+
+        private string digits(int baseNotation)
+        {
+            string digitSequence = "";
+            if (baseNotation <= 10)
+                while (isDigit((char)fstream.Peek()))
+                {
+                    if (fstream.Peek() >= '0' + baseNotation)
+                        return digitSequence;
+                    digitSequence += Next();
+                }
+            else
+                while (isHex((char)fstream.Peek()))
+                    digitSequence += Next();
+            return digitSequence;
+        }
+
+        private Token? LookupKeyword(string keyword)
+        {
+            Enum.TryParse<Token>(keyword, true, out Token result);
+            return Token.keyword_begin < result && result < Token.keyword_end ?
+                result : null;
+        }
+
+        /*
+        Helpers switch functions work as follows:
+        If the token ends with '=', then return tok1,
+        otherwise return tok0, or if the token ends with ch, then tok2
+        */
+        private Token switch2(Token tok0, Token tok1)
+        {
+            if (TryNext('=')) return tok1;
+            return tok0;
+        }
+
+        private Token switch3(Token tok0, Token tok1, char ch, Token tok2)
+        {
+            if (TryNext('=')) return tok1;
+            if (TryNext(ch)) return tok2;
+            return tok0;
+        }
+
+        private void ScanIdentifier()
         {
             while (isLetter((char)fstream.Peek()) || isDigit((char)fstream.Peek()))
                 WriteToBuffer();
-            return buffer;
         }
 
-        private string ScanString()
+        private void ScanString()
         {
-            while (fstream.Peek() != '\'')
+            (lexemeType, lexemeToken) = (TokenType.String, Token.L_STRING);
+            while (true)
             {
-                if (fstream.Peek() == '\n' || fstream.Peek() < 0)
-                    throw new LexemeException(lexemePos, "String exceeds line");
-                WriteToBuffer();
+                while (!TryNext('\''))
+                {
+                    if (fstream.Peek() == '\n' || fstream.Peek() < 0)
+                        throw new LexemeException(lexemePos, "String exceeds line");
+                    WriteToBuffer();
+                }
+                while (fstream.Peek() == '#')
+                    ScanChar();
+                if (!TryNext('\''))
+                    return;
             }
-            WriteToBuffer();
-            return buffer;
+        }
+
+        private void ScanChar()
+        {
+            while (TryNext('#') || currentChar == '#')
+            {
+                string digitChar = digits(10);
+                buffer += digitChar.Length > 0 ? digitChar :
+                    throw new LexemeException(lexemePos, "Illegal char constant");
+            }
+            (lexemeType, lexemeToken) = buffer.Count((c) => c == '#') > 1 ?
+                                        (TokenType.String, Token.L_STRING) :
+                                        (TokenType.Char, Token.L_CHAR);
+            if (TryNext('\'')) ScanString();
         }
 
         private void ScanNumber()
         {
-            string number = "";
-            int notation = currentChar switch
+            int baseNotation = currentChar switch
             {
                 '%' => 2,
                 '&' => 8,
@@ -51,49 +127,51 @@ namespace LexicalAnalyzer
             };
 
             // integer part
-            lexemeToken = Token.L_INTEGER;
-            if (notation == 10) number += currentChar;
-            number += digits(notation);
+            (lexemeType, lexemeToken) = (TokenType.Integer, Token.L_INTEGER);
+            buffer += digits(baseNotation);
 
-            if (number.Length == 0)
+
+            if (buffer.Length == 1 && baseNotation != 10)
                 throw new LexemeException(lexemePos, "Invalid integer expression");
 
             // fractional part
+            string fractionalDigits = "";
             if ((char)fstream.Peek() == '.')
             {
-                if (notation != 10)
-                    throw new LexemeException(lexemePos, "Invalid number");
-                lexemeToken = Token.L_DOUBLE;
-                number += (Next() + digits(notation));
+                (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
+                WriteToBuffer();
+                if (baseNotation == 10)
+                    fractionalDigits = digits(10);
+                buffer += fractionalDigits;
             }
 
             // exponent part
-            if ((char)fstream.Peek() == 'e' || (char)fstream.Peek() == 'E')
+            string exponentDigits = "";
+            if (char.ToLower((char)fstream.Peek()) == 'e' &&
+                (lexemeToken == Token.L_DOUBLE || baseNotation == 10))
             {
-                if (notation != 10)
-                    throw new LexemeException(lexemePos,
-                    "Exponent can't be used without decimal mantissa");
-                lexemeToken = Token.L_DOUBLE;
-                number += Next();
+                (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
+                WriteToBuffer();
 
                 if ((char)fstream.Peek() == '-' || (char)fstream.Peek() == '+')
-                    number += Next();
-
-                string exponentDigits = digits(notation);
-                number += exponentDigits;
+                    WriteToBuffer();
+                exponentDigits = digits(10);
+                buffer += exponentDigits;
 
                 if (exponentDigits.Length == 0)
-                    throw new LexemeException(lexemePos, "Exponent has no digits");
+                    if (buffer.Contains('.') && fractionalDigits.Length == 0)
+                        throw new LexemeException(lexemePos,
+                                    "Illegal floating point constant");
+                    else
+                        throw new LexemeException(lexemePos,
+                                    $"Illegal character '{(char)fstream.Peek()}'");
             }
-            // If base is 10 overwrite full number to buffer,
-            // else base char in buffer + full number.
-            if (notation == 10) buffer = number;
-            else buffer += number;
         }
 
         // ScanComment starts from last character of open comment sequence
         private void ScanComment()
         {
+            (lexemeType, lexemeToken) = (TokenType.Comment, Token.COMMENT);
             // { comment style }
             if (currentChar == '{')
             {
@@ -125,65 +203,6 @@ namespace LexicalAnalyzer
                 WriteToBuffer();
                 return;
             }
-            else return;
-        }
-
-        private bool isSpace(char ch) =>
-            ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t';
-
-        private bool isLetter(char ch) =>
-            'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'z' || ch == '_';
-
-        private bool isDigit(char ch) => '0' <= ch && ch <= '9';
-
-        private bool isHex(char ch) =>
-            isDigit(ch) || 'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'f';
-
-        private int digitValue(char digit) => digit switch
-        {
-            char ch when '0' <= ch && ch <= '9' => (int)(ch - '0'),
-            char ch when 'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'f' =>
-                (int)(char.ToLower(ch) - 'a' + 10),
-            _ => -1
-        };
-
-        private string digits(int notation)
-        {
-            string digitSequence = "";
-            switch (notation)
-            {
-                case int x when x <= 10:
-                    while (isDigit((char)fstream.Peek()))
-                    {
-                        if (Next() >= '0' + notation)
-                            throw new LexemeException(lexemePos,
-                                "The digit exceeds maximum of the base");
-                        digitSequence += currentChar;
-                    }
-                    return digitSequence;
-                default:
-                    while (isHex((char)fstream.Peek()))
-                        digitSequence += Next();
-                    return digitSequence;
-            }
-        }
-
-        /*
-        Helpers switch functions work as follows:
-        If the token ends with '=', then return tok1,
-        otherwise return tok0, or if the token ends with ch, then tok2
-        */
-        private Token switch2(Token tok0, Token tok1)
-        {
-            if (TryNext('=')) return tok1;
-            return tok0;
-        }
-
-        private Token switch3(Token tok0, Token tok1, char ch, Token tok2)
-        {
-            if (TryNext('=')) return tok1;
-            if (TryNext(ch)) return tok2;
-            return tok0;
         }
 
         /*
@@ -212,7 +231,7 @@ namespace LexicalAnalyzer
             buffer += Next();
 
 
-        private void skipWhitespace()
+        private void SkipWhitespace()
         {
             while (isSpace((char)fstream.Peek()))
                 Next();
@@ -226,18 +245,22 @@ namespace LexicalAnalyzer
 
         public Lexeme GetLexem()
         {
-            skipWhitespace();
+            SkipWhitespace();
 
             if (fstream.EndOfStream)
-                return new Lexeme(lexemePos, Token.EOF, Token.EOF.ToString());
+                return new Lexeme(cursor, TokenType.EOF, Token.EOF, Token.EOF.ToString());
 
             buffer = "" + Next();
             lexemePos = cursor;
+            lexemeToken = Token.INVALID;
+            lexemeType = TokenType.Invalid;
 
             switch (currentChar)
             {
+                case '#':
+                    ScanChar();
+                    break;
                 case '\'':
-                    lexemeToken = Token.L_STRING;
                     ScanString();
                     break;
                 case ';':
@@ -253,10 +276,7 @@ namespace LexicalAnalyzer
                 case '(':
                     lexemeToken = Token.LPAREN;
                     if (TryNext('*'))
-                    {
-                        lexemeToken = Token.COMMENT;
                         ScanComment();
-                    }
                     break;
                 case ')':
                     lexemeToken = Token.RPAREN;
@@ -268,7 +288,6 @@ namespace LexicalAnalyzer
                     lexemeToken = Token.RBRACK;
                     break;
                 case '{':
-                    lexemeToken = Token.COMMENT;
                     ScanComment();
                     break;
                 case ':':
@@ -286,10 +305,7 @@ namespace LexicalAnalyzer
                 case '/':
                     lexemeToken = switch2(Token.DIV_REAL, Token.DIV_ASSIGN);
                     if (TryNext('/'))
-                    {
-                        lexemeToken = Token.COMMENT;
                         ScanComment();
-                    }
                     break;
                 case '=':
                     lexemeToken = Token.EQUAL;
@@ -303,19 +319,29 @@ namespace LexicalAnalyzer
                     break;
                 case char ch when isLetter(ch):
                     ScanIdentifier();
-                    if (buffer.Length > 1) lexemeToken = Lexeme.LookupKeyword(buffer);
-                    else lexemeToken = Token.IDENTIFIRE;
+                    var keyword = LookupKeyword(buffer);
+                    (lexemeToken, lexemeType) = keyword.HasValue ?
+                                    ((Token)keyword, TokenType.Keyword) :
+                                    (Token.IDENTIFIRE, TokenType.Identifire);
                     break;
                 case char ch when isDigit(ch) || ch == '%' || ch == '&' || ch == '$':
                     ScanNumber();
                     break;
                 default:
-                    throw new LexemeException(lexemePos, "Invalid token");
+                    throw new LexemeException(lexemePos, $"Illegal character '{currentChar}'");
             }
 
-            if (lexemeToken == Token.COMMENT) return GetLexem();
+            // if (lexemeToken == Token.COMMENT) return GetLexem();
+            lexemeType = lexemeToken switch
+            {
+                Token t when Token.operator_begin < t && t < Token.operator_end =>
+                    TokenType.Operator,
+                Token t when Token.separator_begin < t && t < Token.separator_end =>
+                    TokenType.Separator,
+                _ => lexemeType
+            };
 
-            return new Lexeme(lexemePos, lexemeToken, buffer);
+            return new Lexeme(lexemePos, lexemeType, lexemeToken, buffer);
         }
     }
 }

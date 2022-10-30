@@ -1,14 +1,16 @@
-namespace LexicalAnalyzer.utils
+using System.Globalization;
+
+namespace LexicalAnalyzer
 {
+    public static class DoubleExtension
+    {
+        public static string ToStringPascal(this double value) =>
+            value.ToString("E16", CultureInfo.InvariantCulture);
+    }
+
     public static class StringExtension
     {
-        public static string Capitalize(this string s)
-        {
-            if (String.IsNullOrEmpty(s))
-            {
-                throw new ArgumentException("String is mull or empty");
-            }
-            return string.Concat(s[0].ToString().ToUpper(), s.ToLower().AsSpan(1));
-        }
+        public static string Capitalize(this string str) =>
+            CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower());
     }
 }
