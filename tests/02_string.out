@@ -1,0 +1,7 @@
+1 	 1 	 String 	               	 '             '
+2 	 1 	 String 	 Hello, world! 	 'Hello, world!'
+3 	 1 	 String 	 H,W! 	 #72#44#87#33
+4 	 1 	 String 	 Hello, wo#44rld! 	 #72#101'llo'#44#32'wo#44rl'#100#33
+5 	 1 	 String 	 Hello, world! 	 #72'ello'#44' world'#33
+6 	 1 	 String 	 Hello,\t world! 	 #72'ello'#44#9' world'#33
+7 	 1 	 EOF 	 EOF 	 EOF
