@@ -8,7 +8,7 @@ namespace LexicalAnalyzer
         {
             if (args.Length == 0)
             {
-                AnalyzeFile("01_EOF.in");
+                AnalyzeFile("./tests/01_EOF.in");
                 return;
             }
             switch (args[0])
