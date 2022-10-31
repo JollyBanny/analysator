@@ -41,11 +41,27 @@ namespace LexicalAnalyzer
 
         private string NormalizeString(string source)
         {
-            var controlStrings = Regex.Matches(source, "[0-9]+")
-                                  .Select((x) => x.ToString());
-            foreach (var cs in controlStrings)
-                source = source.Replace(cs, NormalizeChar(cs).ToString());
-            return source.Replace("#", "").Replace("'", "");
+            string source_ = source;
+            bool read = true;
+            for (int i = 0; i < source_.Length; ++i)
+            {
+                if (source_[i] == '\'') read = !read;
+                if (source_[i] == '#' && read)
+                {
+                    string str = $"{source_[i++]}";
+                    while (source_[i].IsDigit())
+                    {
+                        str += source_[i++];
+                        if (i >= source_.Length)
+                            break;
+                    }
+                    --i;
+                    var index = source.IndexOf(str);
+                    source = source.Remove(index, str.Length)
+                                   .Insert(index, NormalizeChar(str.Substring(1)).ToString());
+                }
+            }
+            return source.Replace("'", "");
         }
 
         private void GetBaseNotation(char ch, out int baseNotation) =>

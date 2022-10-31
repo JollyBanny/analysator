@@ -219,8 +219,7 @@ namespace LexicalAnalyzer
             WriteToBuffer(null, true);
             SkipCommentAndWhiteSpace();
             LexemePos = Cursor;
-            lexemeToken = Token.INVALID;
-            lexemeType = TokenType.Invalid;
+            (lexemeType, lexemeToken) = (TokenType.Invalid, Token.INVALID);
 
             switch (CurrentChar)
             {
@@ -270,16 +269,17 @@ namespace LexicalAnalyzer
                     lexemeToken = switch2(Token.MUL, Token.MUL_ASSIGN);
                     break;
                 case '/':
-                    lexemeToken = switch2(Token.DIV_REAL, Token.DIV_ASSIGN);
-                    if (TryNext('/'))
-                        ScanComment();
+                    if (TryNext('/')) ScanComment();
+                    else
+                        lexemeToken = switch2(Token.DIV_REAL, Token.DIV_ASSIGN);
                     break;
                 case '=':
                     lexemeToken = Token.EQUAL;
                     break;
                 case '<':
-                    lexemeToken = switch3(Token.LESS, Token.LESS_EQUAL, '>', Token.NOT_EQUAL);
                     if (TryNext('<')) lexemeToken = Token.O_SHL;
+                    else
+                        lexemeToken = switch3(Token.LESS, Token.LESS_EQUAL, '>', Token.NOT_EQUAL);
                     break;
                 case '>':
                     lexemeToken = switch3(Token.MORE, Token.MORE_EQUAL, '>', Token.O_SHR);
@@ -287,16 +287,15 @@ namespace LexicalAnalyzer
                 case char ch when ch.IsLetter():
                     ScanIdentifier();
                     var keyword = LookupKeyword(Buffer);
-                    (lexemeToken, lexemeType) = keyword.HasValue ?
-                                    ((Token)keyword, TokenType.Keyword) :
-                                    (Token.IDENTIFIRE, TokenType.Identifire);
+                    (lexemeType, lexemeToken) = keyword.HasValue ?
+                                    (TokenType.Keyword, (Token)keyword) :
+                                    (TokenType.Identifire, Token.IDENTIFIRE);
                     break;
                 case char ch when ch.IsDigit() || ch == '%' || ch == '&' || ch == '$':
                     ScanNumber();
                     break;
                 case { } when EndOfStream:
-                    lexemeType = TokenType.EOF;
-                    lexemeToken = Token.EOF;
+                    (lexemeType, lexemeToken) = (TokenType.EOF, Token.EOF);
                     WriteToBuffer(Token.EOF.ToString(), true);
                     break;
                 default:
