@@ -4,8 +4,7 @@
 
 Разработчик: cтудент ДВФУ группы Б9120-09.03.03пикд Пономаренко Максим.
 
-## Запуск
+## Commands
 
-1. `cd compiler`
-
-2. `dotnet run`
+1. Run autotest: `dotnet run -t`
+2. Run file test: `dotnet run -t <path>`

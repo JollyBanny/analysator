@@ -8,8 +8,7 @@ namespace LexicalAnalyzer.Test
 
         static public void AnalyzeFile(string path)
         {
-            StreamReader fstream = new StreamReader($"./tests/{path}");
-            lexer.ChangeFile(fstream);
+            lexer.ChangeFile(path);
             while (true)
             {
                 try
@@ -24,14 +23,13 @@ namespace LexicalAnalyzer.Test
                     break;
                 }
             }
-            fstream.Close();
+            lexer.CloseFile();
         }
 
-        static private void TestFile(string testFile, string checkFile)
+        static private bool TestFile(string testFile, string checkFile)
         {
-            StreamReader fstream = new StreamReader($"./tests/{testFile}");
             StreamReader ofstream = new StreamReader($"./tests/{checkFile}");
-            lexer.ChangeFile(fstream);
+            lexer.ChangeFile(path: $"./tests/{testFile}");
             while (true)
                 try
                 {
@@ -40,8 +38,10 @@ namespace LexicalAnalyzer.Test
                     string found = lexem.ToString();
                     if (expected != found)
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"File: {testFile}\nExpected:\n{expected}\nFound:\n{found}");
-                        break;
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        return false;
                     }
                     if (lexem.Type == TokenType.EOF) break;
                 }
@@ -50,13 +50,16 @@ namespace LexicalAnalyzer.Test
                     string expected = ofstream.ReadLine()!;
                     string found = e.Message;
                     if (expected != found)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"File: {testFile}\nExpected:\n{expected}\nFound:\n{found}");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        return false;
+                    }
                     break;
                 }
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Test {testFile.Substring(0, 2)} OK");
-            Console.ForegroundColor = ConsoleColor.Gray;
-            fstream.Close();
+            lexer.CloseFile();
+            return true;
         }
 
         static public void RunTests()
@@ -66,7 +69,13 @@ namespace LexicalAnalyzer.Test
             var checkFiles = Directory.GetFiles("./tests", "*.out")
                 .Select(f => Path.GetFileName(f)).ToList();
             for (int i = 0; i < testFiles.Capacity; ++i)
-                TestFile(testFiles[i], checkFiles[i]);
+                if (TestFile(testFiles[i], checkFiles[i]))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Test {(i + 1).ToString().PadLeft(2, '0')} OK");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else return;
         }
     }
 }

@@ -67,11 +67,12 @@ namespace LexicalAnalyzer
             else buffer += str;
         }
 
-        public void ChangeFile(StreamReader fstream)
+        public void ChangeFile(string path)
         {
-            this.fstream = fstream;
+            this.fstream = new StreamReader(path);
             lexemePos = cursor = new Position();
         }
 
+        public void CloseFile() => fstream.Close();
     }
 }
