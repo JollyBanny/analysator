@@ -1,0 +1,7 @@
+var x1,y1,x2,y2,d:double;
+begin
+     writeln('Enter A(X1,Y1) и B(X2,Y2)');
+     readln( x1,y1,x2,y2 );
+     d:=sqrt(sqr(y2-y1)+sqr(x2-x1));
+     writeln('length segment |AB|=',d);
+end.

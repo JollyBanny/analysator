@@ -1,0 +1,12 @@
+var n:integer;
+
+function f(x:integer):longint;
+begin
+   if x = 1 then f := 1 else f := x * f(x-1);
+end;
+
+begin
+     writeln('Enter N (N=1..13)');
+     readln(n);
+     writeln('N!=',f(n));
+end.
