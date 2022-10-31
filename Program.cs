@@ -1,15 +1,21 @@
 ﻿using LexicalAnalyzer.Enums;
+using LexicalAnalyzer.Extensions;
+
 namespace LexicalAnalyzer
 {
     class Program
     {
+        static Lexer lexer = new Lexer();
+
         static void AnalyzeFile(string path)
         {
             StreamReader fstream = new StreamReader($"./tests/{path}");
-            var lexer = new Lexer(fstream);
+            lexer.ChangeFile(fstream);
+
             Console.ForegroundColor = ConsoleColor.Cyan;
+            string text = $" Start test file {path} ";
             Console.WriteLine(
-                $"[----------------- Start test file {path} -----------------]\n"
+                $"\n[{text.PadLeft((80 - text.Length) / 2 + text.Length, '-').PadRight(80, '-')}]"
             );
             Console.ForegroundColor = ConsoleColor.Gray;
             while (true)
@@ -26,39 +32,41 @@ namespace LexicalAnalyzer
                     break;
                 }
             }
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(
-                $"\n[----------------- End test file {path} -----------------]\n"
-            );
-            Console.ForegroundColor = ConsoleColor.Gray;
+            fstream.Close();
         }
 
-        static void AnalyzeTest()
+        static void AnalyzeTest(string? path = null)
         {
-            var testFiles = Directory.GetFiles("./tests", "*.in")
-                            .Select(f => Path.GetFileName(f));
-            foreach (var file in testFiles)
-                AnalyzeFile(file);
+            if (path is not null)
+                AnalyzeFile(path);
+            else
+            {
+                var testFiles = Directory.GetFiles("./tests", "*.in")
+                 .Select(f => Path.GetFileName(f)).ToList();
+                foreach (var file in testFiles)
+                    AnalyzeFile(file);
+            }
         }
 
         static void Main(string[] args)
         {
             if (args.Length == 0)
             {
-                AnalyzeFile("01_string.in");
+                AnalyzeFile("01_EOF.in");
                 return;
             }
             switch (args[0])
             {
                 case "-t":
-                    AnalyzeTest();
+                    if (args.Length == 2)
+                        AnalyzeTest(args[1]);
+                    else
+                        AnalyzeTest();
                     break;
                 default:
                     Console.WriteLine("Unknown argument");
                     break;
             }
-
         }
     }
 }
-
