@@ -1,4 +1,3 @@
-using System.ComponentModel;
 namespace LexicalAnalyzer.Enums
 {
     public enum TokenType

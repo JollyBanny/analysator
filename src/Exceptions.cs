@@ -1,4 +1,4 @@
-namespace LexicalAnalyzer
+namespace LexicalAnalyzer.Exceptions
 {
     class LexemeException : Exception
     {
@@ -7,9 +7,9 @@ namespace LexicalAnalyzer
         { }
     }
 
-    class OverflowException : System.OverflowException
+    class LexemeOverflowException : System.OverflowException
     {
-        public OverflowException(Position pos)
+        public LexemeOverflowException(Position pos)
             : base($"{pos.line} \t {pos.ch} \t Type overflow")
         { }
     }
