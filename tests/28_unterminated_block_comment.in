@@ -1,0 +1,8 @@
+{
+    some comment for you
+}
+program Hello;
+begin
+  { // i know
+  writeln ('Hello, World!');
+end.
