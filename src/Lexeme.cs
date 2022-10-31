@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using LexicalAnalyzer.Enums;
+using LexicalAnalyzer.Extensions;
+using LexicalAnalyzer.Exceptions;
 
 namespace LexicalAnalyzer
 {
@@ -35,75 +37,63 @@ namespace LexicalAnalyzer
             _ => token,
         };
 
+        private char NormalizeChar(string source) => (char)int.Parse(source.Trim('#'));
+
         private string NormalizeString(string source)
         {
             var controlStrings = Regex.Matches(source, "[0-9]+")
-                                      .Select((x) => x.ToString());
+                                  .Select((x) => x.ToString());
             foreach (var cs in controlStrings)
                 source = source.Replace(cs, NormalizeChar(cs).ToString());
             return source.Replace("#", "").Replace("'", "");
         }
 
-        private char NormalizeChar(string source) =>
-            (char)int.Parse(source.Trim('#'));
-
-        private int DigitValue(char digit) => digit switch
-        {
-            char ch when '0' <= ch && ch <= '9' => (int)(ch - '0'),
-            char ch when 'a' <= char.ToLower(ch) && char.ToLower(ch) <= 'f' =>
-                (int)(char.ToLower(ch) - 'a' + 10),
-            _ => -1
-        };
+        private void GetBaseNotation(char ch, out int baseNotation) =>
+            baseNotation = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
 
         private object StringToInteger(string source)
         {
-            int baseNotation = source[0] switch
-            {
-                '%' => 2,
-                '&' => 8,
-                '$' => 16,
-                _ => 10
-            };
+            GetBaseNotation(source[0], out int baseNotation);
             Int64 result = 0;
             for (int i = baseNotation == 10 ? 0 : 1; i < source.Length; i++)
             {
-                result = result * baseNotation + DigitValue(source[i]); ;
+                result = result * baseNotation + source[i].DigitValue();
                 if (result > Int32.MaxValue)
-                    throw new OverflowException(pos);
+                    throw new LexemeOverflowException(pos);
             }
             return result;
         }
 
         private object StringToDouble(string source)
         {
-            int baseNotation = source[0] switch
-            {
-                '%' => 2,
-                '&' => 8,
-                '$' => 16,
-                _ => 10
-            };
+            double result = 0;
+            GetBaseNotation(source[0], out int baseNotation);
+
             if (baseNotation != 10)
-                source = StringToInteger(source.Split('.')[0]).ToString()! +
-                            source.Split('.')[1];
+            {
+                string[] splitDouble = source.Split('.');
+                for (int i = 1; i < splitDouble[0].Length; i++)
+                    result = result * baseNotation + splitDouble[0][i].DigitValue();
+                source = result.ToString() + splitDouble[1];
+            }
 
             if (double.TryParse(source, NumberStyles.Float,
-                            CultureInfo.InvariantCulture, out double result))
+                            CultureInfo.InvariantCulture, out result))
                 return result;
-            throw new OverflowException(pos);
+            throw new LexemeOverflowException(pos);
         }
 
         override public string ToString()
         {
-
             object value_ = type switch
             {
                 TokenType.Double => ((double)value).ToStringPascal(),
                 TokenType.Operator or TokenType.Keyword or TokenType.Separator =>
                     value.ToString()!.Capitalize(),
+                TokenType.String or TokenType.Char => value.ToString()!
+                    .Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t"),
                 _ => value,
             };
-
             return $"{pos.line} \t {pos.ch} \t {type} \t {value_} \t {source}";
         }
     }
