@@ -14,6 +14,7 @@ namespace LexicalAnalyzer
         private Position cursor = new Position();
         private Position lexemePos;
         private string buffer;
+        private char? bufferedChar;
 
         public LexerBuffer()
         {
@@ -50,6 +51,12 @@ namespace LexicalAnalyzer
             return _;
         }
 
+        protected void Back()
+        {
+            bufferedChar = CurrentChar;
+            buffer = buffer.Substring(0, buffer.Length - 1);
+        }
+
         protected bool TryNext(char ch)
         {
             if (fstream.Peek() != ch)
@@ -62,6 +69,12 @@ namespace LexicalAnalyzer
         {
             if (resetBuffer)
                 buffer = "";
+            if (bufferedChar is not null)
+            {
+                buffer += bufferedChar;
+                bufferedChar = null;
+                return;
+            }
             if (str == null)
                 buffer += Next();
             else buffer += str;

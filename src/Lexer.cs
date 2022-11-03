@@ -117,10 +117,14 @@ namespace LexicalAnalyzer
 
             // fractional part
             string fractionalDigits = "";
-            if ((char)Peek() == '.')
+            if (TryNext('.'))
             {
+                if (Peek() == '.')
+                {
+                    Back();
+                    return;
+                }
                 (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
-                WriteToBuffer();
                 if (baseNotation == 10)
                     fractionalDigits = Digits(10);
                 WriteToBuffer(fractionalDigits);
@@ -134,7 +138,7 @@ namespace LexicalAnalyzer
                 (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
                 WriteToBuffer();
 
-                if ((char)Peek() == '-' || (char)Peek() == '+')
+                if (Peek() == '-' || Peek() == '+')
                     WriteToBuffer();
                 exponentDigits = Digits(10);
                 WriteToBuffer(exponentDigits);
