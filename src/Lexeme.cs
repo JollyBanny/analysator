@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
 using LexicalAnalyzer.Enums;
 using LexicalAnalyzer.Extensions;
 using LexicalAnalyzer.Exceptions;
@@ -41,7 +40,9 @@ namespace LexicalAnalyzer
 
         private string NormalizeString(string source)
         {
+            source = source.Replace("''", $"'#{(int)'\''}'");
             string source_ = source;
+            source = source.Replace("'", "");
             bool read = true;
             for (int i = 0; i < source_.Length; ++i)
             {
@@ -58,10 +59,10 @@ namespace LexicalAnalyzer
                     --i;
                     var index = source.IndexOf(str);
                     source = source.Remove(index, str.Length)
-                                   .Insert(index, NormalizeChar(str.Substring(1)).ToString());
+                                   .Insert(index, NormalizeChar(str).ToString());
                 }
             }
-            return source.Replace("'", "");
+            return source;
         }
 
         private void GetBaseNotation(char ch, out int baseNotation) =>

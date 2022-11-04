@@ -78,7 +78,7 @@ namespace LexicalAnalyzer
             (lexemeType, lexemeToken) = (TokenType.String, Token.L_STRING);
             while (true)
             {
-                while (!TryNext('\''))
+                while (!TryNext('\'') || Peek() == '\'')
                 {
                     if (Peek() == '\n' || Peek() < 0)
                         throw new LexemeException(LexemePos, "String exceeds line");
