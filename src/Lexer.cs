@@ -6,17 +6,17 @@ namespace LexicalAnalyzer
 {
     class Lexer : LexerBuffer
     {
-        private TokenType lexemeType;
-        private Token lexemeToken;
+        private TokenType _lexemeType;
+        private Token _lexemeToken;
 
         public Lexer(StreamReader fstream) : base(fstream) { }
         public Lexer() : base() { }
 
         /*
-        GetBaseNotation defines the base notation by the symbol
+        GetBase defines the base notation by the symbol
         */
-        private void GetBaseNotation(char ch, out int baseNotation) =>
-            baseNotation = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
+        private void GetBase(char ch, out int @base) =>
+            @base = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
 
         /*
         LookupKeyword searches for a string match with one of the tokens.
@@ -51,13 +51,13 @@ namespace LexicalAnalyzer
         /*
         Digits scans the maximum digit sequence taking into account the base.
         */
-        private string Digits(int baseNotation)
+        private string Digits(int @base)
         {
             string digitSequence = "";
-            if (baseNotation <= 10)
+            if (@base <= 10)
                 while (((char)Peek()).IsDigit())
                 {
-                    if (Peek() >= '0' + baseNotation)
+                    if (Peek() >= '0' + @base)
                         return digitSequence;
                     digitSequence += Next();
                 }
@@ -75,7 +75,7 @@ namespace LexicalAnalyzer
 
         private void ScanString()
         {
-            (lexemeType, lexemeToken) = (TokenType.String, Token.L_STRING);
+            (_lexemeType, _lexemeToken) = (TokenType.String, Token.L_STRING);
             while (true)
             {
                 while (!TryNext('\'') || Peek() == '\'')
@@ -100,7 +100,7 @@ namespace LexicalAnalyzer
                     throw new LexemeException(LexemePos, "Illegal char constant"));
                 TryNext('#');
             }
-            (lexemeType, lexemeToken) = Buffer.Count((c) => c == '#') > 1 ?
+            (_lexemeType, _lexemeToken) = Buffer.Count((c) => c == '#') > 1 ?
                 (TokenType.String, Token.L_STRING) : (TokenType.Char, Token.L_CHAR);
             if (TryNext('\''))
                 ScanString();
@@ -108,11 +108,11 @@ namespace LexicalAnalyzer
 
         private void ScanNumber()
         {
-            GetBaseNotation(CurrentChar, out int baseNotation);
+            GetBase(CurrentChar, out int @base);
             // integer part
-            (lexemeType, lexemeToken) = (TokenType.Integer, Token.L_INTEGER);
-            WriteToBuffer(Digits(baseNotation));
-            if (Buffer.Length == 1 && baseNotation != 10)
+            (_lexemeType, _lexemeToken) = (TokenType.Integer, Token.L_INTEGER);
+            WriteToBuffer(Digits(@base));
+            if (Buffer.Length == 1 && @base != 10)
                 throw new LexemeException(LexemePos, "Invalid integer expression");
 
             // fractional part
@@ -124,8 +124,8 @@ namespace LexicalAnalyzer
                     Back();
                     return;
                 }
-                (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
-                if (baseNotation == 10)
+                (_lexemeType, _lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
+                if (@base == 10)
                     fractionalDigits = Digits(10);
                 WriteToBuffer(fractionalDigits);
             }
@@ -133,9 +133,9 @@ namespace LexicalAnalyzer
             // exponent part
             string exponentDigits = "";
             if (char.ToLower((char)Peek()) == 'e' &&
-                (lexemeToken == Token.L_DOUBLE || baseNotation == 10))
+                (_lexemeToken == Token.L_DOUBLE || @base == 10))
             {
-                (lexemeType, lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
+                (_lexemeType, _lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
                 WriteToBuffer();
 
                 if (Peek() == '-' || Peek() == '+')
@@ -159,7 +159,7 @@ namespace LexicalAnalyzer
         // ScanComment starts from last character of open comment sequence
         private void ScanComment()
         {
-            (lexemeType, lexemeToken) = (TokenType.Comment, Token.COMMENT);
+            (_lexemeType, _lexemeToken) = (TokenType.Comment, Token.COMMENT);
             // { comment style }
             if (CurrentChar == '{')
             {
@@ -232,7 +232,7 @@ namespace LexicalAnalyzer
             WriteToBuffer(null, true);
             SkipCommentAndWhiteSpace();
             LexemePos = Cursor;
-            (lexemeType, lexemeToken) = (TokenType.Invalid, Token.INVALID);
+            (_lexemeType, _lexemeToken) = (TokenType.Invalid, Token.INVALID);
 
             switch (CurrentChar)
             {
@@ -243,62 +243,62 @@ namespace LexicalAnalyzer
                     ScanString();
                     break;
                 case ';':
-                    lexemeToken = Token.SEMICOLOM;
+                    _lexemeToken = Token.SEMICOLOM;
                     break;
                 case '.':
-                    lexemeToken = Token.DOT;
-                    if (TryNext('.')) lexemeToken = Token.ELLIPSIS;
+                    _lexemeToken = Token.DOT;
+                    if (TryNext('.')) _lexemeToken = Token.ELLIPSIS;
                     break;
                 case ',':
-                    lexemeToken = Token.COMMA;
+                    _lexemeToken = Token.COMMA;
                     break;
                 case '(':
-                    lexemeToken = Token.LPAREN;
+                    _lexemeToken = Token.LPAREN;
                     if (TryNext('*')) ScanComment();
                     break;
                 case ')':
-                    lexemeToken = Token.RPAREN;
+                    _lexemeToken = Token.RPAREN;
                     break;
                 case '[':
-                    lexemeToken = Token.LBRACK;
+                    _lexemeToken = Token.LBRACK;
                     break;
                 case ']':
-                    lexemeToken = Token.RBRACK;
+                    _lexemeToken = Token.RBRACK;
                     break;
                 case '{':
                     ScanComment();
                     break;
                 case ':':
-                    lexemeToken = Switch2(Token.COLON, Token.ASSIGN);
+                    _lexemeToken = Switch2(Token.COLON, Token.ASSIGN);
                     break;
                 case '+':
-                    lexemeToken = Switch2(Token.ADD, Token.ADD_ASSIGN);
+                    _lexemeToken = Switch2(Token.ADD, Token.ADD_ASSIGN);
                     break;
                 case '-':
-                    lexemeToken = Switch2(Token.SUB, Token.SUB_ASSIGN);
+                    _lexemeToken = Switch2(Token.SUB, Token.SUB_ASSIGN);
                     break;
                 case '*':
-                    lexemeToken = Switch2(Token.MUL, Token.MUL_ASSIGN);
+                    _lexemeToken = Switch2(Token.MUL, Token.MUL_ASSIGN);
                     break;
                 case '/':
-                    lexemeToken = Switch3(Token.DIV_REAL, Token.DIV_ASSIGN, '/', Token.COMMENT);
-                    if (lexemeToken == Token.COMMENT) ScanComment();
+                    _lexemeToken = Switch3(Token.DIV_REAL, Token.DIV_ASSIGN, '/', Token.COMMENT);
+                    if (_lexemeToken == Token.COMMENT) ScanComment();
                     break;
                 case '=':
-                    lexemeToken = Token.EQUAL;
+                    _lexemeToken = Token.EQUAL;
                     break;
                 case '<':
-                    if (TryNext('<')) lexemeToken = Token.O_SHL;
+                    if (TryNext('<')) _lexemeToken = Token.O_SHL;
                     else
-                        lexemeToken = Switch3(Token.LESS, Token.LESS_EQUAL, '>', Token.NOT_EQUAL);
+                        _lexemeToken = Switch3(Token.LESS, Token.LESS_EQUAL, '>', Token.NOT_EQUAL);
                     break;
                 case '>':
-                    lexemeToken = Switch3(Token.MORE, Token.MORE_EQUAL, '>', Token.O_SHR);
+                    _lexemeToken = Switch3(Token.MORE, Token.MORE_EQUAL, '>', Token.O_SHR);
                     break;
                 case char ch when ch.IsLetter():
                     ScanIdentifier();
                     var keyword = LookupKeyword(Buffer);
-                    (lexemeType, lexemeToken) = keyword.HasValue ?
+                    (_lexemeType, _lexemeToken) = keyword.HasValue ?
                                     (TokenType.Keyword, (Token)keyword) :
                                     (TokenType.Identifire, Token.IDENTIFIRE);
                     break;
@@ -306,21 +306,21 @@ namespace LexicalAnalyzer
                     ScanNumber();
                     break;
                 case { } when EndOfStream:
-                    (lexemeType, lexemeToken) = (TokenType.EOF, Token.EOF);
+                    (_lexemeType, _lexemeToken) = (TokenType.EOF, Token.EOF);
                     WriteToBuffer(Token.EOF.ToString(), true);
                     break;
                 default:
                     throw new LexemeException(LexemePos, $"Illegal character '{CurrentChar}'");
             }
 
-            lexemeType = lexemeToken switch
+            _lexemeType = _lexemeToken switch
             {
                 > Token.operator_begin and < Token.operator_end => TokenType.Operator,
                 > Token.separator_begin and < Token.separator_end => TokenType.Separator,
-                _ => lexemeType
+                _ => _lexemeType
             };
 
-            return new Lexeme(LexemePos, lexemeType, lexemeToken, Buffer);
+            return new Lexeme(LexemePos, _lexemeType, _lexemeToken, Buffer);
         }
     }
 }

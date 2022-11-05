@@ -8,22 +8,23 @@ namespace LexicalAnalyzer
 {
     class Lexeme
     {
-        private Position pos;
-        public Position Pos { get => pos; }
-        private TokenType type;
-        public TokenType Type { get => type; }
-        private object value;
-        public object Value { get => value; }
-        private string source;
-        public string Source { get => source; }
+        private Position _pos;
+        private TokenType _type;
+        private object _value;
+        private string _source;
 
         public Lexeme(Position pos, TokenType type, Token token, string source)
         {
-            this.pos = pos;
-            this.type = type;
-            this.value = LexemeValue(type, token, source);
-            this.source = source;
+            _pos = pos;
+            _type = type;
+            _value = LexemeValue(type, token, source);
+            _source = source;
         }
+
+        public Position Pos { get => _pos; }
+        public TokenType Type { get => _type; }
+        public object Value { get => _value; }
+        public string Source { get => _source; }
 
         private object LexemeValue(TokenType type, Token token, string source) =>
         type switch
@@ -80,18 +81,18 @@ namespace LexicalAnalyzer
             return value.ToString();
         }
 
-        private void GetBaseNotation(char ch, out int baseNotation) =>
-            baseNotation = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
+        private void GetBase(char ch, out int @base) =>
+            @base = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
 
         private object StringToInteger(string source)
         {
-            GetBaseNotation(source[0], out int baseNotation);
+            GetBase(source[0], out int @base);
             Int64 result = 0;
-            for (int i = baseNotation == 10 ? 0 : 1; i < source.Length; i++)
+            for (int i = @base == 10 ? 0 : 1; i < source.Length; i++)
             {
-                result = result * baseNotation + source[i].DigitValue();
+                result = result * @base + source[i].DigitValue();
                 if (result > Int32.MaxValue)
-                    throw new LexemeOverflowException(pos);
+                    throw new LexemeOverflowException(_pos);
             }
             return result;
         }
@@ -99,34 +100,34 @@ namespace LexicalAnalyzer
         private object StringToDouble(string source)
         {
             double result = 0;
-            GetBaseNotation(source[0], out int baseNotation);
+            GetBase(source[0], out int @base);
 
-            if (baseNotation != 10)
+            if (@base != 10)
             {
                 string[] splitDouble = source.Split('.');
                 for (int i = 1; i < splitDouble[0].Length; i++)
-                    result = result * baseNotation + splitDouble[0][i].DigitValue();
+                    result = result * @base + splitDouble[0][i].DigitValue();
                 source = result.ToString() + splitDouble[1];
             }
 
             if (double.TryParse(source, NumberStyles.Float,
                             CultureInfo.InvariantCulture, out result))
                 return result;
-            throw new LexemeOverflowException(pos);
+            throw new LexemeOverflowException(_pos);
         }
 
         override public string ToString()
         {
-            object value_ = type switch
+            object value_ = _type switch
             {
-                TokenType.Double => ((double)value).ToStringPascal(),
+                TokenType.Double => ((double)_value).ToStringPascal(),
                 TokenType.Operator or TokenType.Keyword or TokenType.Separator =>
-                    value.ToString()!.Capitalize(),
-                TokenType.String or TokenType.Char => value.ToString()!
+                    _value.ToString()!.Capitalize(),
+                TokenType.String or TokenType.Char => _value.ToString()!
                     .Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t"),
-                _ => value,
+                _ => _value,
             };
-            return $"{pos.line} \t {pos.ch} \t {type} \t {value_} \t {source}";
+            return $"{_pos.Line} \t {_pos.Ch} \t {_type} \t {value_} \t {_source}";
         }
     }
 }

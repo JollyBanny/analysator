@@ -4,16 +4,16 @@ namespace LexicalAnalyzer.Test
 {
     static class Test
     {
-        static private Lexer lexer = new Lexer();
+        static private Lexer _lexer = new Lexer();
 
         static public void AnalyzeFile(string path)
         {
-            lexer.ChangeFile(path);
+            _lexer.ChangeFile(path);
             while (true)
             {
                 try
                 {
-                    var lexem = lexer.GetLexem();
+                    var lexem = _lexer.GetLexem();
                     Console.WriteLine(lexem.ToString());
                     if (lexem.Type == TokenType.EOF) break;
                 }
@@ -23,17 +23,17 @@ namespace LexicalAnalyzer.Test
                     break;
                 }
             }
-            lexer.CloseFile();
+            _lexer.CloseFile();
         }
 
         static private bool TestFile(string testFile, string checkFile)
         {
             StreamReader ofstream = new StreamReader($"./tests/{checkFile}");
-            lexer.ChangeFile(path: $"./tests/{testFile}");
+            _lexer.ChangeFile(path: $"./tests/{testFile}");
             while (true)
                 try
                 {
-                    var lexem = lexer.GetLexem();
+                    var lexem = _lexer.GetLexem();
                     string expected = ofstream.ReadLine()!;
                     string found = lexem.ToString();
                     if (expected != found)
@@ -58,7 +58,7 @@ namespace LexicalAnalyzer.Test
                     }
                     break;
                 }
-            lexer.CloseFile();
+            _lexer.CloseFile();
             return true;
         }
 
