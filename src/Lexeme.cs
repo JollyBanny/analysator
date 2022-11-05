@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using LexicalAnalyzer.Enums;
 using LexicalAnalyzer.Extensions;
 using LexicalAnalyzer.Exceptions;
@@ -29,7 +30,7 @@ namespace LexicalAnalyzer
         {
             TokenType.Integer => StringToInteger(source),
             TokenType.Double => StringToDouble(source),
-            TokenType.String => NormalizeString(source),
+            TokenType.String => NormalizeString(source.ToCharArray()),
             TokenType.Char => NormalizeChar(source),
             TokenType.Identifire => source,
             TokenType.EOF => Token.EOF,
@@ -38,31 +39,45 @@ namespace LexicalAnalyzer
 
         private char NormalizeChar(string source) => (char)int.Parse(source.Trim('#'));
 
-        private string NormalizeString(string source)
+        private string NormalizeString(char[] source)
         {
-            source = source.Replace("''", $"'#{(int)'\''}'");
-            string source_ = source;
-            source = source.Replace("'", "");
-            bool read = true;
-            for (int i = 0; i < source_.Length; ++i)
+            StringBuilder value = new StringBuilder();
+            for (int i = 0; ;)
             {
-                if (source_[i] == '\'') read = !read;
-                if (source_[i] == '#' && read)
+                if (source.Length == 2)
+                    return "";
+                if (source[i] == '\'')
                 {
-                    string str = $"{source_[i++]}";
-                    while (source_[i].IsDigit())
+                    ++i;
+                    string strPart = "";
+                    while (source[i] != '\'' || source[i + 1] == '\'')
                     {
-                        str += source_[i++];
-                        if (i >= source_.Length)
+                        if (source[i] == '\'' && source[i + 1] == '\'')
+                            strPart += source[i++];
+                        strPart += source[i++];
+                        if (i + 1 >= source.Length)
                             break;
                     }
-                    --i;
-                    var index = source.IndexOf(str);
-                    source = source.Remove(index, str.Length)
-                                   .Insert(index, NormalizeChar(str).ToString());
+                    value.Append(strPart.Replace("''", "'"));
+                    if (++i >= source.Length)
+                        return value.ToString();
                 }
+
+                while (source[i] == '#')
+                {
+                    string specialChar = "";
+                    while (source[++i].IsDigit())
+                    {
+                        specialChar += source[i];
+                        if (i + 1 >= source.Length)
+                            break;
+                    }
+                    value.Append(NormalizeChar(specialChar));
+                }
+                if (source[i] != '\'')
+                    break;
             }
-            return source;
+            return value.ToString();
         }
 
         private void GetBaseNotation(char ch, out int baseNotation) =>
