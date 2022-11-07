@@ -34,7 +34,6 @@ namespace LexicalAnalyzer
             TokenType.String => NormalizeString(source.ToCharArray()),
             TokenType.Char => NormalizeChar(source),
             TokenType.Identifire => source,
-            TokenType.EOF => Token.EOF,
             _ => token,
         };
 
@@ -42,7 +41,7 @@ namespace LexicalAnalyzer
 
         private string NormalizeString(char[] source)
         {
-            StringBuilder value = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; ;)
             {
                 if (source.Length == 2)
@@ -59,9 +58,9 @@ namespace LexicalAnalyzer
                         if (i + 1 >= source.Length)
                             break;
                     }
-                    value.Append(strPart.Replace("''", "'"));
+                    result.Append(strPart.Replace("''", "'"));
                     if (++i >= source.Length)
-                        return value.ToString();
+                        return result.ToString();
                 }
 
                 while (source[i] == '#')
@@ -73,12 +72,12 @@ namespace LexicalAnalyzer
                         if (i + 1 >= source.Length)
                             break;
                     }
-                    value.Append(NormalizeChar(specialChar));
+                    result.Append(NormalizeChar(specialChar));
                 }
                 if (source[i] != '\'')
                     break;
             }
-            return value.ToString();
+            return result.ToString();
         }
 
         private void GetBase(char ch, out int @base) =>
@@ -118,7 +117,7 @@ namespace LexicalAnalyzer
 
         override public string ToString()
         {
-            object value_ = _type switch
+            object value = _type switch
             {
                 TokenType.Double => ((double)_value).ToStringPascal(),
                 TokenType.Operator or TokenType.Keyword or TokenType.Separator =>
@@ -127,7 +126,8 @@ namespace LexicalAnalyzer
                     .Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t"),
                 _ => _value,
             };
-            return $"{_pos.Line} \t {_pos.Ch} \t {_type} \t {value_} \t {_source}";
+            return $"{Pos.Line}\t{Pos.Ch}\t{Type}" +
+                    (Type == TokenType.EOF ? "" : $"\t{value}\t{Source}");
         }
     }
 }
