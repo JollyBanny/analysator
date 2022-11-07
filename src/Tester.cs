@@ -68,14 +68,18 @@ namespace LexicalAnalyzer.Test
                 .Select(f => Path.GetFileName(f)).ToList();
             var checkFiles = Directory.GetFiles("./tests", "*.out")
                 .Select(f => Path.GetFileName(f)).ToList();
+            int total = 0;
             for (int i = 0; i < testFiles.Capacity; ++i)
                 if (TestFile(testFiles[i], checkFiles[i]))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Test {(i + 1).ToString().PadLeft(2, '0')} OK");
                     Console.ForegroundColor = ConsoleColor.Gray;
+                    total++;
                 }
-                else return;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"\nTotal: {total}/{testFiles.Capacity}");
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }
