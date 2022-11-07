@@ -3,7 +3,6 @@ namespace LexicalAnalyzer.Enums
     public enum TokenType
     {
         EOF,
-        Invalid,
         Integer,
         Double,
         Char,
@@ -18,7 +17,6 @@ namespace LexicalAnalyzer.Enums
     public enum Token
     {
         EOF = 1,
-        INVALID,
 
         COMMENT,
         IDENTIFIRE,
