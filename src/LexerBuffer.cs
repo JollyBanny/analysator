@@ -76,7 +76,8 @@ namespace LexicalAnalyzer
             }
             if (str == null)
                 _buffer += Next();
-            else _buffer += str;
+            else
+                _buffer += str;
         }
 
         public void ChangeFile(string path)

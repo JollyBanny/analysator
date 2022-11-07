@@ -9,8 +9,8 @@ namespace LexicalAnalyzer
         private TokenType _lexemeType;
         private Token _lexemeToken;
 
-        public Lexer(StreamReader fstream) : base(fstream) { }
         public Lexer() : base() { }
+        public Lexer(StreamReader fstream) : base(fstream) { }
 
         /*
         GetBase defines the base notation by the symbol
@@ -35,18 +35,11 @@ namespace LexicalAnalyzer
         If the token ends with '=', then return tok1,
         otherwise return tok0, or if the token ends with ch, then tok2
         */
-        private Token Switch2(Token tok0, Token tok1)
-        {
-            if (TryNext('=')) return tok1;
-            return tok0;
-        }
+        private Token Switch2(Token tok0, Token tok1) =>
+            TryNext('=') ? tok1 : tok0;
 
-        private Token Switch3(Token tok0, Token tok1, char ch, Token tok2)
-        {
-            if (TryNext('=')) return tok1;
-            if (TryNext(ch)) return tok2;
-            return tok0;
-        }
+        private Token Switch3(Token tok0, Token tok1, char ch, Token tok2) =>
+            TryNext('=') ? tok1 : TryNext(ch) ? tok2 : tok0;
 
         /*
         Digits scans the maximum digit sequence taking into account the base.
@@ -100,7 +93,7 @@ namespace LexicalAnalyzer
                     throw new LexemeException(LexemePos, "Illegal char constant"));
                 TryNext('#');
             }
-            (_lexemeType, _lexemeToken) = Buffer.Count((c) => c == '#') > 1 ?
+            (_lexemeType, _lexemeToken) = Buffer.Count(c => c == '#') > 1 ?
                 (TokenType.String, Token.L_STRING) : (TokenType.Char, Token.L_CHAR);
             if (TryNext('\''))
                 ScanString();
@@ -232,7 +225,6 @@ namespace LexicalAnalyzer
             WriteToBuffer(null, true);
             SkipCommentAndWhiteSpace();
             LexemePos = Cursor;
-            (_lexemeType, _lexemeToken) = (TokenType.Invalid, Token.INVALID);
 
             switch (CurrentChar)
             {
@@ -307,7 +299,6 @@ namespace LexicalAnalyzer
                     break;
                 case { } when EndOfStream:
                     (_lexemeType, _lexemeToken) = (TokenType.EOF, Token.EOF);
-                    WriteToBuffer(Token.EOF.ToString(), true);
                     break;
                 default:
                     throw new LexemeException(LexemePos, $"Illegal character '{CurrentChar}'");
