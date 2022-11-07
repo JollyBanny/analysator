@@ -1,10 +1,10 @@
-1 	 1 	 Separator 	 Lparen 	 (
-2 	 1 	 Separator 	 Rparen 	 )
-3 	 1 	 Separator 	 Lbrack 	 [
-4 	 1 	 Separator 	 Rbrack 	 ]
-5 	 1 	 Separator 	 Semicolom 	 ;
-6 	 1 	 Separator 	 Colon 	 :
-7 	 1 	 Separator 	 Dot 	 .
-8 	 1 	 Separator 	 Ellipsis 	 ..
-9 	 1 	 Separator 	 Comma 	 ,
-9 	 2 	 EOF 	 EOF 	 EOF
+1	1	Separator	Lparen	(
+2	1	Separator	Rparen	)
+3	1	Separator	Lbrack	[
+4	1	Separator	Rbrack	]
+5	1	Separator	Semicolom	;
+6	1	Separator	Colon	:
+7	1	Separator	Dot	.
+8	1	Separator	Ellipsis	..
+9	1	Separator	Comma	,
+9	2	EOF

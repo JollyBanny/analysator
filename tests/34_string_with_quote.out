@@ -1,2 +1,2 @@
-1 	 1 	 String 	 H'ello,' world!' 	 'H''ello,'' world!'''
-1 	 22 	 EOF 	 EOF 	 EOF
+1	1	String	H'ello,' world!'	'H''ello,'' world!'''
+1	22	EOF

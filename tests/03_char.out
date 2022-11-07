@@ -1,6 +1,6 @@
-1 	 1 	 Char 	 ! 	 #33
-2 	 1 	 Char 	 $ 	 #36
-3 	 1 	 Char 	 { 	 #123
-4 	 1 	 Char 	 q 	 #113
-5 	 1 	 Char 	 4 	 #52
-5 	 4 	 EOF 	 EOF 	 EOF
+1	1	Char	!	#33
+2	1	Char	$	#36
+3	1	Char	{	#123
+4	1	Char	q	#113
+5	1	Char	4	#52
+5	4	EOF
