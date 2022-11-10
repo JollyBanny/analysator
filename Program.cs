@@ -1,6 +1,6 @@
 ﻿using static LexicalAnalyzer.Test.Test;
 
-namespace LexicalAnalyzer
+namespace PascalCompiler
 {
     class Program
     {

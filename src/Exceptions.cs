@@ -1,4 +1,6 @@
-namespace LexicalAnalyzer.Exceptions
+using LexicalAnalyzer;
+
+namespace PascalCompiler.Exceptions
 {
     class LexemeException : Exception
     {

@@ -1,6 +1,6 @@
-using LexicalAnalyzer.Enums;
-using LexicalAnalyzer.Exceptions;
-using LexicalAnalyzer.Extensions;
+using PascalCompiler.Enums;
+using PascalCompiler.Exceptions;
+using PascalCompiler.Extensions;
 
 namespace LexicalAnalyzer
 {
@@ -12,17 +12,9 @@ namespace LexicalAnalyzer
         public Lexer() : base() { }
         public Lexer(StreamReader fstream) : base(fstream) { }
 
-        /*
-        GetBase defines the base notation by the symbol
-        */
         private void GetBase(char ch, out int @base) =>
             @base = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;
 
-        /*
-        LookupKeyword searches for a string match with one of the tokens.
-        After that, it is checked whether the token is in the interval of
-        keyword tokens.
-        */
         private Token? LookupKeyword(string keyword)
         {
             Enum.TryParse<Token>(keyword, true, out Token result);

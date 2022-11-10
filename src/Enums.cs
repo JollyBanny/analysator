@@ -1,4 +1,4 @@
-namespace LexicalAnalyzer.Enums
+namespace PascalCompiler.Enums
 {
     public enum TokenType
     {

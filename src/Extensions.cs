@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace LexicalAnalyzer.Extensions
+namespace PascalCompiler.Extensions
 {
     public static class DoubleExtension
     {

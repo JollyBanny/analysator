@@ -1,8 +1,9 @@
+using PascalCompiler.Enums;
+using PascalCompiler.Exceptions;
+using PascalCompiler.Extensions;
+
 using System.Globalization;
 using System.Text;
-using LexicalAnalyzer.Enums;
-using LexicalAnalyzer.Extensions;
-using LexicalAnalyzer.Exceptions;
 
 namespace LexicalAnalyzer
 {
@@ -25,6 +26,8 @@ namespace LexicalAnalyzer
         public TokenType Type { get => _type; }
         public object Value { get => _value; }
         public string Source { get => _source; }
+
+        public T CastValue<T>() => (T)Value;
 
         private object LexemeValue(TokenType type, Token token, string source) =>
         type switch

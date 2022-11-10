@@ -1,4 +1,4 @@
-using LexicalAnalyzer.Enums;
+using PascalCompiler.Enums;
 
 namespace LexicalAnalyzer.Test
 {
