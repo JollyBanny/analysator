@@ -1,4 +1,4 @@
-namespace LexicalAnalyzer
+namespace PascalCompiler.Lexer
 {
     struct Position
     {

@@ -5,7 +5,7 @@ using PascalCompiler.Extensions;
 using System.Globalization;
 using System.Text;
 
-namespace LexicalAnalyzer
+namespace PascalCompiler.Lexer
 {
     class Lexeme
     {

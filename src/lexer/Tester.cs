@@ -1,8 +1,8 @@
 using PascalCompiler.Enums;
 
-namespace LexicalAnalyzer.Test
+namespace PascalCompiler.Lexer.Test
 {
-    static class Test
+    static class LexerTester
     {
         static private Lexer _lexer = new Lexer();
 

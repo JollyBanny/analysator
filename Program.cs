@@ -1,4 +1,4 @@
-﻿using static LexicalAnalyzer.Test.Test;
+﻿using PascalCompiler.Lexer.Test;
 
 namespace PascalCompiler
 {
@@ -8,16 +8,16 @@ namespace PascalCompiler
         {
             if (args.Length == 0)
             {
-                AnalyzeFile("./tests/01_EOF.in");
+                LexerTester.AnalyzeFile("./tests/01_EOF.in");
                 return;
             }
             switch (args[0])
             {
                 case "-t":
                     if (args.Length > 1)
-                        AnalyzeFile(args[1]);
+                        LexerTester.AnalyzeFile(args[1]);
                     else
-                        RunTests();
+                        LexerTester.RunTests();
                     break;
                 default:
                     Console.WriteLine("Unknown argument");

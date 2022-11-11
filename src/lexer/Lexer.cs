@@ -2,7 +2,7 @@ using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
 
-namespace LexicalAnalyzer
+namespace PascalCompiler.Lexer
 {
     class Lexer : LexerBuffer
     {
