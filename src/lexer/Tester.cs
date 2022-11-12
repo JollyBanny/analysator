@@ -14,7 +14,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 try
                 {
                     var lexeme = _lexer.GetLexem();
-                    Console.WriteLine(lexeme.ToString());
+                    Console.WriteLine(lexeme);
                     if (lexeme.Type == TokenType.EOF) break;
                 }
                 catch (Exception e)

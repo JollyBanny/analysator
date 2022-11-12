@@ -31,8 +31,8 @@ namespace PascalCompiler.LexicalAnalyzer
         protected string Buffer { get => _buffer; }
         protected char CurrentChar { get => _buffer.Last(); }
         protected bool EndOfStream { get => _fstream.EndOfStream; }
-        protected Position Cursor { get => _cursor; set => _cursor = value; }
         protected Position LexemePos { get => _lexemePos; set => _lexemePos = value; }
+        public Position Cursor { get => _cursor; set => _cursor = value; }
 
         /*
         - Next takes the next character from the stream and returns it.
