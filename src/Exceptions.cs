@@ -1,4 +1,4 @@
-using PascalCompiler.Lexer;
+using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.Exceptions
 {

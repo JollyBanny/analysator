@@ -1,6 +1,6 @@
 1	1	Operator	Add	+
 1	2	Operator	Add_Assign	+=
-1	4	Operator	Div_Real	/
+1	4	Operator	O_Div	/
 1	5	Operator	Sub	-
 1	6	Operator	Sub_Assign	-=
 1	8	Operator	Mul_Assign	*=
@@ -11,5 +11,5 @@
 2	1	Operator	O_Shl	<<
 2	3	Operator	More	>
 2	5	Operator	Div_Assign	/=
-2	7	Operator	Div_Real	/
+2	7	Operator	O_Div	/
 2	8	EOF

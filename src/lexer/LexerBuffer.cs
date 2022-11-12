@@ -1,4 +1,4 @@
-namespace PascalCompiler.Lexer
+namespace PascalCompiler.LexicalAnalyzer
 {
     struct Position
     {
@@ -18,7 +18,7 @@ namespace PascalCompiler.Lexer
 
         public LexerBuffer()
         {
-            string path = "./tests/" + Path.GetFileName(Directory.GetFiles("./tests", "*.in")[0]);
+            string path = Directory.GetFiles("./tests/lexer", "*.in")[0];
             _fstream = new StreamReader(path);
             _buffer = "";
         }

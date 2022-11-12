@@ -4,7 +4,7 @@
 4	1	Operator	Sub_Assign	-=
 5	1	Operator	Mul	*
 6	1	Operator	Mul_Assign	*=
-7	1	Operator	Div_Real	/
+7	1	Operator	O_Div	/
 8	1	Operator	Div_Assign	/=
 9	1	Operator	Equal	=
 10	1	Operator	Less	<

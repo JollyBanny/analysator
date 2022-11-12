@@ -2,7 +2,7 @@ using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
 
-namespace PascalCompiler.Lexer
+namespace PascalCompiler.LexicalAnalyzer
 {
     class Lexer : LexerBuffer
     {
@@ -265,7 +265,7 @@ namespace PascalCompiler.Lexer
                     _lexemeToken = Switch2(Token.MUL, Token.MUL_ASSIGN);
                     break;
                 case '/':
-                    _lexemeToken = Switch3(Token.DIV_REAL, Token.DIV_ASSIGN, '/', Token.COMMENT);
+                    _lexemeToken = Switch3(Token.O_DIV, Token.DIV_ASSIGN, '/', Token.COMMENT);
                     if (_lexemeToken == Token.COMMENT) ScanComment();
                     break;
                 case '=':

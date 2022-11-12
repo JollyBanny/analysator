@@ -30,7 +30,7 @@ namespace PascalCompiler.Enums
         ADD,
         SUB,
         MUL,
-        DIV_REAL,
+        O_DIV,              // operator DIV - /
         ADD_ASSIGN,
         SUB_ASSIGN,
         MUL_ASSIGN,
