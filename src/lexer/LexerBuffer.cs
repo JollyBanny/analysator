@@ -22,9 +22,9 @@ namespace PascalCompiler.LexicalAnalyzer
             _fstream = new StreamReader(path);
             _buffer = "";
         }
-        public LexerBuffer(StreamReader fstream)
+        public LexerBuffer(string path)
         {
-            _fstream = fstream;
+            _fstream = new StreamReader(path);
             _buffer = "";
         }
 

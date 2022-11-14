@@ -10,7 +10,7 @@ namespace PascalCompiler.LexicalAnalyzer
         private Token _lexemeToken;
 
         public Lexer() : base() { }
-        public Lexer(StreamReader fstream) : base(fstream) { }
+        public Lexer(string path) : base(path) { }
 
         private void GetBase(char ch, out int @base) =>
             @base = ch == '%' ? 2 : ch == '&' ? 8 : ch == '$' ? 16 : 10;

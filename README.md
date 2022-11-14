@@ -1,10 +1,27 @@
-## Компилятор языка программирования Pascal.
+## Pascal Compiler
 
-Написан на языке программирования C#
+Development language: C#
 
-Разработчик: cтудент ДВФУ группы Б9120-09.03.03пикд Пономаренко Максим.
+Developer: FEFU student Б9120-09.03.03пикд Ponomarenko Maxim
 
-## Commands
+## Usage
+```console
+dotnet run -- <mode> [option | path]
+```
+Mode
+| Flag | Description          |
+| ---- | -------------------- |
+| -l   | Run lexical analysis |
+| -p   | Run parser analysis  |
 
-1. Run autotest: `dotnet run -t`
-2. Run file test: `dotnet run -t <path>`
+Option
+| Flag   | Description           |
+| ------ | --------------------- |
+| --test | Run alanyzer autotest |
+
+
+## Example
+```console
+dotnet run -- -l --test
+dotnet run -- -l .\tests\lexer\01_EOF.in
+```

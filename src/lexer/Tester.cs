@@ -4,30 +4,9 @@ namespace PascalCompiler.LexicalAnalyzer
 {
     static class LexerTester
     {
-        static private Lexer _lexer = new Lexer();
-
-        static public void AnalyzeFile(string path)
-        {
-            _lexer.ChangeFile(path);
-            while (true)
-            {
-                try
-                {
-                    var lexeme = _lexer.GetLexem();
-                    Console.WriteLine(lexeme);
-                    if (lexeme.Type == TokenType.EOF) break;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    break;
-                }
-            }
-            _lexer.CloseFile();
-        }
-
         static private bool TestFile(string testFile, string checkFile)
         {
+            Lexer _lexer = new Lexer();
             StreamReader ofstream = new StreamReader(checkFile);
             _lexer.ChangeFile(testFile);
             while (true)
@@ -40,7 +19,7 @@ namespace PascalCompiler.LexicalAnalyzer
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"File: {testFile}\nExpected:\n{expected}\nFound:\n{found}");
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.ResetColor();
                         return false;
                     }
                     if (lexeme.Type == TokenType.EOF) break;
@@ -53,7 +32,7 @@ namespace PascalCompiler.LexicalAnalyzer
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"File: {testFile}\nExpected:\n{expected}\nFound:\n{found}");
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.ResetColor();
                         return false;
                     }
                     break;
@@ -72,12 +51,13 @@ namespace PascalCompiler.LexicalAnalyzer
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Test {(i + 1).ToString().PadLeft(2, '0')} OK");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ResetColor();
+
                     total++;
                 }
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"\nTotal: {total}/{testFiles.Length}");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ResetColor();
         }
     }
 }
