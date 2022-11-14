@@ -45,7 +45,11 @@ namespace PascalCompiler.SyntaxAnalyzer
                     lexeme.CastValue<Token>() == Token.O_DIV))
             {
                 _currentLexem = _lexer.GetLexem();
-                left = new BinOperNode(lexeme, left, ParseTerm());
+                if (lexeme.CastValue<Token>() == Token.O_DIV)
+                    left = new BinOperNode(lexeme, left, ParseFactor());
+                if (lexeme.CastValue<Token>() == Token.MUL)
+                    left = new BinOperNode(lexeme, left, ParseTerm());
+
                 lexeme = _currentLexem;
             }
             return left;
@@ -72,7 +76,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                     _currentLexem = _lexer.GetLexem();
                     return exp;
             }
-
             throw new SyntaxException(_lexer.Cursor, "Expected factor");
         }
 

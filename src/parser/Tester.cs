@@ -7,7 +7,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         static public void AnalyzeFile(string path)
         {
             _parser.ChangeFile(path);
-            Console.WriteLine(_parser.ParseExpression());
+            _parser.ParseExpression().PrintTree(0, new List<int>());
         }
     }
 }
