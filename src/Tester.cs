@@ -1,7 +1,6 @@
 using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
-using PascalCompiler.Exceptions;
 
 namespace PascalCompiler
 {
@@ -42,10 +41,6 @@ namespace PascalCompiler
 
         static private bool ParserTest(string inFile, string outFile)
         {
-            // var ostrm = new FileStream(outFile, FileMode.OpenOrCreate, FileAccess.Write);
-            // var writer = new StreamWriter(ostrm);
-            // writer.AutoFlush = true;
-            // Console.SetOut(writer);
             var ofstream = new StreamReader(outFile);
             var expected = ofstream.ReadToEnd();
 
@@ -71,8 +66,12 @@ namespace PascalCompiler
 
         static public void RunTests(string mode)
         {
-            Func<string, string, bool> TestFile = mode == "-l" ?
-                LexerTest : ParserTest;
+            Func<string, string, bool> TestFile = mode switch
+            {
+                "-l" => LexerTest,
+                "-p" => ParserTest,
+                _ => LexerTest,
+            };
             var path = "./tests" + (mode == "-l" ? "/lexer" : "/parser");
             var files = Directory.GetFiles(path, "*.in")
                 .Select((f) => Path.GetFileName(f)[..^3]).ToList();

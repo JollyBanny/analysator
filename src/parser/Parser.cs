@@ -71,7 +71,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     var exp = ParseExpression();
                     if (_currentLexem.Type != TokenType.Separator ||
                          _currentLexem.CastValue<Token>() != Token.RPAREN)
-                        throw new SyntaxException(lexeme.Pos, "Expected right paren");
+                        throw new SyntaxException(_lexer.Cursor, "Expected right paren");
                     _currentLexem = _lexer.GetLexem();
                     return exp;
             }
