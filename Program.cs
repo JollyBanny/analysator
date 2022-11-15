@@ -1,4 +1,6 @@
-﻿using PascalCompiler.LexicalAnalyzer;
+﻿using System.Globalization;
+
+using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 
@@ -92,13 +94,22 @@ namespace PascalCompiler
 
         static public void RunParser(string path)
         {
-            Parser _parser = new Parser(path);
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            _parser.ParseExpression().PrintTree();
+            try
+            {
+                Parser _parser = new Parser(path);
+                _parser.ParseExpression().PrintTree();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         static void Main(string[] args)
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             if (args.Length == 0)
             {
                 WrongArgs("No arguments");
@@ -115,14 +126,15 @@ namespace PascalCompiler
             {
                 case "-p":
                     if (options.Count() > 0 && options.Contains("--test"))
-                        LexerTester.RunTests();
+                        Tester.RunTests(mode);
                     else
                         RunParser(path);
                     break;
                 case "-l":
                     if (options.Count() > 0 && options.Contains("--test"))
-                        LexerTester.RunTests();
-                    else RunLexer(path);
+                        Tester.RunTests(mode);
+                    else
+                        RunLexer(path);
                     break;
                 default:
                     Console.WriteLine("Unknown argument");

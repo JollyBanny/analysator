@@ -66,7 +66,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 while (!TryNext('\'') || Peek() == '\'')
                 {
                     if (Peek() == '\n' || Peek() < 0)
-                        throw new LexemeException(LexemePos, "String exceeds line");
+                        throw new LexicalException(LexemePos, "String exceeds line");
                     WriteToBuffer();
                 }
                 if (TryNext('#'))
@@ -82,7 +82,7 @@ namespace PascalCompiler.LexicalAnalyzer
             {
                 string digitChar = Digits(10);
                 WriteToBuffer(digitChar.Length > 0 ? digitChar :
-                    throw new LexemeException(LexemePos, "Illegal char constant"));
+                    throw new LexicalException(LexemePos, "Illegal char constant"));
                 TryNext('#');
             }
             (_lexemeType, _lexemeToken) = Buffer.Count(c => c == '#') > 1 ?
@@ -98,7 +98,7 @@ namespace PascalCompiler.LexicalAnalyzer
             (_lexemeType, _lexemeToken) = (TokenType.Integer, Token.L_INTEGER);
             WriteToBuffer(Digits(@base));
             if (Buffer.Length == 1 && @base != 10)
-                throw new LexemeException(LexemePos, "Invalid integer expression");
+                throw new LexicalException(LexemePos, "Invalid integer expression");
 
             // fractional part
             string fractionalDigits = "";
@@ -130,13 +130,13 @@ namespace PascalCompiler.LexicalAnalyzer
 
                 if (exponentDigits.Length == 0)
                     if (Buffer.Contains('.') && fractionalDigits.Length == 0)
-                        throw new LexemeException(LexemePos,
+                        throw new LexicalException(LexemePos,
                                 "Illegal floating point constant");
                     else
                     {
                         string text = 6 < Peek() && Peek() < 14 ? $"#{Peek()}" :
                             ((char)Peek()).ToString();
-                        throw new LexemeException(LexemePos, $"Illegal character '{text}'");
+                        throw new LexicalException(LexemePos, $"Illegal character '{text}'");
                     }
             }
         }
@@ -151,7 +151,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 while (Peek() != '}')
                 {
                     if (Peek() < 0)
-                        throw new LexemeException(LexemePos, "Unexpected end of file");
+                        throw new LexicalException(LexemePos, "Unexpected end of file");
                     WriteToBuffer();
                 }
                 WriteToBuffer();
@@ -172,7 +172,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 while (CurrentChar != '*' || Peek() != ')')
                 {
                     if (Peek() < 0)
-                        throw new LexemeException(LexemePos, "Unexpected end of file");
+                        throw new LexicalException(LexemePos, "Unexpected end of file");
                     WriteToBuffer();
                 }
                 WriteToBuffer();
@@ -293,7 +293,7 @@ namespace PascalCompiler.LexicalAnalyzer
                     (_lexemeType, _lexemeToken) = (TokenType.EOF, Token.EOF);
                     break;
                 default:
-                    throw new LexemeException(LexemePos, $"Illegal character '{CurrentChar}'");
+                    throw new LexicalException(LexemePos, $"Illegal character '{CurrentChar}'");
             }
 
             _lexemeType = _lexemeToken switch

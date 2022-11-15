@@ -72,11 +72,11 @@ namespace PascalCompiler.SyntaxAnalyzer
                     var exp = ParseExpression();
                     if (_currentLexem.Type != TokenType.Separator ||
                          _currentLexem.CastValue<Token>() != Token.RPAREN)
-                        throw new SyntaxException(_lexer.Cursor, "Expected right paren");
+                        throw new SyntaxException(lexeme.Pos, "Expected right paren");
                     _currentLexem = _lexer.GetLexem();
                     return exp;
             }
-            throw new SyntaxException(_lexer.Cursor, "Expected factor");
+            throw new SyntaxException(lexeme.Pos, "Expected factor");
         }
 
         public void ChangeFile(string path)
