@@ -85,7 +85,5 @@ namespace PascalCompiler.LexicalAnalyzer
             _fstream = new StreamReader(path);
             _lexemePos = _cursor = new Position();
         }
-
-        public void CloseFile() => _fstream.Close();
     }
 }

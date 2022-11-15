@@ -15,9 +15,9 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexem = _lexer.GetLexem();
         }
 
-        public Parser(Lexer lexer)
+        public Parser(string path)
         {
-            _lexer = lexer;
+            _lexer = new Lexer(path);
             _currentLexem = _lexer.GetLexem();
         }
 

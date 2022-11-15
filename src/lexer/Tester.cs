@@ -37,7 +37,6 @@ namespace PascalCompiler.LexicalAnalyzer
                     }
                     break;
                 }
-            _lexer.CloseFile();
             return true;
         }
 
