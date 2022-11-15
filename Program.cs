@@ -1,8 +1,8 @@
-﻿using System.Globalization;
-
-using PascalCompiler.LexicalAnalyzer;
+﻿using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
+
+using System.Globalization;
 
 namespace PascalCompiler
 {

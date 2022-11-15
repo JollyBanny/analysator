@@ -25,9 +25,8 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var left = ParseTerm();
             var lexeme = _currentLexem;
-            while (lexeme.Type == TokenType.Operator &&
-                (lexeme.CastValue<Token>() == Token.ADD ||
-                    lexeme.CastValue<Token>() == Token.SUB))
+            while (lexeme == TokenType.Operator &&
+                (lexeme == Token.ADD || lexeme == Token.SUB))
             {
                 _currentLexem = _lexer.GetLexem();
                 left = new BinOperNode(lexeme, left, ParseTerm());
@@ -40,14 +39,13 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var left = ParseFactor();
             var lexeme = _currentLexem;
-            while (lexeme.Type == TokenType.Operator &&
-                (lexeme.CastValue<Token>() == Token.MUL ||
-                    lexeme.CastValue<Token>() == Token.O_DIV))
+            while (lexeme == TokenType.Operator &&
+                (lexeme == Token.MUL || lexeme == Token.O_DIV))
             {
                 _currentLexem = _lexer.GetLexem();
-                if (lexeme.CastValue<Token>() == Token.O_DIV)
+                if (lexeme == Token.O_DIV)
                     left = new BinOperNode(lexeme, left, ParseFactor());
-                if (lexeme.CastValue<Token>() == Token.MUL)
+                if (lexeme == Token.MUL)
                     left = new BinOperNode(lexeme, left, ParseTerm());
 
                 lexeme = _currentLexem;
@@ -66,11 +64,10 @@ namespace PascalCompiler.SyntaxAnalyzer
                 case TokenType.Identifire:
                     _currentLexem = _lexer.GetLexem();
                     return new IdentifireNode(lexeme);
-                case TokenType.Separator when lexeme.CastValue<Token>() == Token.LPAREN:
+                case TokenType.Separator when lexeme == Token.LPAREN:
                     _currentLexem = _lexer.GetLexem();
                     var exp = ParseExpression();
-                    if (_currentLexem.Type != TokenType.Separator ||
-                         _currentLexem.CastValue<Token>() != Token.RPAREN)
+                    if (!(_currentLexem == TokenType.Separator && _currentLexem == Token.RPAREN))
                         throw new SyntaxException(_lexer.Cursor, "Expected right paren");
                     _currentLexem = _lexer.GetLexem();
                     return exp;

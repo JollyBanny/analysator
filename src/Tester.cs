@@ -17,8 +17,8 @@ namespace PascalCompiler
 
         static private bool LexerTest(string inFile, string outFile)
         {
-            var _lexer = new Lexer();
             var ofstream = new StreamReader(outFile);
+            var _lexer = new Lexer();
             _lexer.ChangeFile(inFile);
             while (true)
                 try

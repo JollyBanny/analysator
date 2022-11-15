@@ -134,9 +134,9 @@ namespace PascalCompiler.LexicalAnalyzer
                                 "Illegal floating point constant");
                     else
                     {
-                        string text = 6 < Peek() && Peek() < 14 ? $"#{Peek()}" :
+                        string illegalCh = 6 < Peek() && Peek() < 14 ? $"#{Peek()}" :
                             ((char)Peek()).ToString();
-                        throw new LexicalException(LexemePos, $"Illegal character '{text}'");
+                        throw new LexicalException(LexemePos, $"Illegal character '{illegalCh}'");
                     }
             }
         }

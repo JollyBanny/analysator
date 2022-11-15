@@ -27,8 +27,6 @@ namespace PascalCompiler.LexicalAnalyzer
         public object Value { get => _value; }
         public string Source { get => _source; }
 
-        public T CastValue<T>() => (T)Value;
-
         private object LexemeValue(TokenType type, Token token, string source) =>
         type switch
         {
@@ -131,6 +129,42 @@ namespace PascalCompiler.LexicalAnalyzer
             };
             return $"{Pos.Line}\t{Pos.Ch}\t{Type}" +
                     (Type == TokenType.EOF ? "" : $"\t{value}\t{Source}");
+        }
+
+        public static bool operator ==(Lexeme lexeme, Token token)
+            => (Token)lexeme.Value == token;
+
+        public static bool operator !=(Lexeme lexeme, Token token)
+            => (Token)lexeme.Value != token;
+
+        public static bool operator ==(Lexeme lexeme, TokenType tokenType)
+            => lexeme.Type == tokenType;
+
+        public static bool operator !=(Lexeme lexeme, TokenType tokenType)
+            => lexeme.Type != tokenType;
+
+        public override bool Equals(Object? obj)
+        {
+            if (obj is null)
+                return false;
+            else if (obj is Token)
+                return this == (Token)obj;
+            else if (obj is TokenType)
+                return this == (TokenType)obj;
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = Pos.GetHashCode();
+                hashCode = 32 * hashCode + Type.GetHashCode();
+                hashCode = 32 * hashCode + Value.GetHashCode();
+                hashCode = 32 * hashCode + Source.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }
