@@ -38,7 +38,7 @@ namespace PascalCompiler.LexicalAnalyzer
         */
         private string Digits(int @base)
         {
-            string digitSequence = "";
+            var digitSequence = "";
             if (@base <= 10)
                 while (((char)Peek()).IsDigit())
                 {
@@ -80,7 +80,7 @@ namespace PascalCompiler.LexicalAnalyzer
         {
             while (CurrentChar == '#')
             {
-                string digitChar = Digits(10);
+                var digitChar = Digits(10);
                 WriteToBuffer(digitChar.Length > 0 ? digitChar :
                     throw new LexicalException(LexemePos, "Illegal char constant"));
                 TryNext('#');
@@ -101,7 +101,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 throw new LexicalException(LexemePos, "Invalid integer expression");
 
             // fractional part
-            string fractionalDigits = "";
+            var fractionalDigits = "";
             if (TryNext('.'))
             {
                 if (Peek() == '.')
@@ -116,7 +116,7 @@ namespace PascalCompiler.LexicalAnalyzer
             }
 
             // exponent part
-            string exponentDigits = "";
+            var exponentDigits = "";
             if (char.ToLower((char)Peek()) == 'e' &&
                 (_lexemeToken == Token.L_DOUBLE || @base == 10))
             {

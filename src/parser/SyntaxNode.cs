@@ -25,13 +25,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public override void PrintTree(int depth, string bridges)
         {
-            int padding = 4 * depth == 0 ? 0 : 4;
+            var padding = depth > 0 ? 4 : 0;
             Console.WriteLine(
                 $"".PadLeft(padding, '─') + (depth > 0 ? $" {this}" : this));
 
             if (Left is not null && Right is not null)
             {
-                string prefix = "";
+                var prefix = "";
                 for (int i = 0; i < depth; i++)
                     prefix += (bridges.Contains(i.ToString()) ? "│" : "").PadRight(6, ' ');
 

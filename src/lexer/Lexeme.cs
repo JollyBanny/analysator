@@ -44,7 +44,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
         private string NormalizeString(char[] source)
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             for (int i = 0; ;)
             {
                 if (source.Length == 2)
@@ -68,7 +68,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
                 while (source[i] == '#')
                 {
-                    string specialChar = "";
+                    var specialChar = "";
                     while (source[++i].IsDigit())
                     {
                         specialChar += source[i];
@@ -106,7 +106,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
             if (@base != 10)
             {
-                string[] splitDouble = source.Split('.');
+                var splitDouble = source.Split('.');
                 for (int i = 1; i < splitDouble[0].Length; i++)
                     result = result * @base + splitDouble[0][i].DigitValue();
                 source = result.ToString() + splitDouble[1];
@@ -120,7 +120,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
         override public string ToString()
         {
-            object value = _type switch
+            var value = _type switch
             {
                 TokenType.Double => ((double)_value).ToStringPascal(),
                 TokenType.Operator or TokenType.Keyword or TokenType.Separator =>

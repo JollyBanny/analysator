@@ -18,22 +18,22 @@ namespace PascalCompiler
 
         static private bool LexerTest(string inFile, string outFile)
         {
-            Lexer _lexer = new Lexer();
-            StreamReader ofstream = new StreamReader(outFile);
+            var _lexer = new Lexer();
+            var ofstream = new StreamReader(outFile);
             _lexer.ChangeFile(inFile);
             while (true)
                 try
                 {
                     var lexeme = _lexer.GetLexem();
-                    string expected = ofstream.ReadLine()!;
-                    string found = lexeme.ToString();
+                    var expected = ofstream.ReadLine()!;
+                    var found = lexeme.ToString();
                     if (!CompareAnswers(inFile, expected, found)) return false;
                     if (lexeme.Type == TokenType.EOF) break;
                 }
                 catch (Exception e)
                 {
-                    string expected = ofstream.ReadLine()!;
-                    string found = e.Message;
+                    var expected = ofstream.ReadLine()!;
+                    var found = e.Message;
                     if (!CompareAnswers(inFile, expected, found)) return false;
                     break;
                 }
@@ -46,14 +46,14 @@ namespace PascalCompiler
             // var writer = new StreamWriter(ostrm);
             // writer.AutoFlush = true;
             // Console.SetOut(writer);
-            StreamReader ofstream = new StreamReader(outFile);
-            string expected = ofstream.ReadToEnd();
+            var ofstream = new StreamReader(outFile);
+            var expected = ofstream.ReadToEnd();
 
             var buffer = new StringWriter();
             Console.SetOut(buffer);
             try
             {
-                Parser _parser = new Parser(inFile);
+                var _parser = new Parser(inFile);
                 _parser.ParseExpression().PrintTree();
             }
             catch (Exception e)
@@ -77,7 +77,7 @@ namespace PascalCompiler
             var files = Directory.GetFiles(path, "*.in")
                 .Select((f) => Path.GetFileName(f)[..^3]).ToList();
 
-            int total = 0;
+            var total = 0;
             foreach (var file in files)
             {
                 if (TestFile($"{path}/{file}.in", $"{path}/{file}.out"))

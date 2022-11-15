@@ -38,7 +38,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private SyntaxNode ParseTerm()
         {
-            SyntaxNode left = ParseFactor();
+            var left = ParseFactor();
             var lexeme = _currentLexem;
             while (lexeme.Type == TokenType.Operator &&
                 (lexeme.CastValue<Token>() == Token.MUL ||
@@ -58,7 +58,6 @@ namespace PascalCompiler.SyntaxAnalyzer
         private SyntaxNode ParseFactor()
         {
             var lexeme = _currentLexem;
-
             switch (lexeme.Type)
             {
                 case TokenType.Integer or TokenType.Double:
