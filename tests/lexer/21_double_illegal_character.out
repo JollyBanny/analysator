@@ -2,4 +2,4 @@
 2	1	Double	1.0000000000000000E+005	1000.e2
 3	1	Double	3.1000000000000002E+124	$1F.e123
 4	1	Double	5.0000000000000000E+010	%101.e+10
-5	1	Illegal character '#13'
+[Line: 5; Column: 1]	Illegal character '#13'

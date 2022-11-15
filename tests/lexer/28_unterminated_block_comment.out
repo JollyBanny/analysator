@@ -2,4 +2,4 @@
 4	9	Identifire	Hello	Hello
 4	14	Separator	Semicolom	;
 5	1	Keyword	Begin	begin
-5	1	Unexpected end of file
+[Line: 5; Column: 1]	Unexpected end of file

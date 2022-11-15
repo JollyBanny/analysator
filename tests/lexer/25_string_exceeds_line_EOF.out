@@ -1,2 +1,2 @@
 1	1	String	Hello, World!	'Hello, World!'
-2	1	String exceeds line
+[Line: 2; Column: 1]	String exceeds line

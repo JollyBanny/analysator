@@ -3,4 +3,4 @@
 1	7	Operator	Equal	=
 2	1	Separator	Comma	,
 2	3	Separator	Dot	.
-2	5	Illegal character '!'
+[Line: 2; Column: 5]	Illegal character '!'
