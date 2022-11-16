@@ -17,14 +17,14 @@ namespace PascalCompiler
             Console.WriteLine("Mode:");
             Console.ResetColor();
             Console.WriteLine(
-                " -l [option | path] \t run lexical analysis\n" +
-                " -p [option | path] \t run parser analysis\n");
+                " -l [option] \t\t run lexical analysis\n" +
+                " -p [option] \t\t run parser analysis\n");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Options:");
             Console.ResetColor();
             Console.WriteLine(
-                " --test \t run analyzer tests\n\n" +
-                "Note: If it runs without --test path option is required");
+                " -t, --test \t\t run analyzer tests\n" +
+                " -f, --file <path> \t run alanyzer with file");
             return;
         }
 
@@ -40,7 +40,7 @@ namespace PascalCompiler
             var options = new List<string>();
             foreach (var option in args.Skip(1))
             {
-                if (option.StartsWith("--"))
+                if (option.StartsWith("--") || option.StartsWith("-"))
                     options.Add(option);
                 else
                     break;
@@ -56,7 +56,7 @@ namespace PascalCompiler
                 return false;
             }
 
-            string[] availableOptions = { "--test" };
+            string[] availableOptions = { "--test", "--file", "-t", "-f" };
             var _ = options.Where(o => availableOptions.Contains(o));
             if (_.Count() != options.Count())
             {
@@ -64,10 +64,18 @@ namespace PascalCompiler
                 return false;
             }
 
-            if (options.Count() == 0 && !File.Exists(path))
+            if (options.Contains("--file") || options.Contains("-f") || options.Length == 0)
             {
-                WrongArgs($"Invalid path {path}");
-                return false;
+                if (path == string.Empty)
+                {
+                    WrongArgs("Path argument is missing");
+                    return false;
+                }
+                else if (!File.Exists(path))
+                {
+                    WrongArgs($"Invalid path {path}");
+                    return false;
+                }
             }
 
             return true;
@@ -75,7 +83,7 @@ namespace PascalCompiler
 
         static public void RunLexer(string path)
         {
-            Lexer _lexer = new Lexer(path);
+            Lexer _lexer = path == string.Empty ? new Lexer() : new Lexer(path);
             while (true)
             {
                 try
@@ -96,7 +104,7 @@ namespace PascalCompiler
         {
             try
             {
-                Parser _parser = new Parser(path);
+                Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
                 _parser.ParseExpression().PrintTree();
             }
             catch (Exception e)
@@ -125,13 +133,15 @@ namespace PascalCompiler
             switch (mode)
             {
                 case "-p":
-                    if (options.Count() > 0 && options.Contains("--test"))
+                    if (options.Count() > 0 &&
+                        (options.Contains("--test") || options.Contains("-t")))
                         Tester.RunTests(mode);
                     else
                         RunParser(path);
                     break;
                 case "-l":
-                    if (options.Count() > 0 && options.Contains("--test"))
+                    if (options.Count() > 0 &&
+                        (options.Contains("--test") || options.Contains("-t")))
                         Tester.RunTests(mode);
                     else
                         RunLexer(path);
