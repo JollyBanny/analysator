@@ -43,11 +43,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 (lexeme == Token.MUL || lexeme == Token.O_DIV))
             {
                 _currentLexem = _lexer.GetLexem();
-                if (lexeme == Token.O_DIV)
-                    left = new BinOperNode(lexeme, left, ParseFactor());
-                if (lexeme == Token.MUL)
-                    left = new BinOperNode(lexeme, left, ParseTerm());
-
+                left = new BinOperNode(lexeme, left, ParseFactor());
                 lexeme = _currentLexem;
             }
             return left;

@@ -53,7 +53,7 @@ namespace PascalCompiler.LexicalAnalyzer
         protected void Back()
         {
             _bufferedChar = CurrentChar;
-            _buffer = _buffer.Substring(0, _buffer.Length - 1);
+            _buffer = _buffer[..^1];
         }
 
         protected bool TryNext(char ch)
