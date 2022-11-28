@@ -11,7 +11,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public Lexeme Lexeme { get; }
 
-        virtual public void PrintTree(int depth = 0, string bridges = "") { }
+        abstract public void PrintTree(int depth = 0, string indent = "");
 
         abstract public bool HasChildren();
     }
@@ -28,26 +28,16 @@ namespace PascalCompiler.SyntaxAnalyzer
         public SyntaxNode Left { get; }
         public SyntaxNode Right { get; }
 
-        public override void PrintTree(int depth, string bridges)
+        public override void PrintTree(int depth, string indent)
         {
-            var padding = depth > 0 ? 4 : 0;
-            Console.WriteLine(
-                $"".PadLeft(padding, '─') + (depth > 0 ? $" {this}" : this));
-
+            Console.WriteLine(this);
             if (Left is not null && Right is not null)
             {
-                var prefix = "";
-                for (int i = 0; i < depth; i++)
-                    prefix += (bridges.Contains(i.ToString()) ? "│" : "").PadRight(6, ' ');
+                Console.Write(indent + "├──── ");
+                Left.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
 
-                var _ = Left.HasChildren() || Right.HasChildren() ?
-                    bridges + depth.ToString() : bridges;
-
-                Console.Write(prefix + "├");
-                Left.PrintTree(depth + 1, _);
-
-                Console.Write(prefix + "└");
-                Right.PrintTree(depth + 1, bridges);
+                Console.Write(indent + "└──── ");
+                Right.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
             }
         }
 
@@ -61,11 +51,8 @@ namespace PascalCompiler.SyntaxAnalyzer
     {
         public NumberNode(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string bridges)
-        {
-            var prefix = depth > 0 ? $" ".PadLeft(4, '─') : "";
-            Console.WriteLine(prefix + this);
-        }
+        public override void PrintTree(int depth, string indent) =>
+            Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
 
@@ -79,11 +66,8 @@ namespace PascalCompiler.SyntaxAnalyzer
     {
         public IdentifireNode(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string bridges)
-        {
-            var prefix = depth > 0 ? $" ".PadLeft(4, '─') : "";
-            Console.WriteLine(prefix + this);
-        }
+        public override void PrintTree(int depth, string indent) =>
+            Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
 
