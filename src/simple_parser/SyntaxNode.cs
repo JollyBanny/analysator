@@ -1,6 +1,6 @@
 using PascalCompiler.LexicalAnalyzer;
 
-namespace PascalCompiler.SyntaxAnalyzer
+namespace PascalCompiler.SimpleSyntaxAnalyzer
 {
     abstract class SyntaxNode
     {

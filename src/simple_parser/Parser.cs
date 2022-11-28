@@ -2,7 +2,7 @@ using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.LexicalAnalyzer;
 
-namespace PascalCompiler.SyntaxAnalyzer
+namespace PascalCompiler.SimpleSyntaxAnalyzer
 {
     class Parser
     {

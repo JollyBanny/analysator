@@ -1,5 +1,5 @@
 ﻿using PascalCompiler.LexicalAnalyzer;
-using PascalCompiler.SyntaxAnalyzer;
+using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.Enums;
 
 using System.Globalization;

@@ -18,7 +18,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
         public LexerBuffer()
         {
-            var path = Directory.GetFiles("./tests/parser", "*.in")[13];
+            var path = Directory.GetFiles("./tests/simple_parser", "*.in")[13];
             _fstream = new StreamReader(path);
             _buffer = "";
         }

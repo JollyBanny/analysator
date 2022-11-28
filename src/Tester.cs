@@ -1,5 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
-using PascalCompiler.SyntaxAnalyzer;
+using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.Enums;
 
 namespace PascalCompiler
@@ -72,7 +72,7 @@ namespace PascalCompiler
                 "-p" => ParserTest,
                 _ => LexerTest,
             };
-            var path = "./tests" + (mode == "-l" ? "/lexer" : "/parser");
+            var path = "./tests" + (mode == "-l" ? "/lexer" : "/simple_parser");
             var files = Directory.GetFiles(path, "*.in")
                 .Select((f) => Path.GetFileName(f)[..^3]).ToList();
 
