@@ -19,6 +19,7 @@ namespace PascalCompiler
             Console.ResetColor();
             Console.WriteLine(
                 " -l [option] \t\t run lexical analysis\n" +
+                " -sp [option] \t\t run simple_parser analysis\n" +
                 " -p [option] \t\t run parser analysis\n");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Options:");
@@ -51,7 +52,7 @@ namespace PascalCompiler
 
         static bool ValidateArgs(string[] args, string mode, string[] options, string path)
         {
-            if (!new string[] { "-l", "-p" }.Contains(mode))
+            if (!new string[] { "-l", "-sp", "-p" }.Contains(mode))
             {
                 WrongArgs("Invalid mode");
                 return false;
@@ -101,16 +102,26 @@ namespace PascalCompiler
             }
         }
 
+        static public void RunSimpleParser(string path)
+        {
+            try
+            {
+                SimpleParser _simpleParser = path == string.Empty ?
+                    new SimpleParser() : new SimpleParser(path);
+                _simpleParser.ParseExpression().PrintTree();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
         static public void RunParser(string path)
         {
             try
             {
                 Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
-                _parser.ParseWhile().PrintTree();
-
-                // SimpleParser _simpleParser = path == string.Empty ?
-                //     new SimpleParser() : new SimpleParser(path);
-                // _parser.ParseExpression().PrintTree();
+                _parser.ParseExpression().PrintTree();
             }
             catch (Exception e)
             {
@@ -137,6 +148,13 @@ namespace PascalCompiler
 
             switch (mode)
             {
+                case "-sp":
+                    if (options.Count() > 0 &&
+                        (options.Contains("--test") || options.Contains("-t")))
+                        Tester.RunTests(mode);
+                    else
+                        RunSimpleParser(path);
+                    break;
                 case "-p":
                     if (options.Count() > 0 &&
                         (options.Contains("--test") || options.Contains("-t")))

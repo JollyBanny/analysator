@@ -69,10 +69,16 @@ namespace PascalCompiler
             Func<string, string, bool> TestFile = mode switch
             {
                 "-l" => LexerTest,
-                "-p" => ParserTest,
+                "-sp" or "-p" => ParserTest,
                 _ => LexerTest,
             };
-            var path = "./tests" + (mode == "-l" ? "/lexer" : "/simple_parser");
+            var path = "./tests" + mode switch
+            {
+                "-l" => "/lexer",
+                "-sp" => "/simple_parser",
+                "-p" => "/parser",
+                _ => "/lexer",
+            };
             var files = Directory.GetFiles(path, "*.in")
                 .Select((f) => Path.GetFileName(f)[..^3]).ToList();
 

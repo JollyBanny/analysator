@@ -12,8 +12,6 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
         public Lexeme Lexeme { get; }
 
         abstract public void PrintTree(int depth = 0, string indent = "");
-
-        abstract public bool HasChildren();
     }
 
     class BinOperNode : SyntaxNode
@@ -42,9 +40,6 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
         }
 
         override public string ToString() => Lexeme.Source;
-
-        public override bool HasChildren() =>
-            Left is not null && Right is not null;
     }
 
     class NumberNode : SyntaxNode
@@ -55,11 +50,6 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
             Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
-
-        public override bool HasChildren()
-        {
-            return false;
-        }
     }
 
     class IdentifireNode : SyntaxNode
@@ -70,11 +60,6 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
             Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
-
-        public override bool HasChildren()
-        {
-            return false;
-        }
     }
 
 }
