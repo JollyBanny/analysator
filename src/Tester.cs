@@ -23,7 +23,7 @@ namespace PascalCompiler
             while (true)
                 try
                 {
-                    var lexeme = _lexer.GetLexem();
+                    var lexeme = _lexer.GetLexeme();
                     var expected = ofstream.ReadLine()!;
                     var found = lexeme.ToString();
                     if (!CompareAnswers(inFile, expected, found)) return false;
@@ -48,7 +48,7 @@ namespace PascalCompiler
             Console.SetOut(buffer);
             try
             {
-                var _parser = new Parser(inFile);
+                var _parser = new SimpleParser(inFile);
                 _parser.ParseExpression().PrintTree();
             }
             catch (Exception e)

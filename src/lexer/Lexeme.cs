@@ -132,10 +132,28 @@ namespace PascalCompiler.LexicalAnalyzer
         }
 
         public static bool operator ==(Lexeme lexeme, Token token)
-            => (Token)lexeme.Value == token;
+        {
+            try
+            {
+                return (Token)lexeme.Value == token;
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+        }
 
         public static bool operator !=(Lexeme lexeme, Token token)
-            => (Token)lexeme.Value != token;
+        {
+            try
+            {
+                return (Token)lexeme.Value != token;
+            }
+            catch (System.Exception)
+            {
+                return true;
+            }
+        }
 
         public static bool operator ==(Lexeme lexeme, TokenType tokenType)
             => lexeme.Type == tokenType;

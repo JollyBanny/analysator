@@ -1,5 +1,6 @@
 ﻿using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SimpleSyntaxAnalyzer;
+using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 
 using System.Globalization;
@@ -88,7 +89,7 @@ namespace PascalCompiler
             {
                 try
                 {
-                    var lexeme = _lexer.GetLexem();
+                    var lexeme = _lexer.GetLexeme();
                     Console.WriteLine(lexeme);
                     if (lexeme.Type == TokenType.EOF) break;
                 }
@@ -105,7 +106,11 @@ namespace PascalCompiler
             try
             {
                 Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
-                _parser.ParseExpression().PrintTree();
+                _parser.ParseWhile().PrintTree();
+
+                // SimpleParser _simpleParser = path == string.Empty ?
+                //     new SimpleParser() : new SimpleParser(path);
+                // _parser.ParseExpression().PrintTree();
             }
             catch (Exception e)
             {

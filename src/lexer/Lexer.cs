@@ -212,7 +212,7 @@ namespace PascalCompiler.LexicalAnalyzer
             }
         }
 
-        public Lexeme GetLexem()
+        public Lexeme GetLexeme()
         {
             WriteToBuffer(null, true);
             SkipCommentAndWhiteSpace();
