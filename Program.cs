@@ -121,7 +121,7 @@ namespace PascalCompiler
             try
             {
                 Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
-                _parser.ParseExpression().PrintTree();
+                _parser.ParseVarDecl();
             }
             catch (Exception e)
             {
