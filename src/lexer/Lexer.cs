@@ -252,12 +252,6 @@ namespace PascalCompiler.LexicalAnalyzer
                 case '{':
                     ScanComment();
                     break;
-                case '^':
-                    _lexemeToken = Token.CAP;
-                    break;
-                case '@':
-                    _lexemeToken = Token.AT;
-                    break;
                 case '=':
                     _lexemeToken = Token.EQUAL;
                     break;

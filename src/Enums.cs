@@ -28,8 +28,6 @@ namespace PascalCompiler.Enums
         operator_begin,
         ASSIGN,
         ADD,
-        AT,
-        CAP,
         SUB,
         MUL,
         O_DIV,              // operator DIV - /
@@ -140,6 +138,8 @@ namespace PascalCompiler.Enums
         VAR,
         WHILE,
         WITH,
+        WRITE,
+        WRITELN,
         XOR,
         keyword_end,
     }
