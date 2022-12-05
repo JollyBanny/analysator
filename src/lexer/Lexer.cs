@@ -252,6 +252,15 @@ namespace PascalCompiler.LexicalAnalyzer
                 case '{':
                     ScanComment();
                     break;
+                case '^':
+                    _lexemeToken = Token.CAP;
+                    break;
+                case '@':
+                    _lexemeToken = Token.AT;
+                    break;
+                case '=':
+                    _lexemeToken = Token.EQUAL;
+                    break;
                 case ':':
                     _lexemeToken = Switch2(Token.COLON, Token.ASSIGN);
                     break;
@@ -267,9 +276,6 @@ namespace PascalCompiler.LexicalAnalyzer
                 case '/':
                     _lexemeToken = Switch3(Token.O_DIV, Token.DIV_ASSIGN, '/', Token.COMMENT);
                     if (_lexemeToken == Token.COMMENT) ScanComment();
-                    break;
-                case '=':
-                    _lexemeToken = Token.EQUAL;
                     break;
                 case '<':
                     if (TryNext('<')) _lexemeToken = Token.O_SHL;
