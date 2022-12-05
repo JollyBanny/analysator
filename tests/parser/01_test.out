@@ -1,0 +1,25 @@
+while (a < 15) or 0 and (5 > 10) do
+        a += 2;
+writeln('hui');
+writeln('hu');
+writeln('h');
+{
+    while
+            expr
+            block
+                +=
+                    a
+                    2
+                ..
+                    ..
+                    ..
+                ..
+                    ..
+                    ..
+    writeln
+        'hui'
+    writeln
+        'hu'
+    writeln
+        'h'
+}

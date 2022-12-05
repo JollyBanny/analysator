@@ -284,7 +284,7 @@ namespace PascalCompiler.LexicalAnalyzer
                     var keyword = LookupKeyword(Buffer);
                     (_lexemeType, _lexemeToken) = keyword.HasValue ?
                                     (TokenType.Keyword, (Token)keyword) :
-                                    (TokenType.Identifire, Token.IDENTIFIRE);
+                                    (TokenType.Identifier, Token.IDENTIFIER);
                     break;
                 case char ch when ch.IsDigit() || ch == '%' || ch == '&' || ch == '$':
                     ScanNumber();

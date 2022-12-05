@@ -1,5 +1,5 @@
 1	1	Keyword	Var	var
-1	5	Identifire	a	a
+1	5	Identifier	a	a
 1	6	Separator	Colon	:
 1	7	Keyword	Array	array
 1	13	Separator	Lbrack	[
@@ -8,6 +8,6 @@
 1	17	Integer	5	5
 1	18	Separator	Rbrack	]
 1	20	Keyword	Of	of
-1	23	Identifire	integer	integer
+1	23	Identifier	integer	integer
 1	30	Separator	Semicolom	;
 1	31	EOF

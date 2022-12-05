@@ -57,7 +57,7 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
                 case TokenType.Integer or TokenType.Double:
                     _currentLexem = _lexer.GetLexeme();
                     return new NumberNode(lexeme);
-                case TokenType.Identifire:
+                case TokenType.Identifier:
                     _currentLexem = _lexer.GetLexeme();
                     return new IdentifireNode(lexeme);
                 case TokenType.Separator when lexeme == Token.LPAREN:

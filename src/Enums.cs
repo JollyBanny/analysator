@@ -7,11 +7,13 @@ namespace PascalCompiler.Enums
         Double,
         Char,
         String,
-        Identifire,
+        Identifier,
         Keyword,
         Operator,
         Separator,
-        Comment
+        Comment,
+        Write,
+        Writeln,
     }
 
     public enum Token
@@ -19,7 +21,7 @@ namespace PascalCompiler.Enums
         EOF = 1,
 
         COMMENT,
-        IDENTIFIRE,
+        IDENTIFIER,
         L_CHAR,             // literal char
         L_STRING,           // literal string
         L_INTEGER,          // literal integer
@@ -138,8 +140,6 @@ namespace PascalCompiler.Enums
         VAR,
         WHILE,
         WITH,
-        WRITE,
-        WRITELN,
         XOR,
         keyword_end,
     }

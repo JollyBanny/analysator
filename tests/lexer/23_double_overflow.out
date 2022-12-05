@@ -3,7 +3,7 @@
 2	4	Double	1.0000000000000000E+000	10e-1
 3	1	Double	5.0000000000000000E+005	%101.e+5
 4	1	Integer	56	&70
-4	4	Identifire	e	e
+4	4	Identifier	e	e
 4	5	Operator	Sub	-
 4	6	Integer	1	1
 5	1	Double	1.7976931348623157E+308	1.7976931348623157E+308

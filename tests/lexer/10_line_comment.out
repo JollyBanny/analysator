@@ -1,8 +1,8 @@
 2	1	Keyword	Program	program
-2	9	Identifire	Hello	Hello
+2	9	Identifier	hello	Hello
 2	14	Separator	Semicolom	;
 3	1	Keyword	Begin	begin
-5	3	Identifire	writeln	writeln
+5	3	Identifier	writeln	writeln
 5	11	Separator	Lparen	(
 5	12	String	Hello, World!	'Hello, World!'
 5	27	Separator	Rparen	)

@@ -1,8 +1,8 @@
-1	1	Identifire	hello_world	hello_world
+1	1	Identifier	hello_world	hello_world
 2	1	Keyword	Program	program
 3	1	Keyword	String	string
-4	1	Identifire	integer	integer
+4	1	Identifier	integer	integer
 5	1	Integer	123	123
-5	4	Identifire	_hello_world	_hello_world
-6	1	Identifire	hello_world123	hello_world123
+5	4	Identifier	_hello_world	_hello_world
+6	1	Identifier	hello_world123	hello_world123
 7	1	EOF
