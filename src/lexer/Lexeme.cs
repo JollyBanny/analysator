@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PascalCompiler.LexicalAnalyzer
 {
-    class Lexeme
+    public class Lexeme
     {
         private Position _pos;
         private TokenType _type;

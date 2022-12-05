@@ -1,6 +1,6 @@
 namespace PascalCompiler.LexicalAnalyzer
 {
-    struct Position
+    public struct Position
     {
         public int Line = 1;
         public int Ch = 0;

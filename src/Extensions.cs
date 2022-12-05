@@ -1,4 +1,6 @@
 using System.Globalization;
+using PascalCompiler.Enums;
+using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.Extensions
 {
@@ -34,5 +36,18 @@ namespace PascalCompiler.Extensions
                 (int)(char.ToLower(ch) - 'a' + 10),
             _ => -1
         };
+    }
+
+    public static class ListExtension
+    {
+        public static bool Contains(this List<Token> list, Lexeme toCheck)
+        {
+            foreach (var item in list)
+            {
+                if (toCheck == item)
+                    return true;
+            }
+            return false;
+        }
     }
 }
