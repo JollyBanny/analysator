@@ -12,8 +12,6 @@ namespace PascalCompiler.Enums
         Operator,
         Separator,
         Comment,
-        Write,
-        Writeln,
     }
 
     public enum Token

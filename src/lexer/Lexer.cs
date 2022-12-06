@@ -231,14 +231,16 @@ namespace PascalCompiler.LexicalAnalyzer
                     break;
                 case '.':
                     _lexemeToken = Token.DOT;
-                    if (TryNext('.')) _lexemeToken = Token.ELLIPSIS;
+                    if (TryNext('.'))
+                        _lexemeToken = Token.ELLIPSIS;
                     break;
                 case ',':
                     _lexemeToken = Token.COMMA;
                     break;
                 case '(':
                     _lexemeToken = Token.LPAREN;
-                    if (TryNext('*')) ScanComment();
+                    if (TryNext('*'))
+                        ScanComment();
                     break;
                 case ')':
                     _lexemeToken = Token.RPAREN;
@@ -269,10 +271,12 @@ namespace PascalCompiler.LexicalAnalyzer
                     break;
                 case '/':
                     _lexemeToken = Switch3(Token.O_DIV, Token.DIV_ASSIGN, '/', Token.COMMENT);
-                    if (_lexemeToken == Token.COMMENT) ScanComment();
+                    if (_lexemeToken == Token.COMMENT)
+                        ScanComment();
                     break;
                 case '<':
-                    if (TryNext('<')) _lexemeToken = Token.O_SHL;
+                    if (TryNext('<'))
+                        _lexemeToken = Token.O_SHL;
                     else
                         _lexemeToken = Switch3(Token.LESS, Token.LESS_EQUAL, '>', Token.NOT_EQUAL);
                     break;
