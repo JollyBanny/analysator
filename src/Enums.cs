@@ -20,6 +20,8 @@ namespace PascalCompiler.Enums
 
         COMMENT,
         IDENTIFIER,
+        WRITE,
+        WRITELN,
         L_CHAR,             // literal char
         L_STRING,           // literal string
         L_INTEGER,          // literal integer
