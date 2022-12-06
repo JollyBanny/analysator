@@ -160,11 +160,14 @@ namespace PascalCompiler.SyntaxAnalyzer
                         throw CreateException(
                         $"Function name expected but '{lexeme.Source}' found");
 
-                    left = left.Lexeme == TokenType.Write ||
-                            left.Lexeme == TokenType.Writeln ?
-                        new WriteCallNode((IdentNode)left, args,
-                            left.Lexeme == TokenType.Writeln) :
-                        new FunctionCallNode((IdentNode)left, args);
+                    var identName = left.Lexeme.Value.ToString()!;
+
+                    if (Token.WRITE.ToString() == identName.ToUpper())
+                        left = new WriteCallNode((IdentNode)left, args, false);
+                    else if (Token.WRITELN.ToString() == identName.ToUpper())
+                        left = new WriteCallNode((IdentNode)left, args, true);
+                    else
+                        left = new FunctionCallNode((IdentNode)left, args);
 
                     lexeme = _currentLexeme;
                 }
