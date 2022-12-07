@@ -98,7 +98,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                     var exp = ParseRelExpression();
                     if (_currentLexeme != Token.RPAREN)
                         throw ExpectedException(")", _currentLexeme.Source);
-
                     _currentLexeme = _lexer.GetLexeme();
                     return exp;
                 default:
@@ -108,7 +107,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private ExprNode ParseVarReference()
         {
-            var left = ParseIdent();
+            var left = ParseIdent() as ExprNode;
             var lexeme = _currentLexeme;
 
             while (true)
@@ -116,17 +115,11 @@ namespace PascalCompiler.SyntaxAnalyzer
                 if (lexeme == Token.LBRACK)
                 {
                     _currentLexeme = _lexer.GetLexeme();
-                    var @params = ParseParamsList();
-
-                    if (@params.Count == 0)
-                        throw ExpectedException("indexes expected", "no indexes");
-
-                    left = new ArrayAccessNode(left, @params);
+                    left = new ArrayAccessNode(left, ParseParamsList());
 
                     if (_currentLexeme != Token.RBRACK)
                         throw ExpectedException("]", _currentLexeme.Source);
-                    else
-                        _currentLexeme = _lexer.GetLexeme();
+                    _currentLexeme = _lexer.GetLexeme();
 
                     lexeme = _currentLexeme;
                 }
@@ -148,14 +141,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                     if (_currentLexeme != Token.RPAREN)
                         throw ExpectedException(")", _currentLexeme.Source);
-                    else
-                        _currentLexeme = _lexer.GetLexeme();
+                    _currentLexeme = _lexer.GetLexeme();
 
-                    var identName = left.Lexeme.Value.ToString()!;
+                    var identName = left.Lexeme.Value.ToString()!.ToUpper();
 
-                    if (Token.WRITE.ToString() == identName.ToUpper())
+                    if (Token.WRITE.ToString() == identName)
                         left = new WriteCallNode((IdentNode)left, args, false);
-                    else if (Token.WRITELN.ToString() == identName.ToUpper())
+                    else if (Token.WRITELN.ToString() == identName)
                         left = new WriteCallNode((IdentNode)left, args, true);
                     else
                         left = new FunctionCallNode((IdentNode)left, args);
@@ -183,7 +175,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return paramsList;
         }
 
-        private ExprNode ParseIdent()
+        private IdentNode ParseIdent()
         {
             var lexeme = _currentLexeme;
             if (_currentLexeme != TokenType.Identifier)
@@ -209,28 +201,28 @@ namespace PascalCompiler.SyntaxAnalyzer
             return idents;
         }
 
-        private ExprNode ParseConstIntegerLiteral()
+        private Constant ParseConstIntegerLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstIntegerLiteral(lexeme);
         }
 
-        private ExprNode ParseConstDoubleLiteral()
+        private Constant ParseConstDoubleLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstDoubleLiteral(lexeme);
         }
 
-        private ExprNode ParseConstStringLiteral()
+        private Constant ParseConstStringLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstStringLiteral(lexeme);
         }
 
-        private ExprNode ParseConstCharLiteral()
+        private Constant ParseConstCharLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();

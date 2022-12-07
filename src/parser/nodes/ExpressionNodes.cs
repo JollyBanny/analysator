@@ -171,43 +171,33 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class ConstIntegerLiteral : ExprNode
+    public class Constant : ExprNode
+    {
+        protected Constant(Lexeme lexeme) : base(lexeme) { }
+
+        override public void PrintTree(int depth, string indent) =>
+            Console.WriteLine(this);
+
+        override public string ToString() => Lexeme.Value.ToString()!;
+    }
+
+    public class ConstIntegerLiteral : Constant
     {
         public ConstIntegerLiteral(Lexeme lexeme) : base(lexeme) { }
-
-        override public void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
-
-        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class ConstDoubleLiteral : ExprNode
+    public class ConstDoubleLiteral : Constant
     {
         public ConstDoubleLiteral(Lexeme lexeme) : base(lexeme) { }
-
-        override public void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
-
-        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class ConstCharLiteral : ExprNode
+    public class ConstCharLiteral : Constant
     {
         public ConstCharLiteral(Lexeme lexeme) : base(lexeme) { }
-
-        override public void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
-
-        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class ConstStringLiteral : ExprNode
+    public class ConstStringLiteral : Constant
     {
         public ConstStringLiteral(Lexeme lexeme) : base(lexeme) { }
-
-        override public void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
-
-        override public string ToString() => Lexeme.Value.ToString()!;
     }
 }
