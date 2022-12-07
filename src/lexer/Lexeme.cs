@@ -161,7 +161,7 @@ namespace PascalCompiler.LexicalAnalyzer
         public static bool operator !=(Lexeme lexeme, TokenType tokenType)
             => lexeme.Type != tokenType;
 
-        public override bool Equals(Object? obj)
+        override public bool Equals(Object? obj)
         {
             if (obj is null)
                 return false;
@@ -173,7 +173,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 return false;
         }
 
-        public override int GetHashCode()
+        override public int GetHashCode()
         {
             unchecked
             {

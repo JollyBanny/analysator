@@ -26,7 +26,7 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
         public SyntaxNode Left { get; }
         public SyntaxNode Right { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
             if (Left is not null && Right is not null)
@@ -46,7 +46,7 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
     {
         public NumberNode(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
@@ -56,7 +56,7 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
     {
         public IdentifireNode(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
         override public string ToString() => $"{Lexeme.Value}";
