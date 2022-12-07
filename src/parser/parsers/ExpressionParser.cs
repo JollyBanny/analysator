@@ -201,28 +201,28 @@ namespace PascalCompiler.SyntaxAnalyzer
             return idents;
         }
 
-        private Constant ParseConstIntegerLiteral()
+        private ConstantNode ParseConstIntegerLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstIntegerLiteral(lexeme);
         }
 
-        private Constant ParseConstDoubleLiteral()
+        private ConstantNode ParseConstDoubleLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstDoubleLiteral(lexeme);
         }
 
-        private Constant ParseConstStringLiteral()
+        private ConstantNode ParseConstStringLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
             return new ConstStringLiteral(lexeme);
         }
 
-        private Constant ParseConstCharLiteral()
+        private ConstantNode ParseConstCharLiteral()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();

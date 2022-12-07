@@ -171,9 +171,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class Constant : ExprNode
+    public class ConstantNode : ExprNode
     {
-        protected Constant(Lexeme lexeme) : base(lexeme) { }
+        protected ConstantNode(Lexeme lexeme) : base(lexeme) { }
 
         override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
@@ -181,22 +181,22 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => Lexeme.Value.ToString()!;
     }
 
-    public class ConstIntegerLiteral : Constant
+    public class ConstIntegerLiteral : ConstantNode
     {
         public ConstIntegerLiteral(Lexeme lexeme) : base(lexeme) { }
     }
 
-    public class ConstDoubleLiteral : Constant
+    public class ConstDoubleLiteral : ConstantNode
     {
         public ConstDoubleLiteral(Lexeme lexeme) : base(lexeme) { }
     }
 
-    public class ConstCharLiteral : Constant
+    public class ConstCharLiteral : ConstantNode
     {
         public ConstCharLiteral(Lexeme lexeme) : base(lexeme) { }
     }
 
-    public class ConstStringLiteral : Constant
+    public class ConstStringLiteral : ConstantNode
     {
         public ConstStringLiteral(Lexeme lexeme) : base(lexeme) { }
     }
