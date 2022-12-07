@@ -4,7 +4,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public abstract class SyntaxNode
     {
-        public SyntaxNode(Lexeme lexeme) => Lexeme = lexeme;
+        public SyntaxNode(Lexeme? lexeme = null) => Lexeme = lexeme!;
 
         public Lexeme Lexeme { get; }
 
