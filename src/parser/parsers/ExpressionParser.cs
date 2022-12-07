@@ -32,11 +32,13 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var left = ParseExpression();
             var lexeme = _currentLexeme;
+
             if (RelationalOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
                 left = new BinOperNode(lexeme, left, ParseExpression());
             }
+
             return left;
         }
 
@@ -44,12 +46,14 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var left = ParseTerm();
             var lexeme = _currentLexeme;
+
             while (AdditionOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
                 left = new BinOperNode(lexeme, left, ParseTerm());
                 lexeme = _currentLexeme;
             }
+
             return left;
         }
 
@@ -57,23 +61,27 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var left = ParseSimpleTerm();
             var lexeme = _currentLexeme;
+
             while (MultiplyOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
                 left = new BinOperNode(lexeme, left, ParseSimpleTerm());
                 lexeme = _currentLexeme;
             }
+
             return left;
         }
 
         private ExprNode ParseSimpleTerm()
         {
             var lexeme = _currentLexeme;
+
             if (UnaryOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
                 return new UnaryOperNode(lexeme, ParseSimpleTerm());
             }
+
             return ParseFactor();
         }
 
@@ -133,9 +141,10 @@ namespace PascalCompiler.SyntaxAnalyzer
                 {
                     if (left is not IdentNode)
                         throw ExpectedException("Function name", left.Lexeme.Source);
-
                     _currentLexeme = _lexer.GetLexeme();
+
                     List<ExprNode> args = new List<ExprNode>();
+
                     if (_currentLexeme != Token.RPAREN)
                         args = ParseParamsList();
 
@@ -167,8 +176,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 var expression = ParseExpression();
                 paramsList.Add(expression);
+
                 if (_currentLexeme != Token.COMMA)
                     break;
+
                 _currentLexeme = _lexer.GetLexeme();
             }
 
@@ -178,10 +189,11 @@ namespace PascalCompiler.SyntaxAnalyzer
         private IdentNode ParseIdent()
         {
             var lexeme = _currentLexeme;
+
             if (_currentLexeme != TokenType.Identifier)
                 throw ExpectedException("Identifier", lexeme.Source);
-
             _currentLexeme = _lexer.GetLexeme();
+
             return new IdentNode(lexeme);
         }
 
@@ -193,8 +205,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 var ident = ParseIdent() as IdentNode;
                 idents.Add(ident!);
+
                 if (_currentLexeme != Token.COMMA)
                     break;
+
                 _currentLexeme = _lexer.GetLexeme();
             }
 

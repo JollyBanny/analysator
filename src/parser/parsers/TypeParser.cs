@@ -113,6 +113,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.SEMICOLOM)
                     break;
+
                 _currentLexeme = _lexer.GetLexeme();
             }
 
