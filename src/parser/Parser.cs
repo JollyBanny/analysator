@@ -26,7 +26,15 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        private SyntaxException CreateException(string msg) =>
-            new SyntaxException(_lexer.Cursor, msg);
+        private SyntaxException ExpectedException(string expected, string found)
+        {
+            return new SyntaxException(_lexer.Cursor,
+                        $"'{expected}' expected but '{found}' found");
+        }
+
+        private SyntaxException FatalException(string msg)
+        {
+            return new SyntaxException(_lexer.Cursor, $"{msg}");
+        }
     }
 }

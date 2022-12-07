@@ -14,8 +14,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     // class StmtNode : SyntaxNode
     // {
     //     public StmtNode(Lexeme lexeme) : base(lexeme) { }
-    //     public override void PrintTree(int depth = 0, string indent = "") { }
-    //     public override bool HasChildren() => false;
+    //     override public void PrintTree(int depth = 0, string indent = "") { }
+    //     override public bool HasChildren() => false;
     // }
 
     // class DeclareVarsNode : StmtNode
@@ -34,7 +34,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     //     public ExprNode Condition { get; }
     //     public StmtNode Body { get; }
 
-    //     public override void PrintTree(int depth, string indent)
+    //     override public void PrintTree(int depth, string indent)
     //     {
     //         Console.WriteLine(this);
 

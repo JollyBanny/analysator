@@ -5,33 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class ExprNode : SyntaxNode
     {
         protected ExprNode(Lexeme? lexeme = null) : base(lexeme!) { }
-        public override void PrintTree(int depth = 0, string indent = "") { }
-    }
-
-    public class RelOperNode : ExprNode
-    {
-        public RelOperNode(Lexeme lexeme, ExprNode left, ExprNode right)
-        : base(lexeme)
-        {
-            Left = left;
-            Right = right;
-        }
-
-        public ExprNode Left { get; }
-        public ExprNode Right { get; }
-
-        public override void PrintTree(int depth, string indent)
-        {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Left.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Right.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-        }
-
-        override public string ToString() => Lexeme.Source;
+        override public void PrintTree(int depth = 0, string indent = "") { }
     }
 
     public class BinOperNode : ExprNode
@@ -46,7 +20,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Left { get; }
         public ExprNode Right { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -68,7 +42,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
         public ExprNode Expr { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -91,7 +65,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Record { get; }
         public ExprNode Field { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -117,7 +91,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode ArrayIdent { get; }
         public List<ExprNode> AccessExprs { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -152,7 +126,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<ExprNode> Args { get; }
 
-        public override void PrintTree(int depth, string indent)
+        override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -171,7 +145,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class WriteCallNode : FunctionCallNode
@@ -184,56 +158,56 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public bool NewLine { get; }
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class IdentNode : ExprNode
     {
         public IdentNode(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstIntegerLiteral : ExprNode
     {
         public ConstIntegerLiteral(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstDoubleLiteral : ExprNode
     {
         public ConstDoubleLiteral(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstCharLiteral : ExprNode
     {
         public ConstCharLiteral(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstStringLiteral : ExprNode
     {
         public ConstStringLiteral(Lexeme lexeme) : base(lexeme) { }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => $"{Lexeme.Value}";
+        override public string ToString() => Lexeme.Value.ToString()!;
     }
 }

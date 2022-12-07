@@ -19,8 +19,8 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private static readonly List<Token> MultiplyOperators = new List<Token>
         {
-            Token.MUL, Token.DIV, Token.O_SHL, Token.O_SHR,
-            Token.AND, Token.AS, Token.SHL, Token.SHR,
+            Token.MUL, Token.O_DIV, Token.O_SHL, Token.O_SHR,
+            Token.AND, Token.DIV, Token.SHL, Token.SHR, Token.AS,
         };
 
         private static readonly List<Token> UnaryOperators = new List<Token>
@@ -35,7 +35,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             if (RelationalOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
-                left = new RelOperNode(lexeme, left, ParseExpression());
+                left = new BinOperNode(lexeme, left, ParseExpression());
             }
             return left;
         }
@@ -83,32 +83,26 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             switch (lexeme.Type)
             {
-                case TokenType.Identifier or TokenType.Keyword:
+                case TokenType.Identifier:
                     return ParseVarReference();
                 case TokenType.Integer:
-                    _currentLexeme = _lexer.GetLexeme();
-                    return new ConstIntegerLiteral(lexeme);
+                    return ParseConstIntegerLiteral();
                 case TokenType.Double:
-                    _currentLexeme = _lexer.GetLexeme();
-                    return new ConstDoubleLiteral(lexeme);
+                    return ParseConstDoubleLiteral();
                 case TokenType.Char:
-                    _currentLexeme = _lexer.GetLexeme();
-                    return new ConstCharLiteral(lexeme);
+                    return ParseConstCharLiteral();
                 case TokenType.String:
-                    _currentLexeme = _lexer.GetLexeme();
-                    return new ConstStringLiteral(lexeme);
+                    return ParseConstStringLiteral();
                 case TokenType.Separator when lexeme == Token.LPAREN:
                     _currentLexeme = _lexer.GetLexeme();
                     var exp = ParseRelExpression();
-
                     if (_currentLexeme != Token.RPAREN)
-                        throw CreateException(
-                            $"')' expected but '{_currentLexeme.Value}' found");
+                        throw ExpectedException(")", _currentLexeme.Source);
 
                     _currentLexeme = _lexer.GetLexeme();
                     return exp;
                 default:
-                    throw CreateException("Illegal expression");
+                    throw FatalException("Illegal expression");
             }
         }
 
@@ -125,13 +119,12 @@ namespace PascalCompiler.SyntaxAnalyzer
                     var @params = ParseParamsList();
 
                     if (@params.Count == 0)
-                        throw CreateException("indexes expected");
+                        throw ExpectedException("indexes expected", "no indexes");
 
                     left = new ArrayAccessNode(left, @params);
 
                     if (_currentLexeme != Token.RBRACK)
-                        throw CreateException(
-                            $"']' expected but '{_currentLexeme.Source}' found");
+                        throw ExpectedException("]", _currentLexeme.Source);
                     else
                         _currentLexeme = _lexer.GetLexeme();
 
@@ -145,20 +138,18 @@ namespace PascalCompiler.SyntaxAnalyzer
                 }
                 else if (lexeme == Token.LPAREN)
                 {
+                    if (left is not IdentNode)
+                        throw ExpectedException("Function name", left.Lexeme.Source);
+
                     _currentLexeme = _lexer.GetLexeme();
                     List<ExprNode> args = new List<ExprNode>();
                     if (_currentLexeme != Token.RPAREN)
                         args = ParseParamsList();
 
                     if (_currentLexeme != Token.RPAREN)
-                        throw CreateException(
-                            $"')' expected but '{_currentLexeme.Source}' found");
+                        throw ExpectedException(")", _currentLexeme.Source);
                     else
                         _currentLexeme = _lexer.GetLexeme();
-
-                    if (left is not IdentNode)
-                        throw CreateException(
-                        $"Function name expected but '{lexeme.Source}' found");
 
                     var identName = left.Lexeme.Value.ToString()!;
 
@@ -176,7 +167,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
         }
 
-        public List<ExprNode> ParseParamsList()
+        private List<ExprNode> ParseParamsList()
         {
             var paramsList = new List<ExprNode>();
 
@@ -192,16 +183,58 @@ namespace PascalCompiler.SyntaxAnalyzer
             return paramsList;
         }
 
-        public ExprNode ParseIdent()
+        private ExprNode ParseIdent()
         {
             var lexeme = _currentLexeme;
-            if (!(_currentLexeme == TokenType.Identifier ||
-                _currentLexeme == TokenType.Keyword))
-                throw CreateException(
-                    $"Identifier expected but '{lexeme.Source}' found");
+            if (_currentLexeme != TokenType.Identifier)
+                throw ExpectedException("Identifier", lexeme.Source);
 
             _currentLexeme = _lexer.GetLexeme();
             return new IdentNode(lexeme);
+        }
+
+        public List<IdentNode> ParseIdentsList()
+        {
+            var idents = new List<IdentNode>();
+
+            while (true)
+            {
+                var ident = ParseIdent() as IdentNode;
+                idents.Add(ident!);
+                if (_currentLexeme != Token.COMMA)
+                    break;
+                _currentLexeme = _lexer.GetLexeme();
+            }
+
+            return idents;
+        }
+
+        private ExprNode ParseConstIntegerLiteral()
+        {
+            var lexeme = _currentLexeme;
+            _currentLexeme = _lexer.GetLexeme();
+            return new ConstIntegerLiteral(lexeme);
+        }
+
+        private ExprNode ParseConstDoubleLiteral()
+        {
+            var lexeme = _currentLexeme;
+            _currentLexeme = _lexer.GetLexeme();
+            return new ConstDoubleLiteral(lexeme);
+        }
+
+        private ExprNode ParseConstStringLiteral()
+        {
+            var lexeme = _currentLexeme;
+            _currentLexeme = _lexer.GetLexeme();
+            return new ConstStringLiteral(lexeme);
+        }
+
+        private ExprNode ParseConstCharLiteral()
+        {
+            var lexeme = _currentLexeme;
+            _currentLexeme = _lexer.GetLexeme();
+            return new ConstCharLiteral(lexeme);
         }
     }
 }
