@@ -16,13 +16,13 @@ namespace PascalCompiler.LexicalAnalyzer
         private string _buffer;
         private char? _bufferedChar;
 
-        public LexerBuffer()
+        protected LexerBuffer()
         {
             var path = Directory.GetFiles("./tests/simple_parser", "*.in")[13];
             _fstream = new StreamReader(path);
             _buffer = "";
         }
-        public LexerBuffer(string path)
+        protected LexerBuffer(string path)
         {
             _fstream = new StreamReader(path);
             _buffer = "";
