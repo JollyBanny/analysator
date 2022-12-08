@@ -1,11 +1,14 @@
 using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SimpleSyntaxAnalyzer;
+using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 
 namespace PascalCompiler
 {
     static class Tester
     {
+        static private int _totalSuccess = 0;
+
         static private bool CompareAnswers(string file, string expected, string found)
         {
             if (expected == found) return true;
@@ -39,22 +42,32 @@ namespace PascalCompiler
             return true;
         }
 
-        static private bool ParserTest(string inFile, string outFile)
+        static private bool ParserTest(string inFile, string outFile, string mode)
         {
             var ofstream = new StreamReader(outFile);
             var expected = ofstream.ReadToEnd();
 
             var buffer = new StringWriter();
             Console.SetOut(buffer);
+
             try
             {
-                var _parser = new SimpleParser(inFile);
-                _parser.ParseExpression().PrintTree();
+                if (mode == "-sp")
+                {
+                    var _parser = new SimpleParser(inFile);
+                    _parser.ParseExpression().PrintTree();
+                }
+                else
+                {
+                    var _parser = new Parser(inFile);
+                    _parser.ParseExpression().PrintTree();
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+
             var originOutput = new StreamWriter(Console.OpenStandardOutput());
             originOutput.AutoFlush = true;
             Console.SetOut(originOutput);
@@ -64,14 +77,22 @@ namespace PascalCompiler
             return true;
         }
 
+        static private bool SimpleParserTest(string inFile, string outFile) =>
+             ParserTest(inFile, outFile, "-sp");
+
+        static private bool FullParserTest(string inFile, string outFile) =>
+             ParserTest(inFile, outFile, "-p");
+
         static public void RunTests(string mode)
         {
             Func<string, string, bool> TestFile = mode switch
             {
                 "-l" => LexerTest,
-                "-sp" or "-p" => ParserTest,
+                "-sp" => SimpleParserTest,
+                "-p" => FullParserTest,
                 _ => LexerTest,
             };
+
             var path = "./tests" + mode switch
             {
                 "-l" => "/lexer",
@@ -79,10 +100,10 @@ namespace PascalCompiler
                 "-p" => "/parser",
                 _ => "/lexer",
             };
+
             var files = Directory.GetFiles(path, "*.in")
                 .Select((f) => Path.GetFileName(f)[..^3]).ToList();
 
-            var total = 0;
             foreach (var file in files)
             {
                 if (TestFile($"{path}/{file}.in", $"{path}/{file}.out"))
@@ -90,11 +111,11 @@ namespace PascalCompiler
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Test {file[..2]} OK");
                     Console.ResetColor();
-                    total++;
+                    _totalSuccess++;
                 }
             }
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\nTotal: {total}/{files.Capacity}");
+            Console.WriteLine($"\nTotal: {_totalSuccess}/{files.Capacity}");
             Console.ResetColor();
         }
     }
