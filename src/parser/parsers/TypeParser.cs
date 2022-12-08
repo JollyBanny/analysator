@@ -76,13 +76,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SubrangeTypeNode ParseSubrange()
         {
-            var leftBound = ParseExpression();
+            var leftBound = ParseSimpleExpression();
             var lexeme = _currentLexeme;
 
             if (lexeme == Token.ELLIPSIS)
                 _currentLexeme = _lexer.GetLexeme();
 
-            var rightBound = ParseExpression();
+            var rightBound = ParseSimpleExpression();
             return new SubrangeTypeNode(lexeme, leftBound, rightBound);
         }
 

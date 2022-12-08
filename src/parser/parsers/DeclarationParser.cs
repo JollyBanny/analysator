@@ -64,7 +64,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 throw ExpectedException("=", _currentLexeme.Source);
             _currentLexeme = _lexer.GetLexeme();
 
-            ExprNode expression = ParseRelExpression();
+            ExprNode expression = ParseExpression();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
@@ -165,20 +165,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallDeclNode(lexeme, header, block);
         }
 
-        public CallHeaderNode ParseFuncHeader()
-        {
-            var funcName = ParseIdent();
-            var paramsList = ParseFormalParamsList();
-
-            if (_currentLexeme != Token.COLON)
-                throw ExpectedException(":", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
-
-            var resultType = ParseIdentType();
-
-            return new CallHeaderNode(funcName, paramsList, resultType);
-        }
-
         public SyntaxNode ParseProcDecl()
         {
             var lexeme = _currentLexeme;
@@ -197,6 +183,20 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
 
             return new CallDeclNode(lexeme, header, block);
+        }
+
+        public CallHeaderNode ParseFuncHeader()
+        {
+            var funcName = ParseIdent();
+            var paramsList = ParseFormalParamsList();
+
+            if (_currentLexeme != Token.COLON)
+                throw ExpectedException(":", _currentLexeme.Source);
+            _currentLexeme = _lexer.GetLexeme();
+
+            var resultType = ParseIdentType();
+
+            return new CallHeaderNode(funcName, paramsList, resultType);
         }
 
         public CallHeaderNode ParseProcHeader()
