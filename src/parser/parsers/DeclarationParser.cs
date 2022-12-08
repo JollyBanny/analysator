@@ -30,7 +30,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return delcsList;
         }
 
-        public SyntaxNode ParseConstDecls()
+        public DeclsPartNode ParseConstDecls()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
@@ -73,7 +73,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new ConstDeclNode(constIdent, type, expression);
         }
 
-        public SyntaxNode ParseVarDecls()
+        public DeclsPartNode ParseVarDecls()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
@@ -109,7 +109,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new VarDeclNode(varIdents, type);
         }
 
-        public SyntaxNode ParseTypeDecls()
+        public DeclsPartNode ParseTypeDecls()
         {
             var lexeme = _currentLexeme;
             _currentLexeme = _lexer.GetLexeme();
@@ -234,13 +234,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public FormalParamNode ParseFormalParam()
         {
-            ModifierNode? modifier = null;
+            KeywordNode? modifier = null;
             switch (_currentLexeme.Value)
             {
                 case Token.VAR:
                 case Token.CONST:
                 case Token.OUT:
-                    modifier = new ModifierNode(_currentLexeme);
+                    modifier = new KeywordNode(_currentLexeme);
                     break;
             };
 
@@ -273,7 +273,28 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SyntaxNode ParseSubroutineBlock()
         {
-            return null;
+            var decls = new List<DeclsPartNode>();
+
+            while (true)
+            {
+                switch (_currentLexeme.Value)
+                {
+                    case Token.CONST:
+                        var constDecls = ParseConstDecls();
+                        decls.Add(constDecls);
+                        break;
+                    case Token.TYPE:
+                        var typeDecls = ParseTypeDecls();
+                        decls.Add(typeDecls);
+                        break;
+                    case Token.VAR:
+                        var varDecls = ParseVarDecls();
+                        decls.Add(varDecls);
+                        break;
+                    default:
+                        return new SubroutineBlockNode(decls, ParseCompoundStmt());
+                }
+            }
         }
     }
 }

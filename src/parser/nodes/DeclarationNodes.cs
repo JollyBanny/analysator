@@ -159,8 +159,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Console.Write(indent + "├──── ");
             Header.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
 
-            Console.Write(indent + "└──── block \n");
-            // Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            Console.Write(indent + "└──── ");
+            Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
         override public string ToString() => Lexeme.Value.ToString()!;
@@ -222,8 +222,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class FormalParamNode : SyntaxNode
     {
-        public FormalParamNode(List<IdentNode> identsList, TypeNode type, ModifierNode? modifier)
-        : base()
+        public FormalParamNode(List<IdentNode> identsList, TypeNode type,
+            KeywordNode? modifier) : base()
         {
             IdentsList = identsList;
             Type = type;
@@ -232,7 +232,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
-        public ModifierNode? Modifier { get; }
+        public KeywordNode? Modifier { get; }
 
         override public void PrintTree(int depth, string indent)
         {
@@ -257,9 +257,38 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => "parameter";
     }
 
-    public class ModifierNode : SyntaxNode
+    public class SubroutineBlockNode : SyntaxNode
     {
-        public ModifierNode(Lexeme lexeme) : base(lexeme)
+        public SubroutineBlockNode(List<DeclsPartNode> decls, StmtNode compoundStmt)
+        : base()
+        {
+            Decls = decls;
+            CompoundStmt = compoundStmt;
+        }
+
+        public List<DeclsPartNode> Decls { get; }
+        public StmtNode CompoundStmt { get; }
+
+        override public void PrintTree(int depth, string indent)
+        {
+            Console.WriteLine(this);
+
+            foreach (var decl in Decls)
+            {
+                Console.Write(indent + "├──── ");
+                decl.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            }
+
+            Console.Write(indent + "└──── ");
+            CompoundStmt.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+        }
+
+        override public string ToString() => "block";
+    }
+
+    public class KeywordNode : SyntaxNode
+    {
+        public KeywordNode(Lexeme lexeme) : base(lexeme)
         { }
 
         override public void PrintTree(int depth, string indent) =>
