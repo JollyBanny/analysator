@@ -264,6 +264,8 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 TokenType.Keyword when _currentLexeme == Token.ARRAY =>
                     ParseParamArrayType(),
+                TokenType.Keyword when _currentLexeme == Token.STRING =>
+                    ParseIdentType(),
                 TokenType.Identifier =>
                     ParseIdentType(),
                 _ =>

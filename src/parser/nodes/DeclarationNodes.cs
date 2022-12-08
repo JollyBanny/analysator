@@ -276,7 +276,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             foreach (var decl in Decls)
             {
                 Console.Write(indent + "├──── ");
-                decl.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+                decl.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
             }
 
             Console.Write(indent + "└──── ");
