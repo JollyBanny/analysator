@@ -19,7 +19,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private static readonly List<Token> MultiplyOperators = new List<Token>
         {
-            Token.MUL, Token.O_DIV, Token.O_SHL, Token.O_SHR,
+            Token.MUL, Token.O_DIV, Token.O_SHL, Token.O_SHR, Token.MOD,
             Token.AND, Token.DIV, Token.SHL, Token.SHR, Token.AS,
         };
 
