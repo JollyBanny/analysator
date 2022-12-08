@@ -201,10 +201,14 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class ConstCharLiteral : ConstantNode
     {
         public ConstCharLiteral(Lexeme lexeme) : base(lexeme) { }
+
+        override public string ToString() => $"'{Lexeme.Value.ToString()!}'";
     }
 
     public class ConstStringLiteral : ConstantNode
     {
         public ConstStringLiteral(Lexeme lexeme) : base(lexeme) { }
+
+        override public string ToString() => $"'{Lexeme.Value.ToString()!}'";
     }
 }
