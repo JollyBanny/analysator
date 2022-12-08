@@ -17,7 +17,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public SyntaxNode TypeIdent { get; }
 
-        public override void PrintTree(int depth, string indent) =>
+        override public void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
         override public string ToString() => Lexeme.Value.ToString()!;

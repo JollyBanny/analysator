@@ -222,26 +222,26 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class FormalParamNode : SyntaxNode
     {
-        public FormalParamNode(List<IdentNode> identsList, TypeNode type, string? modifire)
+        public FormalParamNode(List<IdentNode> identsList, TypeNode type, ModifierNode? modifier)
         : base()
         {
             IdentsList = identsList;
             Type = type;
-            Modifire = modifire;
+            Modifier = modifier;
         }
 
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
-        public string? Modifire { get; }
+        public ModifierNode? Modifier { get; }
 
         override public void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
-            if (Modifire is not null)
+            if (Modifier is not null)
             {
                 Console.Write(indent + "├──── ");
-                Console.WriteLine(Modifire);
+                Modifier.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
             }
 
             Console.Write(indent + "├──── ");
@@ -257,15 +257,13 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => "parameter";
     }
 
-    public class ModifireNode : SyntaxNode
+    public class ModifierNode : SyntaxNode
     {
-        public ModifireNode(Lexeme lexeme) : base(lexeme)
+        public ModifierNode(Lexeme lexeme) : base(lexeme)
         { }
 
-        override public void PrintTree(int depth = 0, string indent = "")
-        {
-            throw new NotImplementedException();
-        }
+        override public void PrintTree(int depth, string indent) =>
+            Console.WriteLine(this);
 
         override public string ToString() => Lexeme.Value.ToString()!;
     }

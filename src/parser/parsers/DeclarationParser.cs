@@ -235,15 +235,17 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public FormalParamNode ParseFormalParam()
         {
-            string? modifire = _currentLexeme.Value switch
+            ModifierNode? modifier = null;
+            switch (_currentLexeme.Value)
             {
-                Token.VAR => Token.VAR.ToString().ToLower(),
-                Token.CONST => Token.CONST.ToString().ToLower(),
-                Token.OUT => Token.OUT.ToString().ToLower(),
-                _ => null,
+                case Token.VAR:
+                case Token.CONST:
+                case Token.OUT:
+                    modifier = new ModifierNode(_currentLexeme);
+                    break;
             };
 
-            if (modifire is not null)
+            if (modifier is not null)
                 _currentLexeme = _lexer.GetLexeme();
 
             var identsList = ParseIdentsList();
@@ -254,7 +256,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var paramType = ParseParamsType();
 
-            return new FormalParamNode(identsList, paramType, modifire);
+            return new FormalParamNode(identsList, paramType, modifier);
         }
 
         public TypeNode ParseParamsType()
