@@ -72,10 +72,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             if (_currentLexeme == Token.END)
                 return new EmptyStmtNode();
 
-            return ParseAssignStatement();
+            return ParseAssignStmt();
         }
 
-        public StmtNode ParseAssignStatement()
+        public StmtNode ParseAssignStmt()
         {
             var left = ParseExpression();
             var lexeme = _currentLexeme;
@@ -118,7 +118,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             StmtNode? elsePart = null;
 
             if (_currentLexeme == Token.ELSE)
+            {
+                _currentLexeme = _lexer.GetLexeme();
                 elsePart = ParseStatement();
+            }
 
             return new IfStmtNode(lexeme, condition, ifPart, elsePart);
         }

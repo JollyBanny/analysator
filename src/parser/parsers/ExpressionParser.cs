@@ -140,7 +140,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 else if (lexeme == Token.LPAREN)
                 {
                     if (left is not IdentNode)
-                        throw ExpectedException("Function name", left.Lexeme.Source);
+                        throw ExpectedException("Identifier", left.Lexeme.Source);
                     _currentLexeme = _lexer.GetLexeme();
 
                     List<ExprNode> args = new List<ExprNode>();
