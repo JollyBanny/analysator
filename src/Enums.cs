@@ -37,7 +37,6 @@ namespace PascalCompiler.Enums
         SUB_ASSIGN,
         MUL_ASSIGN,
         DIV_ASSIGN,
-        MOD_ASSIGN,
 
         EQUAL,
         LESS,

@@ -68,7 +68,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.COMMA)
                     break;
-
                 _currentLexeme = _lexer.GetLexeme();
             }
 
