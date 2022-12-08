@@ -17,8 +17,8 @@ namespace PascalCompiler.SyntaxAnalyzer
                     Token.CONST => ParseConstDecls(),
                     Token.VAR => ParseVarDecls(),
                     Token.TYPE => ParseTypeDecls(),
-                    Token.PROCEDURE => ParseVarDecls(),
-                    Token.FUNCTION => ParseVarDecls(),
+                    Token.PROCEDURE => ParseProcDecl(),
+                    Token.FUNCTION => ParseFuncDecl(),
                     _ => null,
                 };
 
@@ -208,9 +208,66 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallHeaderNode(funcName, paramsList);
         }
 
-        public List<SyntaxNode> ParseFormalParamsList()
+        public List<FormalParamNode> ParseFormalParamsList()
         {
-            return null;
+            if (_currentLexeme != Token.LPAREN)
+                throw ExpectedException("(", _currentLexeme.Source);
+            _currentLexeme = _lexer.GetLexeme();
+
+            var paramsList = new List<FormalParamNode>();
+
+            while (true)
+            {
+                var param = ParseFormalParam();
+                paramsList.Add(param);
+
+                if (_currentLexeme != Token.SEMICOLOM)
+                    break;
+                _currentLexeme = _lexer.GetLexeme();
+            }
+
+            if (_currentLexeme != Token.RPAREN)
+                throw ExpectedException(")", _currentLexeme.Source);
+            _currentLexeme = _lexer.GetLexeme();
+
+            return paramsList;
+        }
+
+        public FormalParamNode ParseFormalParam()
+        {
+            string? modifire = _currentLexeme.Value switch
+            {
+                Token.VAR => Token.VAR.ToString().ToLower(),
+                Token.CONST => Token.CONST.ToString().ToLower(),
+                Token.OUT => Token.OUT.ToString().ToLower(),
+                _ => null,
+            };
+
+            if (modifire is not null)
+                _currentLexeme = _lexer.GetLexeme();
+
+            var identsList = ParseIdentsList();
+
+            if (_currentLexeme != Token.COLON)
+                throw ExpectedException(":", _currentLexeme.Source);
+            _currentLexeme = _lexer.GetLexeme();
+
+            var paramType = ParseParamsType();
+
+            return new FormalParamNode(identsList, paramType, modifire);
+        }
+
+        public TypeNode ParseParamsType()
+        {
+            return _currentLexeme.Type switch
+            {
+                TokenType.Keyword when _currentLexeme == Token.ARRAY =>
+                    ParseParamArrayType(),
+                TokenType.Identifier =>
+                    ParseIdentType(),
+                _ =>
+                    throw ExpectedException("variable type", _currentLexeme.Source),
+            };
         }
 
         public SyntaxNode ParseSubroutineBlock()
