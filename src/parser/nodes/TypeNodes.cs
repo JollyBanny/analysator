@@ -134,4 +134,23 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         override public string ToString() => Lexeme.Source;
     }
+
+    public class ParamArrayTypeNode : TypeNode
+    {
+        public ParamArrayTypeNode(Lexeme lexeme, TypeNode type) : base(lexeme)
+        {
+            Type = type;
+        }
+
+        public TypeNode Type { get; }
+
+        override public void PrintTree(int depth, string indent)
+        {
+            Console.WriteLine(this);
+            Console.Write(indent + "└──── ");
+            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+        }
+
+        override public string ToString() => Lexeme.Value.ToString()!;
+    }
 }

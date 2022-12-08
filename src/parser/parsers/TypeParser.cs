@@ -132,5 +132,18 @@ namespace PascalCompiler.SyntaxAnalyzer
             var type = ParseType();
             return new RecordFieldNode(lexeme, identsList, type);
         }
+
+        public ParamArrayTypeNode ParseParamArrayType()
+        {
+            var lexeme = _currentLexeme;
+            _currentLexeme = _lexer.GetLexeme();
+
+            if (_currentLexeme != Token.OF)
+                throw ExpectedException($"{Token.OF}", _currentLexeme.Source);
+            _currentLexeme = _lexer.GetLexeme();
+
+            var type = ParseIdentType();
+            return new ParamArrayTypeNode(lexeme, type);
+        }
     }
 }
