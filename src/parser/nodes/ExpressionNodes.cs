@@ -148,17 +148,24 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         override public string ToString() => Lexeme.Value.ToString()!;
     }
 
+    public class CustomCallNode : FunctionCallNode
+    {
+        public CustomCallNode(IdentNode funcIdent, List<ExprNode> args)
+        : base(funcIdent, args)
+        {
+
+        }
+    }
+
     public class WriteCallNode : FunctionCallNode
     {
-        public WriteCallNode(IdentNode arrayIdent, List<ExprNode> args, bool newLine)
-        : base(arrayIdent, args)
+        public WriteCallNode(IdentNode funcIdent, List<ExprNode> args, bool newLine)
+        : base(funcIdent, args)
         {
             NewLine = newLine;
         }
 
         public bool NewLine { get; }
-
-        override public string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class IdentNode : ExprNode

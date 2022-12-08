@@ -28,21 +28,21 @@ namespace PascalCompiler.SyntaxAnalyzer
             Token.ADD, Token.SUB,
         };
 
-        public ExprNode ParseRelExpression()
+        public ExprNode ParseExpression()
         {
-            var left = ParseExpression();
+            var left = ParseSimpleExpression();
             var lexeme = _currentLexeme;
 
             if (RelationalOperators.Contains(lexeme))
             {
                 _currentLexeme = _lexer.GetLexeme();
-                left = new BinOperNode(lexeme, left, ParseExpression());
+                left = new BinOperNode(lexeme, left, ParseSimpleExpression());
             }
 
             return left;
         }
 
-        public ExprNode ParseExpression()
+        public ExprNode ParseSimpleExpression()
         {
             var left = ParseTerm();
             var lexeme = _currentLexeme;
@@ -103,7 +103,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     return ParseConstStringLiteral();
                 case TokenType.Separator when lexeme == Token.LPAREN:
                     _currentLexeme = _lexer.GetLexeme();
-                    var exp = ParseRelExpression();
+                    var exp = ParseExpression();
                     if (_currentLexeme != Token.RPAREN)
                         throw ExpectedException(")", _currentLexeme.Source);
                     _currentLexeme = _lexer.GetLexeme();
@@ -159,7 +159,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     else if (Token.WRITELN.ToString() == identName)
                         left = new WriteCallNode((IdentNode)left, args, true);
                     else
-                        left = new FunctionCallNode((IdentNode)left, args);
+                        left = new CustomCallNode((IdentNode)left, args);
 
                     lexeme = _currentLexeme;
                 }
