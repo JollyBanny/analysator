@@ -5,7 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class TypeNode : SyntaxNode
     {
         protected TypeNode(Lexeme? lexeme = null) : base(lexeme!) { }
-        override public void PrintTree(int depth = 0, string indent = "") { }
+        public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
     public class IdentTypeNode : TypeNode
@@ -17,10 +17,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public SyntaxNode TypeIdent { get; }
 
-        override public void PrintTree(int depth, string indent) =>
+        public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ArrayTypeNode : TypeNode
@@ -35,7 +35,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SubrangeTypeNode> Ranges { get; }
         public SyntaxNode Type { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -49,7 +49,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class SubrangeTypeNode : TypeNode
@@ -64,7 +64,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode LeftBound { get; }
         public ExprNode RightBound { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -75,7 +75,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             RightBound.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Source;
+        public override string ToString() => Lexeme.Source;
     }
 
     public class RecordTypeNode : TypeNode
@@ -87,7 +87,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<RecordFieldNode> FieldsList { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
             for (int i = 0; i < FieldsList.Count; ++i)
@@ -105,7 +105,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class RecordFieldNode : TypeNode
@@ -120,7 +120,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
             for (int i = 0; i < IdentsList.Count; ++i)
@@ -132,7 +132,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Source;
+        public override string ToString() => Lexeme.Source;
     }
 
     public class ParamArrayTypeNode : TypeNode
@@ -144,13 +144,13 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public TypeNode Type { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
             Console.Write(indent + "└──── ");
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 }

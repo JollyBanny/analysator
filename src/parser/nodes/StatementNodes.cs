@@ -5,7 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class StmtNode : SyntaxNode
     {
         protected StmtNode(Lexeme? lexeme = null) : base(lexeme!) { }
-        override public void PrintTree(int depth = 0, string indent = "") { }
+        public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
     public class CompoundStmtNode : StmtNode
@@ -17,7 +17,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<StmtNode> Statements { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -36,7 +36,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        override public string ToString() => "Compound statement";
+        public override string ToString() => "Compound statement";
     }
 
     public class EmptyStmtNode : StmtNode
@@ -44,10 +44,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public EmptyStmtNode() : base()
         { }
 
-        override public void PrintTree(int depth, string indent) =>
+        public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => "Empty statement";
+        public override string ToString() => "Empty statement";
     }
 
     public class CallStmtNode : StmtNode
@@ -59,7 +59,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public ExprNode Expression { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -67,7 +67,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Expression.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "Call statement";
+        public override string ToString() => "Call statement";
     }
 
     public class AssignStmtNode : StmtNode
@@ -81,7 +81,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Left { get; }
         public ExprNode Right { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -92,7 +92,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Right.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Source;
+        public override string ToString() => Lexeme.Source;
     }
 
     public class IfStmtNode : StmtNode
@@ -109,7 +109,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public StmtNode IfPart { get; }
         public StmtNode? ElsePart { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -133,7 +133,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             ElsePart?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class WhileStmtNode : StmtNode
@@ -148,7 +148,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public StmtNode Statement { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -159,7 +159,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Statement.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class RepeatStmtNode : StmtNode
@@ -174,7 +174,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public List<StmtNode> Statements { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -196,7 +196,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ForStmtNode : StmtNode
@@ -213,7 +213,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ForRangeNode ForRange { get; }
         public StmtNode Statement { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -227,7 +227,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Statement.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ForRangeNode : SyntaxNode
@@ -242,7 +242,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode StartValue { get; }
         public ExprNode FinalValue { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -253,6 +253,6 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             FinalValue.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 }

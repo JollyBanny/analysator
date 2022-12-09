@@ -116,7 +116,7 @@ namespace PascalCompiler.LexicalAnalyzer
             throw new LexemeOverflowException(_pos);
         }
 
-        override public string ToString()
+        public override string ToString()
         {
             var value = _type switch
             {
@@ -161,7 +161,7 @@ namespace PascalCompiler.LexicalAnalyzer
         public static bool operator !=(Lexeme lexeme, TokenType tokenType)
             => lexeme.Type != tokenType;
 
-        override public bool Equals(Object? obj)
+        public override bool Equals(Object? obj)
         {
             if (obj is null)
                 return false;
@@ -173,7 +173,7 @@ namespace PascalCompiler.LexicalAnalyzer
                 return false;
         }
 
-        override public int GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {

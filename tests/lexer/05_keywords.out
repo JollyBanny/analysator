@@ -56,7 +56,7 @@
 56	1	Keyword	Real	real
 57	1	Keyword	Record	record
 58	1	Keyword	Repeat	repeat
-59	1	Keyword	Reaise	reaise
+59	1	Keyword	Raise	raise
 60	1	Keyword	Self	self
 61	1	Keyword	Set	set
 62	1	Keyword	Shl	shl

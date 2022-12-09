@@ -12,7 +12,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<SyntaxNode> Decls { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -31,7 +31,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstDeclsPartNode : DeclsPartNode
@@ -53,7 +53,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode? Type { get; }
         public ExprNode Expr { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -71,7 +71,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Expr.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "const declaration";
+        public override string ToString() => "const declaration";
     }
 
     public class VarDeclsPartNode : DeclsPartNode
@@ -91,7 +91,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -105,7 +105,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "var declaration";
+        public override string ToString() => "var declaration";
     }
 
     public class TypeDeclsPartNode : DeclsPartNode
@@ -125,7 +125,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public IdentNode Ident { get; }
         public TypeNode Type { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -136,7 +136,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "type declaration";
+        public override string ToString() => "type declaration";
     }
 
     public class CallDeclNode : SyntaxNode
@@ -151,7 +151,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public CallHeaderNode Header { get; }
         public SyntaxNode Block { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -162,7 +162,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class CallHeaderNode : SyntaxNode
@@ -180,7 +180,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode? Type { get; }
 
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -216,7 +216,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "header";
+        public override string ToString() => "header";
     }
 
     public class FormalParamNode : SyntaxNode
@@ -233,7 +233,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode Type { get; }
         public KeywordNode? Modifier { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -253,7 +253,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "parameter";
+        public override string ToString() => "parameter";
     }
 
     public class SubroutineBlockNode : SyntaxNode
@@ -268,7 +268,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<DeclsPartNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -282,7 +282,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             CompoundStmt.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "block";
+        public override string ToString() => "block";
     }
 
     public class KeywordNode : SyntaxNode
@@ -290,9 +290,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public KeywordNode(Lexeme lexeme) : base(lexeme)
         { }
 
-        override public void PrintTree(int depth, string indent) =>
+        public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        override public string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 }

@@ -56,7 +56,7 @@ property
 real
 record
 repeat
-reaise
+raise
 self
 set
 shl

@@ -5,7 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class ProgramNode : SyntaxNode
     {
         protected ProgramNode(Lexeme? lexeme = null) : base(lexeme!) { }
-        override public void PrintTree(int depth = 0, string indent = "") { }
+        public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
     public class FullProgramNode : ProgramNode
@@ -19,7 +19,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ProgramNode? Header { get; }
         public ProgramNode Block { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -33,7 +33,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "program";
+        public override string ToString() => "program";
     }
 
     public class ProgramHeaderNode : ProgramNode
@@ -45,7 +45,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public IdentNode ProgramName { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -53,7 +53,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             ProgramName.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "program header";
+        public override string ToString() => "program header";
     }
 
     public class ProgramBlockNode : ProgramNode
@@ -67,7 +67,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SyntaxNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
-        override public void PrintTree(int depth, string indent)
+        public override void PrintTree(int depth, string indent)
         {
             Console.WriteLine(this);
 
@@ -81,6 +81,6 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             CompoundStmt.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
-        override public string ToString() => "program block";
+        public override string ToString() => "program block";
     }
 }
