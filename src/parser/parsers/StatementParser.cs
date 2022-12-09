@@ -84,7 +84,12 @@ namespace PascalCompiler.SyntaxAnalyzer
                 return new CallStmtNode(left);
 
             if (!AssignOperators.Contains(lexeme))
-                throw FatalException("Illegal expression");
+            {
+                if (left is IdentNode)
+                    return new CallStmtNode(left);
+                else
+                    throw FatalException("Illegal expression");
+            }
             _currentLexeme = _lexer.GetLexeme();
 
             return new AssignStmtNode(lexeme, left, ParseExpression());
