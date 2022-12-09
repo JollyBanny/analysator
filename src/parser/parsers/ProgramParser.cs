@@ -12,7 +12,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme == Token.PROGRAM)
             {
-                _currentLexeme = _lexer.GetLexeme();
+                NextLexeme();
                 header = ParseProgramHeader();
             }
 
@@ -27,7 +27,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new ProgramHeaderNode(programName);
         }

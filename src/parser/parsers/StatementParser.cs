@@ -16,13 +16,13 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             if (_currentLexeme != Token.BEGIN)
                 throw ExpectedException($"{Token.BEGIN}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var statements = ParseStatements();
 
             if (_currentLexeme != Token.END)
                 throw ExpectedException($"{Token.END}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new CompoundStmtNode(statements);
         }
@@ -50,7 +50,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 if (_currentLexeme == Token.SEMICOLOM)
                 {
                     separatorExist = true;
-                    _currentLexeme = _lexer.GetLexeme();
+                    NextLexeme();
                 }
             }
 
@@ -90,7 +90,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 else
                     throw FatalException("Illegal expression");
             }
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new AssignStmtNode(lexeme, left, ParseExpression());
         }
@@ -111,20 +111,20 @@ namespace PascalCompiler.SyntaxAnalyzer
         public StmtNode ParseIfStmt()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var condition = ParseExpression();
 
             if (_currentLexeme != Token.THEN)
                 throw ExpectedException($"{Token.THEN}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var ifPart = ParseStatement();
             StmtNode? elsePart = null;
 
             if (_currentLexeme == Token.ELSE)
             {
-                _currentLexeme = _lexer.GetLexeme();
+                NextLexeme();
                 elsePart = ParseStatement();
             }
 
@@ -134,13 +134,13 @@ namespace PascalCompiler.SyntaxAnalyzer
         public StmtNode ParseWhileStmt()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var condition = ParseExpression();
 
             if (_currentLexeme != Token.DO)
                 throw ExpectedException($"{Token.DO}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new WhileStmtNode(lexeme, condition, ParseStatement());
         }
@@ -148,13 +148,13 @@ namespace PascalCompiler.SyntaxAnalyzer
         public StmtNode ParseRepeatStmt()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var statements = ParseStatements();
 
             if (_currentLexeme != Token.UNTIL)
                 throw ExpectedException($"{Token.UNTIL}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var condition = ParseExpression();
 
@@ -164,19 +164,19 @@ namespace PascalCompiler.SyntaxAnalyzer
         public StmtNode ParseForStmt()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var ctrlIdent = ParseIdent();
 
             if (_currentLexeme != Token.ASSIGN)
                 throw ExpectedException(":=", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var forRange = ParseForRange();
 
             if (_currentLexeme != Token.DO)
                 throw ExpectedException($"{Token.DO}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var statement = ParseStatement();
 
@@ -190,7 +190,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme != Token.TO && _currentLexeme != Token.DOWNTO)
                 throw ExpectedException($"{Token.TO}", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var finalValue = ParseExpression();
 

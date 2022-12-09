@@ -20,6 +20,11 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
+        public void NextLexeme()
+        {
+            _currentLexeme = _lexer.GetLexeme();
+        }
+
         public void ChangeFile(string path)
         {
             _lexer.ChangeFile(path);
@@ -34,7 +39,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private SyntaxException FatalException(string msg)
         {
-            return new SyntaxException(_lexer.Cursor, $"{msg}");
+            return new SyntaxException(_lexer.Cursor, msg);
         }
     }
 }

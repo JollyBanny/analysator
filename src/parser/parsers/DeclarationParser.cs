@@ -33,7 +33,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         public DeclsPartNode ParseConstDecls()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var constDecls = new List<SyntaxNode>();
 
@@ -56,19 +56,19 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme == Token.COLON)
             {
-                _currentLexeme = _lexer.GetLexeme();
+                NextLexeme();
                 type = ParseType();
             }
 
             if (_currentLexeme != Token.EQUAL)
                 throw ExpectedException("=", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             ExprNode expression = ParseExpression();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new ConstDeclNode(constIdent, type, expression);
         }
@@ -76,7 +76,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         public DeclsPartNode ParseVarDecls()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var varDecls = new List<SyntaxNode>();
 
@@ -98,13 +98,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme != Token.COLON)
                 throw ExpectedException(":", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var type = ParseType();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new VarDeclNode(varIdents, type);
         }
@@ -112,7 +112,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         public DeclsPartNode ParseTypeDecls()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var typeDecls = new List<SyntaxNode>();
 
@@ -134,13 +134,13 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme != Token.EQUAL)
                 throw ExpectedException("=", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var type = ParseType();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new TypeDeclNode(typeIdent, type);
         }
@@ -148,19 +148,19 @@ namespace PascalCompiler.SyntaxAnalyzer
         public SyntaxNode ParseFuncDecl()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var header = ParseFuncHeader();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var block = ParseSubroutineBlock();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -168,19 +168,19 @@ namespace PascalCompiler.SyntaxAnalyzer
         public SyntaxNode ParseProcDecl()
         {
             var lexeme = _currentLexeme;
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var header = ParseProcHeader();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var block = ParseSubroutineBlock();
 
             if (_currentLexeme != Token.SEMICOLOM)
                 throw ExpectedException(";", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -192,7 +192,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             if (_currentLexeme != Token.COLON)
                 throw ExpectedException(":", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var resultType = ParseIdentType();
 
@@ -211,7 +211,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             if (_currentLexeme != Token.LPAREN)
                 throw ExpectedException("(", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var paramsList = new List<FormalParamNode>();
 
@@ -222,12 +222,12 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.SEMICOLOM)
                     break;
-                _currentLexeme = _lexer.GetLexeme();
+                NextLexeme();
             }
 
             if (_currentLexeme != Token.RPAREN)
                 throw ExpectedException(")", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             return paramsList;
         }
@@ -245,13 +245,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
 
             if (modifier is not null)
-                _currentLexeme = _lexer.GetLexeme();
+                NextLexeme();
 
             var identsList = ParseIdentsList();
 
             if (_currentLexeme != Token.COLON)
                 throw ExpectedException(":", _currentLexeme.Source);
-            _currentLexeme = _lexer.GetLexeme();
+            NextLexeme();
 
             var paramType = ParseParamsType();
 
