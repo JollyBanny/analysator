@@ -38,7 +38,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 return statements;
             }
 
-            while (_currentLexeme != Token.END)
+            while (_currentLexeme != Token.END && _currentLexeme != Token.EOF)
             {
                 if (!separatorExist)
                     throw ExpectedException(";", _currentLexeme.Source);
