@@ -36,6 +36,10 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var decls = ParseDecls();
             var statement = ParseCompoundStmt();
+
+            if (_currentLexeme != Token.DOT)
+                throw ExpectedException(".", _currentLexeme.Source);
+
             return new ProgramBlockNode(decls, statement);
         }
     }

@@ -1,4 +1,3 @@
-using PascalCompiler.Enums;
 using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
