@@ -60,7 +60,7 @@ namespace PascalCompiler
                 else
                 {
                     var _parser = new Parser(inFile);
-                    _parser.ParseExpression().PrintTree();
+                    _parser.ParseProgram().PrintTree();
                 }
             }
             catch (Exception e)
@@ -71,6 +71,13 @@ namespace PascalCompiler
             var originOutput = new StreamWriter(Console.OpenStandardOutput());
             originOutput.AutoFlush = true;
             Console.SetOut(originOutput);
+
+            /*
+            ofstream.Close();
+            var testWritter = new StreamWriter(outFile);
+            testWritter.AutoFlush = true;
+            testWritter.Write(buffer);
+            */
 
             if (!CompareAnswers(inFile, expected, buffer.ToString()))
                 return false;
