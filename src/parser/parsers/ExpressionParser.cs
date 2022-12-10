@@ -104,9 +104,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 case TokenType.Separator when lexeme == Token.LPAREN:
                     NextLexeme();
                     var exp = ParseExpression();
-                    if (_currentLexeme != Token.RPAREN)
-                        throw ExpectedException(")", _currentLexeme.Source);
-                    NextLexeme();
+                    Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
                     return exp;
                 default:
                     throw FatalException("Illegal expression");
@@ -123,11 +121,10 @@ namespace PascalCompiler.SyntaxAnalyzer
                 if (lexeme == Token.LBRACK)
                 {
                     NextLexeme();
+
                     left = new ArrayAccessNode(left, ParseParamsList());
 
-                    if (_currentLexeme != Token.RBRACK)
-                        throw ExpectedException("]", _currentLexeme.Source);
-                    NextLexeme();
+                    Require<Token>(new List<Token> { Token.RBRACK }, true, "]");
 
                     lexeme = _currentLexeme;
                 }
@@ -148,9 +145,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     if (_currentLexeme != Token.RPAREN)
                         args = ParseParamsList();
 
-                    if (_currentLexeme != Token.RPAREN)
-                        throw ExpectedException(")", _currentLexeme.Source);
-                    NextLexeme();
+                    Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
 
                     var identName = left.Lexeme.Value.ToString()!.ToUpper();
 
@@ -179,7 +174,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.COMMA)
                     break;
-
                 NextLexeme();
             }
 
@@ -190,9 +184,8 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var lexeme = _currentLexeme;
 
-            if (_currentLexeme != TokenType.Identifier)
-                throw ExpectedException("Identifier", lexeme.Source);
-            NextLexeme();
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                true, $"{TokenType.Identifier}");
 
             return new IdentNode(lexeme);
         }
@@ -208,7 +201,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.COMMA)
                     break;
-
                 NextLexeme();
             }
 

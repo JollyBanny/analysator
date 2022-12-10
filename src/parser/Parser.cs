@@ -25,6 +25,19 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
+        public void Require<T>(List<T> tokens, bool getNext, string expected)
+        {
+            foreach (var token in tokens)
+                if (_currentLexeme.Equals(token))
+                {
+                    if (getNext)
+                        NextLexeme();
+                    return;
+                }
+
+            throw ExpectedException(expected, _currentLexeme.Source);
+        }
+
         public void ChangeFile(string path)
         {
             _lexer.ChangeFile(path);

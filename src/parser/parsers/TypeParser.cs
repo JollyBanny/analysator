@@ -18,7 +18,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                     ParseArrayType(),
                 TokenType.Keyword when lexeme == Token.RECORD =>
                     ParseRecordType(),
-
                 _ => throw ExpectedException("variable type", lexeme.Source)
             };
         }
@@ -30,6 +29,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var lexeme = _currentLexeme;
             NextLexeme();
+
             return new IdentTypeNode(new IdentNode(lexeme));
         }
 
@@ -38,19 +38,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            if (_currentLexeme != Token.LBRACK)
-                throw ExpectedException("[", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.LBRACK }, true, "[");
 
             var rangesList = ParseSubrangesList();
 
-            if (_currentLexeme != Token.RBRACK)
-                throw ExpectedException("]", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.RBRACK }, true, "]");
 
-            if (_currentLexeme != Token.OF)
-                throw ExpectedException($"{Token.OF}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.OF }, true, $"{Token.OF}");
 
             var type = ParseType();
 
@@ -79,8 +73,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var leftBound = ParseSimpleExpression();
             var lexeme = _currentLexeme;
 
-            if (lexeme == Token.ELLIPSIS)
-                NextLexeme();
+            Require<Token>(new List<Token> { Token.ELLIPSIS }, true, "..");
 
             var rightBound = ParseSimpleExpression();
             return new SubrangeTypeNode(lexeme, leftBound, rightBound);
@@ -93,9 +86,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var fieldsList = ParseRecordFields();
 
-            if (_currentLexeme != Token.END)
-                throw ExpectedException($"{Token.END}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.END }, true, $"{Token.END}");
 
             return new RecordTypeNode(lexeme, fieldsList);
         }
@@ -123,9 +114,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var identsList = ParseIdentsList();
             var lexeme = _currentLexeme;
 
-            if (lexeme != Token.COLON)
-                throw ExpectedException(":", lexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
             var type = ParseType();
             return new RecordFieldNode(lexeme, identsList, type);
@@ -136,9 +125,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            if (_currentLexeme != Token.OF)
-                throw ExpectedException($"{Token.OF}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.OF }, true, $"{Token.OF}");
 
             var type = ParseIdentType();
             return new ParamArrayTypeNode(lexeme, type);

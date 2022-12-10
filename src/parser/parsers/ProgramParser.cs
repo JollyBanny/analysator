@@ -25,9 +25,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var programName = ParseIdent();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new ProgramHeaderNode(programName);
         }
@@ -37,8 +35,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var decls = ParseDecls();
             var statement = ParseCompoundStmt();
 
-            if (_currentLexeme != Token.DOT)
-                throw ExpectedException(".", _currentLexeme.Source);
+            Require<Token>(new List<Token> { Token.DOT }, false, ".");
 
             return new ProgramBlockNode(decls, statement);
         }

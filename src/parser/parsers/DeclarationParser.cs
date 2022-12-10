@@ -48,8 +48,8 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SyntaxNode ParseConsts()
         {
-            if (_currentLexeme != TokenType.Identifier)
-                throw ExpectedException($"{Token.BEGIN}", _currentLexeme.Source);
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{Token.BEGIN}");
 
             var constIdent = ParseIdent();
             TypeNode? type = null;
@@ -60,15 +60,11 @@ namespace PascalCompiler.SyntaxAnalyzer
                 type = ParseType();
             }
 
-            if (_currentLexeme != Token.EQUAL)
-                throw ExpectedException("=", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.EQUAL }, true, "=");
 
             ExprNode expression = ParseExpression();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new ConstDeclNode(constIdent, type, expression);
         }
@@ -91,20 +87,16 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SyntaxNode ParseVars()
         {
-            if (_currentLexeme != TokenType.Identifier)
-                throw ExpectedException($"{Token.BEGIN}", _currentLexeme.Source);
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{Token.BEGIN}");
 
             var varIdents = ParseIdentsList();
 
-            if (_currentLexeme != Token.COLON)
-                throw ExpectedException(":", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
             var type = ParseType();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new VarDeclNode(varIdents, type);
         }
@@ -127,20 +119,16 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SyntaxNode ParseTypes()
         {
-            if (_currentLexeme != TokenType.Identifier)
-                throw ExpectedException($"{Token.BEGIN}", _currentLexeme.Source);
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{Token.BEGIN}");
 
             var typeIdent = ParseIdent();
 
-            if (_currentLexeme != Token.EQUAL)
-                throw ExpectedException("=", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.EQUAL }, true, "=");
 
             var type = ParseType();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new TypeDeclNode(typeIdent, type);
         }
@@ -152,15 +140,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var header = ParseFuncHeader();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             var block = ParseSubroutineBlock();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -172,15 +156,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var header = ParseProcHeader();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             var block = ParseSubroutineBlock();
 
-            if (_currentLexeme != Token.SEMICOLOM)
-                throw ExpectedException(";", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -190,9 +170,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var funcName = ParseIdent();
             var paramsList = ParseFormalParamsList();
 
-            if (_currentLexeme != Token.COLON)
-                throw ExpectedException(":", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
             var resultType = ParseIdentType();
 
@@ -209,9 +187,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public List<FormalParamNode> ParseFormalParamsList()
         {
-            if (_currentLexeme != Token.LPAREN)
-                throw ExpectedException("(", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.LPAREN }, true, "(");
 
             var paramsList = new List<FormalParamNode>();
 
@@ -225,9 +201,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 NextLexeme();
             }
 
-            if (_currentLexeme != Token.RPAREN)
-                throw ExpectedException(")", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
 
             return paramsList;
         }
@@ -249,9 +223,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var identsList = ParseIdentsList();
 
-            if (_currentLexeme != Token.COLON)
-                throw ExpectedException(":", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
             var paramType = ParseParamsType();
 

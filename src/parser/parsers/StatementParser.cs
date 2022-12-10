@@ -14,15 +14,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public StmtNode ParseCompoundStmt()
         {
-            if (_currentLexeme != Token.BEGIN)
-                throw ExpectedException($"{Token.BEGIN}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.BEGIN }, true, $"{Token.BEGIN}");
 
             var statements = ParseStatements();
 
-            if (_currentLexeme != Token.END)
-                throw ExpectedException($"{Token.END}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.END }, true, $"{Token.END}");
 
             return new CompoundStmtNode(statements);
         }
@@ -115,9 +111,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var condition = ParseExpression();
 
-            if (_currentLexeme != Token.THEN)
-                throw ExpectedException($"{Token.THEN}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.THEN }, true, $"{Token.THEN}");
 
             var ifPart = ParseStatement();
             StmtNode? elsePart = null;
@@ -138,9 +132,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var condition = ParseExpression();
 
-            if (_currentLexeme != Token.DO)
-                throw ExpectedException($"{Token.DO}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.DO }, true, $"{Token.DO}");
 
             return new WhileStmtNode(lexeme, condition, ParseStatement());
         }
@@ -152,9 +144,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var statements = ParseStatements();
 
-            if (_currentLexeme != Token.UNTIL)
-                throw ExpectedException($"{Token.UNTIL}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.UNTIL }, true, $"{Token.UNTIL}");
 
             var condition = ParseExpression();
 
@@ -168,15 +158,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var ctrlIdent = ParseIdent();
 
-            if (_currentLexeme != Token.ASSIGN)
-                throw ExpectedException(":=", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.ASSIGN }, true, ":=");
 
             var forRange = ParseForRange();
 
-            if (_currentLexeme != Token.DO)
-                throw ExpectedException($"{Token.DO}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.DO }, true, $"{Token.DO}");
 
             var statement = ParseStatement();
 
@@ -188,9 +174,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var startValue = ParseExpression();
             var direction = _currentLexeme;
 
-            if (_currentLexeme != Token.TO && _currentLexeme != Token.DOWNTO)
-                throw ExpectedException($"{Token.TO}", _currentLexeme.Source);
-            NextLexeme();
+            Require<Token>(new List<Token> { Token.TO, Token.DOWNTO }, true, $"{Token.TO}");
 
             var finalValue = ParseExpression();
 
