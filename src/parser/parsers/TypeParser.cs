@@ -98,7 +98,10 @@ namespace PascalCompiler.SyntaxAnalyzer
                 fieldsList.Add(field);
 
                 if (_currentLexeme != Token.SEMICOLOM)
+                {
+                    Require<Token>(new List<Token> { Token.END }, false, ";");
                     break;
+                }
 
                 NextLexeme();
             }
