@@ -186,8 +186,14 @@ namespace PascalCompiler.SyntaxAnalyzer
         public CallHeaderNode ParseFuncHeader()
         {
             var funcName = ParseIdent();
-            var paramsList = ParseFormalParamsList();
+            List<FormalParamNode>? paramsList = null;
 
+            Require<Token>(new List<Token> { Token.LPAREN }, true, "(");
+
+            if (_currentLexeme != Token.RPAREN)
+                paramsList = ParseFormalParamsList();
+
+            Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
             Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
             var resultType = ParseIdentType();
@@ -198,15 +204,20 @@ namespace PascalCompiler.SyntaxAnalyzer
         public CallHeaderNode ParseProcHeader()
         {
             var funcName = ParseIdent();
-            var paramsList = ParseFormalParamsList();
+            List<FormalParamNode>? paramsList = null;
+
+            Require<Token>(new List<Token> { Token.LPAREN }, true, "(");
+
+            if (_currentLexeme != Token.RPAREN)
+                paramsList = ParseFormalParamsList();
+
+            Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
 
             return new CallHeaderNode(funcName, paramsList);
         }
 
         public List<FormalParamNode> ParseFormalParamsList()
         {
-            Require<Token>(new List<Token> { Token.LPAREN }, true, "(");
-
             var paramsList = new List<FormalParamNode>();
 
             while (true)
@@ -218,8 +229,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                     break;
                 NextLexeme();
             }
-
-            Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
 
             return paramsList;
         }

@@ -181,7 +181,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallHeaderNode : SyntaxNode
     {
-        public CallHeaderNode(IdentNode name, List<FormalParamNode> paramsList,
+        public CallHeaderNode(IdentNode name, List<FormalParamNode>? paramsList,
             TypeNode? type = null) : base()
         {
             Name = name;
@@ -190,7 +190,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
 
         public IdentNode Name { get; }
-        public List<FormalParamNode> ParamsList { get; }
+        public List<FormalParamNode>? ParamsList { get; }
         public TypeNode? Type { get; }
 
 
@@ -201,33 +201,40 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Console.Write(indent + "├──── ");
             Name.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
 
-            if (Type is not null)
+            if (ParamsList is not null)
             {
-                foreach (var param in ParamsList)
+                if (Type is not null)
                 {
-                    Console.Write(indent + "├──── ");
-                    param.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
+                    foreach (var param in ParamsList)
+                    {
+                        Console.Write(indent + "├──── ");
+                        param.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
+                    }
+                    Console.Write(indent + "└──── ");
                 }
-                Console.Write(indent + "└──── ");
+                else
+                {
+                    for (int i = 0; i < ParamsList.Count; ++i)
+                    {
+                        if (i == ParamsList.Count - 1)
+                        {
+                            Console.Write(indent + "└──── ");
+                            ParamsList[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+                        }
+                        else
+                        {
+                            Console.Write(indent + "├──── ");
+                            ParamsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
+                        }
+                    }
+                }
             }
             else
             {
-                for (int i = 0; i < ParamsList.Count; ++i)
-                {
-                    if (i == ParamsList.Count - 1)
-                    {
-                        Console.Write(indent + "└──── ");
-                        ParamsList[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                    }
-                    else
-                    {
-                        Console.Write(indent + "├──── ");
-                        ParamsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                    }
-                }
+                if (Type is not null)
+                    Console.Write(indent + "└──── ");
+                Type?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
             }
-
-            Type?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
         public override string ToString() => "header";
