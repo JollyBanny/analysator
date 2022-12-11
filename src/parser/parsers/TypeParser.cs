@@ -24,13 +24,10 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public TypeNode ParseSimpleType()
         {
-            if (_currentLexeme != Token.STRING)
+            if (_currentLexeme == Token.STRING)
+                return new SimpleTypeNode(ParseKeywordNode());
+            else
                 return new SimpleTypeNode(ParseIdent());
-
-            var lexeme = _currentLexeme;
-            NextLexeme();
-
-            return new SimpleTypeNode(new IdentNode(lexeme));
         }
 
         public TypeNode ParseArrayType()
