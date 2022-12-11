@@ -236,7 +236,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class FormalParamNode : SyntaxNode
     {
         public FormalParamNode(List<IdentNode> identsList, TypeNode type,
-            KeywordNode? modifier) : base()
+            SyntaxNode? modifier) : base()
         {
             IdentsList = identsList;
             Type = type;
@@ -245,7 +245,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
-        public KeywordNode? Modifier { get; }
+        public SyntaxNode? Modifier { get; }
 
         public override void PrintTree(int depth, string indent)
         {

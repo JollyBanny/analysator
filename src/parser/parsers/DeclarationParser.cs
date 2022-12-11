@@ -235,18 +235,15 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public FormalParamNode ParseFormalParam()
         {
-            KeywordNode? modifier = null;
+            SyntaxNode? modifier = null;
             switch (_currentLexeme.Value)
             {
                 case Token.VAR:
                 case Token.CONST:
                 case Token.OUT:
-                    modifier = new KeywordNode(_currentLexeme);
+                    modifier = ParseKeywordNode();
                     break;
             };
-
-            if (modifier is not null)
-                NextLexeme();
 
             var identsList = ParseIdentsList();
 
@@ -296,6 +293,13 @@ namespace PascalCompiler.SyntaxAnalyzer
                         return new SubroutineBlockNode(decls, ParseCompoundStmt());
                 }
             }
+        }
+
+        public SyntaxNode ParseKeywordNode()
+        {
+            var lexeme = _currentLexeme;
+            NextLexeme();
+            return new KeywordNode(lexeme);
         }
     }
 }
