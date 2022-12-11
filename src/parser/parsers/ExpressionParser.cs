@@ -101,8 +101,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                     return ParseConstCharLiteral();
                 case TokenType.String:
                     return ParseConstStringLiteral();
-                case TokenType.Keyword when lexeme == Token.NIL:
-                    return ParseNil();
                 case TokenType.Keyword when lexeme == Token.TRUE || lexeme == Token.FALSE:
                     return ParseConstBooleanLiteral();
                 case TokenType.Separator when lexeme == Token.LPAREN:
@@ -237,13 +235,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             var lexeme = _currentLexeme;
             NextLexeme();
             return new ConstCharLiteral(lexeme);
-        }
-
-        private ConstantNode ParseNil()
-        {
-            var lexeme = _currentLexeme;
-            NextLexeme();
-            return new Nil(lexeme);
         }
 
         private ConstantNode ParseConstBooleanLiteral()

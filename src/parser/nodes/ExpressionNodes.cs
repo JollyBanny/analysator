@@ -216,9 +216,4 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     {
         public ConstBooleanLiteral(Lexeme lexeme) : base(lexeme) { }
     }
-
-    public class Nil : ConstantNode
-    {
-        public Nil(Lexeme lexeme) : base(lexeme) { }
-    }
 }
