@@ -1,0 +1,79 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── s
+      │           └──── STRING
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── j
+      │           ├──── integer
+      │           └──── 10
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── smallalpha
+      │     │     ├──── parameter
+      │     │     │     ├──── ps
+      │     │     │     └──── STRING
+      │     │     └──── STRING
+      │     └──── block
+      │           ├──── VAR
+      │           │     └──── var declaration
+      │           │           ├──── i
+      │           │           └──── integer
+      │           └──── Compound statement
+      │                 ├──── FOR
+      │                 │     ├──── i
+      │                 │     ├──── TO
+      │                 │     │     ├──── 1
+      │                 │     │     └──── length
+      │                 │     │           └──── ps
+      │                 │     └──── Compound statement
+      │                 │           └──── IF
+      │                 │                 ├──── and
+      │                 │                 │     ├──── >=
+      │                 │                 │     │     ├──── array access
+      │                 │                 │     │     │     ├──── ps
+      │                 │                 │     │     │     └──── i
+      │                 │                 │     │     └──── 'A'
+      │                 │                 │     └──── <=
+      │                 │                 │           ├──── array access
+      │                 │                 │           │     ├──── ps
+      │                 │                 │           │     └──── i
+      │                 │                 │           └──── 'Z'
+      │                 │                 ├──── Call statement
+      │                 │                 │     └──── inc_
+      │                 │                 │           ├──── array access
+      │                 │                 │           │     ├──── ps
+      │                 │                 │           │     └──── i
+      │                 │                 │           └──── 32
+      │                 │                 └──── :=
+      │                 │                       ├──── array access
+      │                 │                       │     ├──── ps
+      │                 │                       │     └──── i
+      │                 │                       └──── array access
+      │                 │                             ├──── ps
+      │                 │                             └──── i
+      │                 └──── :=
+      │                       ├──── smallalpha
+      │                       └──── ps
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── 'write text'
+            ├──── Call statement
+            │     └──── readln
+            │           └──── s
+            └──── REPEAT
+                  ├──── >=
+                  │     ├──── j
+                  │     └──── 15
+                  ├──── Compound statement
+                  │     └──── Call statement
+                  │           └──── writeln
+                  │                 ├──── 'this text to lower: '
+                  │                 └──── smallalpha
+                  │                       └──── s
+                  └──── +=
+                        ├──── j
+                        └──── 1

@@ -1,0 +1,10 @@
+var i:integer = 10;
+
+begin
+      repeat
+         begin
+            writeln(i);
+         end;
+		   i += 1
+      until i >= 15;
+end.

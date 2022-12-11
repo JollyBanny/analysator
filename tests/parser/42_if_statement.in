@@ -1,0 +1,8 @@
+var i:integer = 0;
+
+begin
+   if i < 0 then
+      writeln('negative')
+   else
+      writeln('positive')
+end.

@@ -1,0 +1,19 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── i
+      │           ├──── integer
+      │           └──── 0
+      └──── Compound statement
+            └──── WHILE
+                  ├──── <
+                  │     ├──── i
+                  │     └──── 10
+                  └──── Compound statement
+                        ├──── Call statement
+                        │     └──── writeln
+                        │           └──── i
+                        └──── +=
+                              ├──── i
+                              └──── 1

@@ -1,0 +1,18 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── i
+      │           ├──── integer
+      │           └──── 0
+      └──── Compound statement
+            └──── IF
+                  ├──── <
+                  │     ├──── i
+                  │     └──── 0
+                  ├──── Call statement
+                  │     └──── writeln
+                  │           └──── 'negative'
+                  └──── Call statement
+                        └──── writeln
+                              └──── 'positive'

@@ -19,6 +19,6 @@ begin
          begin
             writeln('this text to lower: ', SmallAlpha(s));
          end;
-		   j += 1;
+		   j += 1
       until j >= 15;
 end.
