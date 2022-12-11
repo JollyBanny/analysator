@@ -25,7 +25,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private static readonly List<Token> UnaryOperators = new List<Token>
         {
-            Token.ADD, Token.SUB,
+            Token.ADD, Token.SUB, Token.NOT,
         };
 
         public ExprNode ParseExpression()
