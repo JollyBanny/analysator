@@ -1,0 +1,44 @@
+program
+└──── program block
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── point
+      │           └──── RECORD
+      │                 ├──── :
+      │                 │     ├──── x
+      │                 │     └──── integer
+      │                 └──── :
+      │                       ├──── y
+      │                       └──── integer
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── pointarr
+      │           └──── ARRAY
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 2
+      │                 └──── point
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── cursor
+      │           └──── point
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── awesomefunc
+      │     │     ├──── parameter
+      │     │     │     ├──── cursor_
+      │     │     │     └──── point
+      │     │     └──── pointarr
+      │     └──── block
+      │           ├──── VAR
+      │           │     └──── var declaration
+      │           │           ├──── arr
+      │           │           └──── pointarr
+      │           └──── Compound statement
+      │                 └──── Call statement
+      │                       └──── writeln
+      │                             └──── 'asdas'
+      └──── Compound statement
+            └──── Call statement
+                  └──── awesomefunc
+                        └──── cursor

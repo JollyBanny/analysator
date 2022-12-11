@@ -1,0 +1,23 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── sum
+      │           ├──── integer
+      │           └──── 0
+      ├──── PROCEDURE
+      │     ├──── header
+      │     │     ├──── awesomeproc
+      │     │     └──── parameter
+      │     │           ├──── VAR
+      │     │           ├──── a
+      │     │           └──── integer
+      │     └──── block
+      │           └──── Compound statement
+      │                 └──── Call statement
+      │                       └──── writeln
+      │                             └──── a
+      └──── Compound statement
+            └──── Call statement
+                  └──── awesomeproc
+                        └──── sum

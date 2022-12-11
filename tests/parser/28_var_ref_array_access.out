@@ -1,0 +1,33 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── sum
+      │           └──── ARRAY
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 3
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 3
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 3
+      │                 └──── integer
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── array access
+            │                 ├──── sum
+            │                 ├──── 0
+            │                 ├──── 0
+            │                 └──── 0
+            └──── Call statement
+                  └──── writeln
+                        └──── array access
+                              ├──── array access
+                              │     ├──── array access
+                              │     │     ├──── sum
+                              │     │     └──── 0
+                              │     └──── 0
+                              └──── 0

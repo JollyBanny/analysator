@@ -1,0 +1,25 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── point
+      │           └──── RECORD
+      │                 ├──── :
+      │                 │     ├──── x
+      │                 │     └──── integer
+      │                 └──── :
+      │                       ├──── y
+      │                       └──── integer
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           ├──── 'x: '
+            │           └──── record access
+            │                 ├──── point
+            │                 └──── x
+            └──── Call statement
+                  └──── writeln
+                        ├──── 'y: '
+                        └──── record access
+                              ├──── point
+                              └──── y

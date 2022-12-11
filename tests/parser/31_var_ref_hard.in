@@ -1,16 +1,18 @@
 type Point = record
-    x: intger;
+    x: integer;
     y: integer;
 end;
 
+type PointArr = array [0..2] of Point;
+
 var cursor: Point;
 
-function AwesomeFunc(cursor_: Point): array of Point;
-var arr: array [0..2] of Point;
+function AwesomeFunc(cursor_: Point): PointArr;
+var arr: PointArr;
 begin
-    writeln(a);
+    writeln('asdas');
 end;
 
 begin
-    AwesomeProc(sum);
+    AwesomeFunc(cursor);
 end.

@@ -1,0 +1,11 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── sum
+      │           ├──── integer
+      │           └──── 0
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        └──── sum
