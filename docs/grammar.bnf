@@ -1,0 +1,86 @@
+# BNF rules
+# 1.     [X]    -- zero or one entry of X
+# 2.     {X}    -- zero and more entries of X
+# 3.    (X|Y)   -- group: or X, or Y
+# 4.    (X Y)   -- group: X Y
+# 5.    "XYZ"   -- terminal sign XYZ
+
+<comparing_operator> ::= "<>"|"<"|"<="|">="|">"|"="
+<multiplying_operator> ::= "*"|"/"|"div"|"mod"|"and"|"shr"|"shl"
+<additive_operator> ::= "+"|"-"|"or"|"xor"
+<unary_operator> ::= "+"|"-"|"not"|"@"
+<assignment_operator> ::= ":="|"+="|"-="|"*="|"/="
+
+# program
+<program> ::= ["program" <ident>  ";"] <main_block> "."
+<main_block> ::= {<declarations>} <compound_statement>
+
+# declaration
+<declarations> ::= <const_decls>|<variable_decls>|<type_decls>|<proc_decls>|<func_decls>
+
+<const_decls> ::= "const" <const_decl> {<const_decl>}
+    <const_decl> ::= <ident> [":" <type>] "=" <expression> ";"
+
+<variable_decls> ::= "var" <variable_decl> {<variable_decl>}
+    <variable_decl> ::= <ident_list> ":" <type> ["=" <expression>] ";"
+
+<type_decls> ::= "type" <type_decl> {<type_decl>}
+    <type_decl> ::= <ident> "=" <type> ";"
+
+<proc_decl> ::= <proc_header> ";" <subroutine_block> ";"
+    <proc_header> ::= "procedure" <ident> <formal_param_list>
+
+<func_decl> ::= <func_header> ";" <subroutine_block> ";"
+    <func_header> ::= "function" <ident> <formal_param_list> ":" <simple_type>
+    <subroutine_block> ::= {<const_decls>|<type_decls>|<variable_decls>} <compound_statement>
+
+<formal_param_list> ::= "(" [<formal_param_section> {";" <formal_param_section>} ] ")"
+    <formal_param_section> ::= [<modifier>] <ident_list> ":" <param_type>
+        <modifier> ::= "var"|"const"|"out"
+        <param_type> ::= <simple_type> | <conformant_array>
+        <conformant_array> ::= "array" "of" <simple_type>
+
+# statement
+<compound_statement> ::= "begin" <statements> "end"
+    <statements> ::= [<statement> {";" <statement>}]
+        <statement> ::= <simple_statement>|<structured_statement>
+
+<simple_statement> ::= <empty_statement>|<assignment_statement>|<function_call>
+    <empty_statement> ::= "begin" "end"
+    <assignment_statement> ::= <expression> <assignment_operator> <expression>
+
+<structured_statement> ::= <if_statement>|<while_statement>|<repeat_statement>|<for_statement>|<compound_statement>
+    <if_statement> ::= "if" <expression> "then" <statement> ["else" <statement>]
+    <while_statement> ::= "while" <expression> "do" <statement>
+    <repeat_statement> ::= "repeat" <statements> "until" <expression>
+    <for_statement> ::= "for" <ident> ":=" <for_range> "do" <statement>
+        <for_range> ::= <expression> ("to"|"downto") <expression>
+
+# types
+<type> ::= <simple_type>|<array_type>|<record_type>
+
+<simple_type> ::= <ident>
+
+<array_type> ::= "array" "[" <index_ranges> "]" "of" <type>
+    <index_ranges> ::= <index_range> {"," <index_range>}
+        <index_range> ::= <dec_int> ".." <dec_int>
+
+<record_type> ::= "record" [<fields_list>] "end"
+    <fields_list> ::= <field_section> {";" <field_section>}
+        <field_section> ::= <ident_list> ":" <type>
+
+# expression
+<expression> ::= <simple_expr>[<comparing_operator> <simple_expr>]
+
+<simple_expr> ::= <term> [<additive_operator> <term>]
+<term> ::= <simple_term> [<multiplying_operator> <simple_term>]
+<simple_term> ::= {<unary_operator>} <factor>
+<factor> ::= ("(" <expression> ")")|<constant>|<variable_ref>
+<variable_ref> ::= <ident> | array_access | <record_access> | <function_call>
+    <array_access> ::= <variable_ref> "[" <param_list> "]"
+    <record_access> ::= <variable_ref> "." <ident>
+    <function_call> ::= <ident> ["(" [<param_list>] ")"]
+
+# utils
+<ident_list> ::= <ident> {"," <ident>}
+<param_list> ::= <expression> {"," <expression>}
