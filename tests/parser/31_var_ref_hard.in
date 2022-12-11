@@ -5,14 +5,20 @@ end;
 
 type PointArr = array [0..2] of Point;
 
-var cursor: Point;
+var cursor1, cursor2: Point;
 
 function AwesomeFunc(cursor_: Point): PointArr;
 var arr: PointArr;
 begin
-    writeln('asdas');
+	arr[0] := cursor_;
+	arr[1] := cursor2;
+ 	AwesomeFunc := arr;
 end;
 
 begin
-    AwesomeFunc(cursor);
+	cursor1.x := 2;
+ 	cursor1.y := 2;
+  	cursor2.x := 3;
+ 	cursor2.y := 3;
+    writeln(AwesomeFunc(cursor1)[0].x);
 end.

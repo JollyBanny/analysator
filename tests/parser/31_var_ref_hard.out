@@ -20,7 +20,7 @@ program
       │                 └──── point
       ├──── VAR
       │     └──── var declaration
-      │           ├──── cursor
+      │           ├──── cursor1, cursor2
       │           └──── point
       ├──── FUNCTION
       │     ├──── header
@@ -35,10 +35,45 @@ program
       │           │           ├──── arr
       │           │           └──── pointarr
       │           └──── Compound statement
-      │                 └──── Call statement
-      │                       └──── writeln
-      │                             └──── 'asdas'
+      │                 ├──── :=
+      │                 │     ├──── array access
+      │                 │     │     ├──── arr
+      │                 │     │     └──── 0
+      │                 │     └──── cursor_
+      │                 ├──── :=
+      │                 │     ├──── array access
+      │                 │     │     ├──── arr
+      │                 │     │     └──── 1
+      │                 │     └──── cursor2
+      │                 └──── :=
+      │                       ├──── awesomefunc
+      │                       └──── arr
       └──── Compound statement
+            ├──── :=
+            │     ├──── record access
+            │     │     ├──── cursor1
+            │     │     └──── x
+            │     └──── 2
+            ├──── :=
+            │     ├──── record access
+            │     │     ├──── cursor1
+            │     │     └──── y
+            │     └──── 2
+            ├──── :=
+            │     ├──── record access
+            │     │     ├──── cursor2
+            │     │     └──── x
+            │     └──── 3
+            ├──── :=
+            │     ├──── record access
+            │     │     ├──── cursor2
+            │     │     └──── y
+            │     └──── 3
             └──── Call statement
-                  └──── awesomefunc
-                        └──── cursor
+                  └──── writeln
+                        └──── record access
+                              ├──── array access
+                              │     ├──── awesomefunc
+                              │     │     └──── cursor1
+                              │     └──── 0
+                              └──── x

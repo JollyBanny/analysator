@@ -1,0 +1,13 @@
+var a: integer = 10;
+
+function pow(x: integer; y: integer): integer;
+var b: integer;
+begin
+    b := y;
+	writeln(b);
+    pow := x * x;
+end;
+
+begin
+    writeln(pow(a, ));
+end.

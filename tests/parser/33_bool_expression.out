@@ -1,0 +1,64 @@
+program
+└──── program block
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── a
+      │     │     ├──── integer
+      │     │     └──── 100
+      │     └──── var declaration
+      │           ├──── b
+      │           ├──── integer
+      │           └──── 20
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── =
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── <>
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── >
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── <
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── >=
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── <=
+            │                 ├──── 100
+            │                 └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── or
+            │                 ├──── =
+            │                 │     ├──── 100
+            │                 │     └──── 20
+            │                 └──── <>
+            │                       ├──── 100
+            │                       └──── 20
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── and
+            │                 ├──── =
+            │                 │     ├──── 100
+            │                 │     └──── 20
+            │                 └──── <>
+            │                       ├──── 100
+            │                       └──── 20
+            └──── Call statement
+                  └──── writeln
+                        └──── not
+                              └──── 1

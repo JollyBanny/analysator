@@ -1,0 +1,10 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── a
+      │           └──── integer
+      └──── Compound statement
+            └──── :=
+                  ├──── a
+                  └──── 5

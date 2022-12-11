@@ -1,0 +1,40 @@
+var a: integer = 100;
+	b: integer = 20;
+	c: integer = 5;
+	d: integer = 3;
+
+function Pow(x: integer): integer;
+begin
+	Pow:= x * x;
+end;
+
+begin
+	writeln(10 - 10);
+	writeln(10 + 10);
+	writeln(10 / 10);
+	writeln(10 * 10);
+
+	writeln(a - 10);
+	writeln(a + 10);
+	writeln(a / 10);
+	writeln(a * 10);
+
+	writeln(a - b);
+	writeln(a + b);
+	writeln(a / b);
+	writeln(a * b);
+
+	writeln(c >> 1);
+	writeln(c << 1);
+
+	writeln(-(Pow(a) + 2) / 2 +----+ 10);
+
+	writeln(a div 100 + 5);
+	writeln(a mod 100 - 5);
+
+	writeln(c or d);
+	writeln(c and d);
+	writeln(c xor d);
+	writeln(c shr 1);
+	writeln(c shl 1);
+end.

@@ -1,0 +1,159 @@
+program
+└──── program block
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── a
+      │     │     ├──── integer
+      │     │     └──── 100
+      │     ├──── var declaration
+      │     │     ├──── b
+      │     │     ├──── integer
+      │     │     └──── 20
+      │     ├──── var declaration
+      │     │     ├──── c
+      │     │     ├──── integer
+      │     │     └──── 5
+      │     └──── var declaration
+      │           ├──── d
+      │           ├──── integer
+      │           └──── 3
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── pow
+      │     │     ├──── parameter
+      │     │     │     ├──── x
+      │     │     │     └──── integer
+      │     │     └──── integer
+      │     └──── block
+      │           └──── Compound statement
+      │                 └──── :=
+      │                       ├──── pow
+      │                       └──── *
+      │                             ├──── x
+      │                             └──── x
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── -
+            │                 ├──── 10
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── +
+            │                 ├──── 10
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── /
+            │                 ├──── 10
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── *
+            │                 ├──── 10
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── -
+            │                 ├──── a
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── +
+            │                 ├──── a
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── /
+            │                 ├──── a
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── *
+            │                 ├──── a
+            │                 └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── -
+            │                 ├──── a
+            │                 └──── b
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── +
+            │                 ├──── a
+            │                 └──── b
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── /
+            │                 ├──── a
+            │                 └──── b
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── *
+            │                 ├──── a
+            │                 └──── b
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── >>
+            │                 ├──── c
+            │                 └──── 1
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── <<
+            │                 ├──── c
+            │                 └──── 1
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── +
+            │                 ├──── /
+            │                 │     ├──── -
+            │                 │     │     └──── +
+            │                 │     │           ├──── pow
+            │                 │     │           │     └──── a
+            │                 │     │           └──── 2
+            │                 │     └──── 2
+            │                 └──── -
+            │                       └──── -
+            │                             └──── -
+            │                                   └──── -
+            │                                         └──── +
+            │                                               └──── 10
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── +
+            │                 ├──── div
+            │                 │     ├──── a
+            │                 │     └──── 100
+            │                 └──── 5
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── -
+            │                 ├──── mod
+            │                 │     ├──── a
+            │                 │     └──── 100
+            │                 └──── 5
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── or
+            │                 ├──── c
+            │                 └──── d
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── and
+            │                 ├──── c
+            │                 └──── d
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── xor
+            │                 ├──── c
+            │                 └──── d
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── shr
+            │                 ├──── c
+            │                 └──── 1
+            └──── Call statement
+                  └──── writeln
+                        └──── shl
+                              ├──── c
+                              └──── 1

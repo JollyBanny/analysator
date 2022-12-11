@@ -1,0 +1,24 @@
+var s:string;
+var j:integer = 10;
+
+function SmallAlpha(ps:string):string;
+var i:integer;
+begin
+   for i:=1 to length(ps) do begin
+      if ((ps[i] >= 'A') and (ps[i] <= 'Z')) then
+    	   inc_(ps[i],32)
+      else
+         ps[i] := ps[i];
+   end;
+   SmallAlpha:=ps;
+end;
+
+begin
+      writeln('write text'); readln(s);
+      repeat
+         begin
+            writeln('this text to lower: ', SmallAlpha(s));
+         end;
+		   j += 1;
+      until j >= 15;
+end.

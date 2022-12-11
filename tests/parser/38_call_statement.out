@@ -1,0 +1,25 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── a
+      │           └──── integer
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── pow
+      │     │     ├──── parameter
+      │     │     │     ├──── x
+      │     │     │     └──── integer
+      │     │     └──── integer
+      │     └──── block
+      │           └──── Compound statement
+      │                 └──── :=
+      │                       ├──── pow
+      │                       └──── *
+      │                             ├──── x
+      │                             └──── x
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        └──── pow
+                              └──── a

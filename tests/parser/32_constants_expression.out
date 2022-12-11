@@ -1,0 +1,21 @@
+program
+└──── program block
+      └──── Compound statement
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── 'c'
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── 'f'
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── 102
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── 10.2
+            ├──── Call statement
+            │     └──── writeln
+            │           └──── TRUE
+            └──── Call statement
+                  └──── writeln
+                        └──── FALSE

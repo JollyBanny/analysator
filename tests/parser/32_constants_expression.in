@@ -1,0 +1,8 @@
+begin
+	writeln('c');
+ 	writeln(#102);
+  	writeln(102);
+   	writeln(10.2);
+	writeln(true);
+ 	writeln(false);
+end.
