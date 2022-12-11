@@ -82,14 +82,17 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class VarDeclNode : SyntaxNode
     {
-        public VarDeclNode(List<IdentNode> identsList, TypeNode type) : base()
+        public VarDeclNode(List<IdentNode> identsList, TypeNode type, ExprNode? expr)
+        : base()
         {
             IdentsList = identsList;
             Type = type;
+            Expr = expr;
         }
 
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
+        public ExprNode? Expr { get; }
 
         public override void PrintTree(int depth, string indent)
         {
@@ -101,8 +104,19 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
                 Console.Write(IdentsList[i] + (i == IdentsList.Count - 1 ? "\n" : ", "));
             }
 
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            if (Expr is not null)
+            {
+                Console.Write(indent + "├──── ");
+                Type.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
+                Console.Write(indent + "└──── ");
+            }
+            else
+            {
+                Console.Write(indent + "└──── ");
+                Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            }
+
+            Expr?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
         public override string ToString() => "var declaration";

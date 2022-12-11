@@ -37,6 +37,9 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var constDecls = new List<SyntaxNode>();
 
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{TokenType.Identifier}");
+
             while (_currentLexeme == TokenType.Identifier)
             {
                 var consts = ParseConsts();
@@ -76,6 +79,9 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var varDecls = new List<SyntaxNode>();
 
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{TokenType.Identifier}");
+
             while (_currentLexeme == TokenType.Identifier)
             {
                 var vars = ParseVars();
@@ -96,9 +102,18 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var type = ParseType();
 
+            ExprNode? expression = null;
+            if (_currentLexeme == Token.EQUAL)
+            {
+                if (varIdents.Count > 1)
+                    throw FatalException("Only one var can be initalized");
+                NextLexeme();
+                expression = ParseExpression();
+            }
+
             Require<Token>(new List<Token> { Token.SEMICOLOM }, true, ";");
 
-            return new VarDeclNode(varIdents, type);
+            return new VarDeclNode(varIdents, type, expression);
         }
 
         public DeclsPartNode ParseTypeDecls()
@@ -107,6 +122,9 @@ namespace PascalCompiler.SyntaxAnalyzer
             NextLexeme();
 
             var typeDecls = new List<SyntaxNode>();
+
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
+                false, $"{TokenType.Identifier}");
 
             while (_currentLexeme == TokenType.Identifier)
             {
