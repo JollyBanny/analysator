@@ -11,9 +11,9 @@ namespace PascalCompiler.SyntaxAnalyzer
             return lexeme.Type switch
             {
                 TokenType.Identifier =>
-                    ParseIdentType(),
+                    ParseSimpleType(),
                 TokenType.Keyword when lexeme == Token.STRING =>
-                    ParseIdentType(),
+                    ParseSimpleType(),
                 TokenType.Keyword when lexeme == Token.ARRAY =>
                     ParseArrayType(),
                 TokenType.Keyword when lexeme == Token.RECORD =>
@@ -22,15 +22,15 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        public TypeNode ParseIdentType()
+        public TypeNode ParseSimpleType()
         {
             if (_currentLexeme != Token.STRING)
-                return new IdentTypeNode(ParseIdent());
+                return new SimpleTypeNode(ParseIdent());
 
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            return new IdentTypeNode(new IdentNode(lexeme));
+            return new SimpleTypeNode(new IdentNode(lexeme));
         }
 
         public TypeNode ParseArrayType()
@@ -127,7 +127,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             Require<Token>(new List<Token> { Token.OF }, true, $"{Token.OF}");
 
-            var type = ParseIdentType();
+            var type = ParseSimpleType();
             return new ParamArrayTypeNode(lexeme, type);
         }
     }

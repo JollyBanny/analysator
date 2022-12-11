@@ -8,9 +8,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
-    public class IdentTypeNode : TypeNode
+    public class SimpleTypeNode : TypeNode
     {
-        public IdentTypeNode(SyntaxNode typeIdent) : base(typeIdent.Lexeme)
+        public SimpleTypeNode(SyntaxNode typeIdent) : base(typeIdent.Lexeme)
         {
             TypeIdent = typeIdent;
         }

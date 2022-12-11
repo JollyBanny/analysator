@@ -196,7 +196,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
             Require<Token>(new List<Token> { Token.COLON }, true, ":");
 
-            var resultType = ParseIdentType();
+            var resultType = ParseSimpleType();
 
             return new CallHeaderNode(funcName, paramsList, resultType);
         }
@@ -264,9 +264,9 @@ namespace PascalCompiler.SyntaxAnalyzer
                 TokenType.Keyword when _currentLexeme == Token.ARRAY =>
                     ParseParamArrayType(),
                 TokenType.Keyword when _currentLexeme == Token.STRING =>
-                    ParseIdentType(),
+                    ParseSimpleType(),
                 TokenType.Identifier =>
-                    ParseIdentType(),
+                    ParseSimpleType(),
                 _ =>
                     throw ExpectedException("variable type", _currentLexeme.Source),
             };
