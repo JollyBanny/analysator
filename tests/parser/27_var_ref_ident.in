@@ -1,0 +1,5 @@
+var sum: integer = 0;
+
+begin
+    writeln(sum);
+end.

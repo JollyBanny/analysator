@@ -1,0 +1,8 @@
+procedure MyProc();
+var str: string;
+begin
+  writeln('Some text')
+end;
+
+begin
+end.

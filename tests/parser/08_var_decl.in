@@ -1,0 +1,4 @@
+var a, b: integer;
+    str: string;
+begin
+end.

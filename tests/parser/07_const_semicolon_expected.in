@@ -1,0 +1,5 @@
+const constant1 = 10;
+      constant2 = 20
+      constant3 = 30;
+begin
+end.

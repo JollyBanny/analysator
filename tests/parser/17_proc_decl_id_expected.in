@@ -1,0 +1,7 @@
+procedure ();
+begin
+  writeln('Some text')
+end;
+
+begin
+end.

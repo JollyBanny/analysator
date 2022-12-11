@@ -1,0 +1,12 @@
+program
+└──── program block
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── int
+      │           └──── integer
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── mystring
+      │           └──── STRING
+      └──── Compound statement
+            └──── Empty statement

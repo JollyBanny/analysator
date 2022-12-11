@@ -1,0 +1,12 @@
+type Point = record
+    x: integer;
+    y: integer;
+end;
+
+var sum: integer;
+    score: double;
+    symbol: do;
+
+begin
+    writeln('Hello world');
+end.

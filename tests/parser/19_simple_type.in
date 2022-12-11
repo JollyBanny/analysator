@@ -1,0 +1,10 @@
+type SuperInt = integer;
+
+var sum: SuperInt;
+    score: double;
+    symbol: char;
+    str: string;
+
+begin
+    writeln('Hello world');
+end.

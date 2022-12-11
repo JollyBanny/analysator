@@ -1,0 +1,7 @@
+function (const b: integer; var b: string; a: double): integer;
+begin
+  writeln('Some text')
+end;
+
+begin
+end.

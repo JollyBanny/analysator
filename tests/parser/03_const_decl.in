@@ -1,0 +1,5 @@
+const a = 5;
+    b:string = 'hello world';
+begin
+      writeln(1 + 2, str);
+end.

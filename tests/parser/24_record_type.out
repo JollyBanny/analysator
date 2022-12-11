@@ -1,0 +1,23 @@
+program
+└──── program block
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── point
+      │           └──── RECORD
+      │                 ├──── :
+      │                 │     ├──── x
+      │                 │     └──── integer
+      │                 └──── :
+      │                       ├──── y
+      │                       └──── integer
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── sum
+      │     │     └──── integer
+      │     └──── var declaration
+      │           ├──── cursor
+      │           └──── point
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        └──── 'Hello world'

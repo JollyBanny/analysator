@@ -1,0 +1,10 @@
+type Point = record
+    x: integer;
+    y: integer;
+
+var sum: integer;
+    cursor: Point;
+
+begin
+    writeln('Hello world');
+end.

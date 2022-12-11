@@ -1,0 +1,13 @@
+program
+└──── program block
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── number
+      │     │     ├──── integer
+      │     │     └──── 5
+      │     └──── var declaration
+      │           ├──── str
+      │           ├──── STRING
+      │           └──── 'string'
+      └──── Compound statement
+            └──── Empty statement

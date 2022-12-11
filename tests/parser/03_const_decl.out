@@ -1,0 +1,17 @@
+program
+└──── program block
+      ├──── CONST
+      │     ├──── const declaration
+      │     │     ├──── a
+      │     │     └──── 5
+      │     └──── const declaration
+      │           ├──── b
+      │           ├──── STRING
+      │           └──── 'hello world'
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        ├──── +
+                        │     ├──── 1
+                        │     └──── 2
+                        └──── str

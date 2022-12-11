@@ -1,0 +1,10 @@
+var sum: integer = 0;
+
+procedure AwesomeProc(var a: integer);
+begin
+    writeln(a);
+end;
+
+begin
+    AwesomeProc(sum);
+end.

@@ -1,0 +1,5 @@
+type int = integer;
+type MyString = string;
+
+begin
+end.

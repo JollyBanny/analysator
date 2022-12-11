@@ -1,0 +1,9 @@
+var sum: integer;
+    score: double;
+    symbol: char;
+    str: string;
+    box: array [0..10, 0..10, 0..10] of integer;
+
+begin
+    writeln('Hello world');
+end.

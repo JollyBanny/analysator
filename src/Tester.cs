@@ -23,6 +23,7 @@ namespace PascalCompiler
             var ofstream = new StreamReader(outFile);
             var _lexer = new Lexer();
             _lexer.ChangeFile(inFile);
+
             while (true)
                 try
                 {
@@ -39,13 +40,13 @@ namespace PascalCompiler
                     if (!CompareAnswers(inFile, expected, found)) return false;
                     break;
                 }
+
             return true;
         }
 
         static private bool ParserTest(string inFile, string outFile, string mode)
         {
-            var ofstream = new StreamReader(outFile);
-            var expected = ofstream.ReadToEnd();
+            new FileStream(outFile, FileMode.OpenOrCreate).Close();
 
             var buffer = new StringWriter();
             Console.SetOut(buffer);
@@ -72,12 +73,8 @@ namespace PascalCompiler
             originOutput.AutoFlush = true;
             Console.SetOut(originOutput);
 
-            /*
-            ofstream.Close();
-            var testWritter = new StreamWriter(outFile);
-            testWritter.AutoFlush = true;
-            testWritter.Write(buffer);
-            */
+            var ofstream = new StreamReader(outFile);
+            var expected = ofstream.ReadToEnd();
 
             if (!CompareAnswers(inFile, expected, buffer.ToString()))
                 return false;

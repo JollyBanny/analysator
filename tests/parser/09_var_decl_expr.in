@@ -1,0 +1,4 @@
+var number: integer = 5;
+    str: string = 'string';
+begin
+end.

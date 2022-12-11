@@ -1,0 +1,9 @@
+var point: record
+    x: integer;
+    y: integer;
+end;
+
+begin
+    writeln('x: ', point.x);
+    writeln('y: ', point.y);
+end.

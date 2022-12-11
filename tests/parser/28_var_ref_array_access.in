@@ -1,0 +1,6 @@
+var sum: array [0..3, 0..3, 0..3] of integer;
+
+begin
+    writeln(sum[0, 0, 0]);
+    writeln(sum[0][0][0]);
+end.

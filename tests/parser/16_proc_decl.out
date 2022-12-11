@@ -1,0 +1,16 @@
+program
+└──── program block
+      ├──── PROCEDURE
+      │     ├──── header
+      │     │     ├──── myproc
+      │     └──── block
+      │           ├──── VAR
+      │           │     └──── var declaration
+      │           │           ├──── str
+      │           │           └──── STRING
+      │           └──── Compound statement
+      │                 └──── Call statement
+      │                       └──── writeln
+      │                             └──── 'Some text'
+      └──── Compound statement
+            └──── Empty statement

@@ -1,0 +1,6 @@
+program
+├──── program header
+│     └──── hello_world
+└──── program block
+      └──── Compound statement
+            └──── Empty statement

@@ -1,0 +1,23 @@
+program
+└──── program block
+      ├──── TYPE
+      │     └──── type declaration
+      │           ├──── superint
+      │           └──── integer
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── sum
+      │     │     └──── superint
+      │     ├──── var declaration
+      │     │     ├──── score
+      │     │     └──── double
+      │     ├──── var declaration
+      │     │     ├──── symbol
+      │     │     └──── char
+      │     └──── var declaration
+      │           ├──── str
+      │           └──── STRING
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        └──── 'Hello world'

@@ -1,0 +1,28 @@
+program
+└──── program block
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── myfunc
+      │     │     ├──── parameter
+      │     │     │     ├──── CONST
+      │     │     │     ├──── b
+      │     │     │     └──── integer
+      │     │     ├──── parameter
+      │     │     │     ├──── VAR
+      │     │     │     ├──── b
+      │     │     │     └──── STRING
+      │     │     ├──── parameter
+      │     │     │     ├──── a
+      │     │     │     └──── double
+      │     │     └──── integer
+      │     └──── block
+      │           ├──── VAR
+      │           │     └──── var declaration
+      │           │           ├──── str
+      │           │           └──── STRING
+      │           └──── Compound statement
+      │                 └──── Call statement
+      │                       └──── writeln
+      │                             └──── 'Some text'
+      └──── Compound statement
+            └──── Empty statement

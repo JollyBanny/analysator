@@ -1,0 +1,10 @@
+function OtherFunc(): integer;
+
+function MyFunc(var str: string): string;
+begin
+  writeln(str);
+  MyFunc := str + str;
+end;
+
+begin
+end.

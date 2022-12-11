@@ -1,0 +1,9 @@
+procedure MyAwesomeProc();
+
+procedure MyProc();
+begin
+  writeln('hello world');
+end;
+
+begin
+end.

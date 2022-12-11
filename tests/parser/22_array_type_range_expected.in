@@ -1,0 +1,6 @@
+var sum: integer;
+    box: array[] of integer;
+
+begin
+    writeln('Hello world');
+end.

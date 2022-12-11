@@ -1,0 +1,32 @@
+program
+└──── program block
+      ├──── VAR
+      │     ├──── var declaration
+      │     │     ├──── sum
+      │     │     └──── integer
+      │     ├──── var declaration
+      │     │     ├──── score
+      │     │     └──── double
+      │     ├──── var declaration
+      │     │     ├──── symbol
+      │     │     └──── char
+      │     ├──── var declaration
+      │     │     ├──── str
+      │     │     └──── STRING
+      │     └──── var declaration
+      │           ├──── box
+      │           └──── ARRAY
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 10
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 10
+      │                 ├──── ..
+      │                 │     ├──── 0
+      │                 │     └──── 10
+      │                 └──── integer
+      └──── Compound statement
+            └──── Call statement
+                  └──── writeln
+                        └──── 'Hello world'
