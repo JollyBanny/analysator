@@ -202,18 +202,13 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Name.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
 
             if (ParamsList is not null)
-            {
                 if (Type is not null)
-                {
                     foreach (var param in ParamsList)
                     {
                         Console.Write(indent + "├──── ");
                         param.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
                     }
-                    Console.Write(indent + "└──── ");
-                }
                 else
-                {
                     for (int i = 0; i < ParamsList.Count; ++i)
                     {
                         if (i == ParamsList.Count - 1)
@@ -227,12 +222,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
                             ParamsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
                         }
                     }
-                }
-            }
-            else
+
+            if (Type is not null)
             {
-                if (Type is not null)
-                    Console.Write(indent + "└──── ");
+                Console.Write(indent + "└──── ");
                 Type?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
             }
         }
