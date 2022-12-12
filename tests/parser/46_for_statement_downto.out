@@ -1,0 +1,16 @@
+program
+└──── program block
+      ├──── VAR
+      │     └──── var declaration
+      │           ├──── i
+      │           └──── integer
+      └──── Compound statement
+            └──── FOR
+                  ├──── i
+                  ├──── DOWNTO
+                  │     ├──── 0
+                  │     └──── 10
+                  └──── Compound statement
+                        └──── Call statement
+                              └──── writeln
+                                    └──── i

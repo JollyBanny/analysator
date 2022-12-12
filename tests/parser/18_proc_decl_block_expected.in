@@ -1,9 +1,11 @@
 procedure MyAwesomeProc();
-
 procedure MyProc();
 begin
-  writeln('hello world');
+	writeln('hello world');
 end;
+while 1 < 0 do
+	writeln('1 < 0?')
 
 begin
+	MyAwesomeProc();
 end.

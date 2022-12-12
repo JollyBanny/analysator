@@ -1,8 +1,13 @@
-function MyFunc(const b: integer; var b: string; a: double): integer;
-var str: string;
+function MyAwesomeFunc() : string;
+  var x: integer;
+  function MyFunc() : string;
+  begin
+	  MyFunc := 'hello world';
+  end;
 begin
-  writeln('Some text')
+  MyAwesomeFunc := MyFunc + '!';
 end;
 
 begin
+  write(MyAwesomeFunc);
 end.

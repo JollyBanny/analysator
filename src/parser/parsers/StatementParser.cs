@@ -148,6 +148,9 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var statements = ParseStatements();
 
+            if (statements.Count == 0)
+                statements.Add(new EmptyStmtNode());
+
             Require<Token>(new List<Token> { Token.UNTIL }, true, $"{Token.UNTIL}");
 
             var condition = ParseExpression();

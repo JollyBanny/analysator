@@ -1,8 +1,14 @@
+procedure MyAwesomeProc();
+var x: integer;
 procedure MyProc();
-var str: string;
 begin
-  writeln('Some text')
+	write('hello world');
+end;
+begin
+	MyProc();
+	writeln('!');
 end;
 
 begin
+	MyAwesomeProc();
 end.

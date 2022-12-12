@@ -1,10 +1,12 @@
-function OtherFunc(): integer;
+function MyAwesomeFunc() : string;
+  var x: integer;
+  function MyFunc() : string;
+  begin
+	  MyFunc := 'hello world';
+  end;
+while 1 < 0 do
+	writeln('1 < 0?')
 
-function MyFunc(var str: string): string;
 begin
-  writeln(str);
-  MyFunc := str + str;
-end;
-
-begin
+  write(MyAwesomeFunc);
 end.

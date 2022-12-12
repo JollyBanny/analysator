@@ -272,14 +272,14 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class SubroutineBlockNode : SyntaxNode
     {
-        public SubroutineBlockNode(List<DeclsPartNode> decls, StmtNode compoundStmt)
+        public SubroutineBlockNode(List<SyntaxNode> decls, StmtNode compoundStmt)
         : base()
         {
             Decls = decls;
             CompoundStmt = compoundStmt;
         }
 
-        public List<DeclsPartNode> Decls { get; }
+        public List<SyntaxNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
         public override void PrintTree(int depth, string indent)

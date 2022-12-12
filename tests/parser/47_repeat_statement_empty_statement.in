@@ -1,0 +1,6 @@
+var i:integer = 10;
+
+begin
+      repeat
+      until i >= 15;
+end.

@@ -2,15 +2,26 @@ program
 └──── program block
       ├──── PROCEDURE
       │     ├──── header
-      │     │     ├──── myproc
+      │     │     ├──── myawesomeproc
       │     └──── block
       │           ├──── VAR
       │           │     └──── var declaration
-      │           │           ├──── str
-      │           │           └──── STRING
+      │           │           ├──── x
+      │           │           └──── integer
+      │           ├──── PROCEDURE
+      │           │     ├──── header
+      │           │     │     ├──── myproc
+      │           │     └──── block
+      │           │           └──── Compound statement
+      │           │                 └──── Call statement
+      │           │                       └──── write
+      │           │                             └──── 'hello world'
       │           └──── Compound statement
+      │                 ├──── Call statement
+      │                 │     └──── myproc
       │                 └──── Call statement
       │                       └──── writeln
-      │                             └──── 'Some text'
+      │                             └──── '!'
       └──── Compound statement
-            └──── Empty statement
+            └──── Call statement
+                  └──── myawesomeproc

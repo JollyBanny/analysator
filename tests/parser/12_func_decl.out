@@ -2,27 +2,29 @@ program
 └──── program block
       ├──── FUNCTION
       │     ├──── header
-      │     │     ├──── myfunc
-      │     │     ├──── parameter
-      │     │     │     ├──── CONST
-      │     │     │     ├──── b
-      │     │     │     └──── integer
-      │     │     ├──── parameter
-      │     │     │     ├──── VAR
-      │     │     │     ├──── b
-      │     │     │     └──── STRING
-      │     │     ├──── parameter
-      │     │     │     ├──── a
-      │     │     │     └──── double
-      │     │     └──── integer
+      │     │     ├──── myawesomefunc
+      │     │     └──── STRING
       │     └──── block
       │           ├──── VAR
       │           │     └──── var declaration
-      │           │           ├──── str
-      │           │           └──── STRING
+      │           │           ├──── x
+      │           │           └──── integer
+      │           ├──── FUNCTION
+      │           │     ├──── header
+      │           │     │     ├──── myfunc
+      │           │     │     └──── STRING
+      │           │     └──── block
+      │           │           └──── Compound statement
+      │           │                 └──── :=
+      │           │                       ├──── myfunc
+      │           │                       └──── 'hello world'
       │           └──── Compound statement
-      │                 └──── Call statement
-      │                       └──── writeln
-      │                             └──── 'Some text'
+      │                 └──── :=
+      │                       ├──── myawesomefunc
+      │                       └──── +
+      │                             ├──── myfunc
+      │                             └──── '!'
       └──── Compound statement
-            └──── Empty statement
+            └──── Call statement
+                  └──── write
+                        └──── myawesomefunc

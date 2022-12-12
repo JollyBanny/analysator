@@ -1,1 +1,1 @@
-[Line: 3; Column: 8]	'BEGIN' expected but 'function' found
+[Line: 7; Column: 5]	'BEGIN' expected but 'while' found
