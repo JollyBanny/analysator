@@ -50,4 +50,42 @@ namespace PascalCompiler.Extensions
             return false;
         }
     }
+
+    public static class TokenExtension
+    {
+        public static Dictionary<Token, string> StringTokens = new Dictionary<Token, string>
+        {
+            {Token.O_DIV, "/"},
+            {Token.ADD_ASSIGN, "+="},
+            {Token.SUB_ASSIGN, "-="},
+            {Token.MUL_ASSIGN, "*="},
+            {Token.DIV_ASSIGN, "/="},
+            {Token.EQUAL, "="},
+            {Token.NOT_EQUAL, "<>"},
+            {Token.LESS, "<"},
+            {Token.LESS_EQUAL, "<="},
+            {Token.MORE, ">"},
+            {Token.MORE_EQUAL, ">="},
+            {Token.O_SHL, "<<"},
+            {Token.O_SHR, ">>"},
+
+            {Token.LPAREN, "("},
+            {Token.RPAREN, ")"},
+            {Token.LBRACK, "["},
+            {Token.RBRACK, "]"},
+            {Token.COMMA, ","},
+            {Token.DOT, "."},
+            {Token.ELLIPSIS, ".."},
+            {Token.SEMICOLOM, ";"},
+            {Token.COLON, ":"},
+        };
+
+        public static string ToString(this Token token, bool test)
+        {
+            if (StringTokens.Any(st => st.Key == token))
+                return StringTokens.First(st => st.Key == token).Value;
+            else
+                return token.ToString();
+        }
+    }
 }

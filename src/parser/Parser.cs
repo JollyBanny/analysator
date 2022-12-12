@@ -1,4 +1,6 @@
+using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
+using PascalCompiler.Extensions;
 using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -25,7 +27,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        public void Require<T>(List<T> tokens, bool getNext, string expected)
+        public void Require<T>(List<T> tokens, bool getNext)
         {
             foreach (var token in tokens)
                 if (_currentLexeme.Equals(token))
@@ -34,8 +36,14 @@ namespace PascalCompiler.SyntaxAnalyzer
                         NextLexeme();
                     return;
                 }
+            if (tokens[0] is Token)
+            {
+                object a = tokens[0]!;
+                Token tok = (Token)a;
+                throw ExpectedException(tok.ToString(true)!, _currentLexeme.Source);
+            }
 
-            throw ExpectedException(expected, _currentLexeme.Source);
+            throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
         }
 
         public void ChangeFile(string path)

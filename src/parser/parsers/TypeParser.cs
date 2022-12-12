@@ -35,13 +35,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            Require<Token>(new List<Token> { Token.LBRACK }, true, "[");
+            Require<Token>(new List<Token> { Token.LBRACK }, true);
 
             var rangesList = ParseSubrangesList();
 
-            Require<Token>(new List<Token> { Token.RBRACK }, true, "]");
+            Require<Token>(new List<Token> { Token.RBRACK }, true);
 
-            Require<Token>(new List<Token> { Token.OF }, true, $"{Token.OF}");
+            Require<Token>(new List<Token> { Token.OF }, true);
 
             var type = ParseType();
 
@@ -70,7 +70,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var leftBound = ParseSimpleExpression();
             var lexeme = _currentLexeme;
 
-            Require<Token>(new List<Token> { Token.ELLIPSIS }, true, "..");
+            Require<Token>(new List<Token> { Token.ELLIPSIS }, true);
 
             var rightBound = ParseSimpleExpression();
             return new SubrangeTypeNode(lexeme, leftBound, rightBound);
@@ -83,7 +83,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var fieldsList = ParseRecordFields();
 
-            Require<Token>(new List<Token> { Token.END }, true, $"{Token.END}");
+            Require<Token>(new List<Token> { Token.END }, true);
 
             return new RecordTypeNode(lexeme, fieldsList);
         }
@@ -99,7 +99,8 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 if (_currentLexeme != Token.SEMICOLOM)
                 {
-                    Require<Token>(new List<Token> { Token.END }, false, ";");
+                    if (_currentLexeme == TokenType.Identifier)
+                        Require<Token>(new List<Token> { Token.SEMICOLOM }, false);
                     break;
                 }
 
@@ -114,7 +115,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var identsList = ParseIdentsList();
             var lexeme = _currentLexeme;
 
-            Require<Token>(new List<Token> { Token.COLON }, true, ":");
+            Require<Token>(new List<Token> { Token.COLON }, true);
 
             var type = ParseType();
             return new RecordFieldNode(lexeme, identsList, type);
@@ -125,7 +126,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            Require<Token>(new List<Token> { Token.OF }, true, $"{Token.OF}");
+            Require<Token>(new List<Token> { Token.OF }, true);
 
             var type = ParseSimpleType();
             return new ParamArrayTypeNode(lexeme, type);

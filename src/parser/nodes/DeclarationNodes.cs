@@ -4,8 +4,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public class DeclsPartNode : SyntaxNode
     {
-        protected DeclsPartNode(List<SyntaxNode> decls, Lexeme? lexeme = null)
-        : base(lexeme!)
+        protected DeclsPartNode(List<SyntaxNode> decls, Lexeme lexeme)
+        : base(lexeme)
         {
             Decls = decls;
         }

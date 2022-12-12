@@ -106,7 +106,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 case TokenType.Separator when lexeme == Token.LPAREN:
                     NextLexeme();
                     var exp = ParseExpression();
-                    Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
+                    Require<Token>(new List<Token> { Token.RPAREN }, true);
                     return exp;
                 default:
                     throw FatalException("Illegal expression");
@@ -126,7 +126,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                     left = new ArrayAccessNode(left, ParseParamsList());
 
-                    Require<Token>(new List<Token> { Token.RBRACK }, true, "]");
+                    Require<Token>(new List<Token> { Token.RBRACK }, true);
 
                     lexeme = _currentLexeme;
                 }
@@ -147,7 +147,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     if (_currentLexeme != Token.RPAREN)
                         args = ParseParamsList();
 
-                    Require<Token>(new List<Token> { Token.RPAREN }, true, ")");
+                    Require<Token>(new List<Token> { Token.RPAREN }, true);
 
                     var identName = left.Lexeme.Value.ToString()!.ToUpper();
 
@@ -186,8 +186,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var lexeme = _currentLexeme;
 
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier },
-                true, $"{TokenType.Identifier}");
+            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, true);
 
             return new IdentNode(lexeme);
         }
