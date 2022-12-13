@@ -11,7 +11,7 @@ namespace PascalCompiler
 
         static private bool CompareAnswers(string file, string expected, string found)
         {
-            if (expected == found) return true;
+            if (expected.Equals(found)) return true;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"File: {file}\nExpected:\n{expected}\nFound:\n{found}");
             Console.ResetColor();
@@ -46,10 +46,10 @@ namespace PascalCompiler
 
         static private bool ParserTest(string inFile, string outFile, string mode)
         {
-            new FileStream(outFile, FileMode.OpenOrCreate).Close();
+            var expected = File.ReadAllText(outFile);
+            var found = new StringWriter();
 
-            var buffer = new StringWriter();
-            Console.SetOut(buffer);
+            Console.SetOut(found);
 
             try
             {
@@ -73,11 +73,9 @@ namespace PascalCompiler
             originOutput.AutoFlush = true;
             Console.SetOut(originOutput);
 
-            var ofstream = new StreamReader(outFile);
-            var expected = ofstream.ReadToEnd();
-
-            if (!CompareAnswers(inFile, expected, buffer.ToString()))
+            if (!CompareAnswers(inFile, expected, found.ToString()))
                 return false;
+
             return true;
         }
 
