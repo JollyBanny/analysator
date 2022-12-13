@@ -41,7 +41,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var constDecls = new List<SyntaxNode>();
 
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             while (_currentLexeme == TokenType.Identifier)
             {
@@ -54,7 +54,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private SyntaxNode ParseConsts()
         {
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             var constIdent = ParseIdent();
             TypeNode? type = null;
@@ -65,11 +65,11 @@ namespace PascalCompiler.SyntaxAnalyzer
                 type = ParseType();
             }
 
-            Require<Token>(new List<Token> { Token.EQUAL }, true);
+            Require<Token>(true, Token.EQUAL);
 
             ExprNode expression = ParseExpression();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new ConstDeclNode(constIdent, type, expression);
         }
@@ -81,7 +81,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var varDecls = new List<SyntaxNode>();
 
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             while (_currentLexeme == TokenType.Identifier)
             {
@@ -94,11 +94,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private SyntaxNode ParseVars()
         {
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             var varIdents = ParseIdentsList();
 
-            Require<Token>(new List<Token> { Token.COLON }, true);
+            Require<Token>(true, Token.COLON);
 
             var type = ParseType();
 
@@ -111,7 +111,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 expression = ParseExpression();
             }
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new VarDeclNode(varIdents, type, expression);
         }
@@ -123,7 +123,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var typeDecls = new List<SyntaxNode>();
 
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             while (_currentLexeme == TokenType.Identifier)
             {
@@ -136,15 +136,15 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private SyntaxNode ParseTypes()
         {
-            Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
+            Require<TokenType>(false, TokenType.Identifier);
 
             var typeIdent = ParseIdent();
 
-            Require<Token>(new List<Token> { Token.EQUAL }, true);
+            Require<Token>(true, Token.EQUAL);
 
             var type = ParseType();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new TypeDeclNode(typeIdent, type);
         }
@@ -156,11 +156,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var header = ParseFuncHeader();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             var block = ParseSubroutineBlock();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM );
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -172,11 +172,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var header = ParseProcHeader();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             var block = ParseSubroutineBlock();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -186,13 +186,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             var funcName = ParseIdent();
             List<FormalParamNode>? paramsList = null;
 
-            Require<Token>(new List<Token> { Token.LPAREN }, true);
+            Require<Token>(true, Token.LPAREN);
 
             if (_currentLexeme != Token.RPAREN)
                 paramsList = ParseFormalParamsList();
 
-            Require<Token>(new List<Token> { Token.RPAREN }, true);
-            Require<Token>(new List<Token> { Token.COLON }, true);
+            Require<Token>(true, Token.RPAREN);
+            Require<Token>(true, Token.COLON);
 
             var resultType = ParseSimpleType();
 
@@ -204,12 +204,12 @@ namespace PascalCompiler.SyntaxAnalyzer
             var funcName = ParseIdent();
             List<FormalParamNode>? paramsList = null;
 
-            Require<Token>(new List<Token> { Token.LPAREN }, true);
+            Require<Token>(true, Token.LPAREN);
 
             if (_currentLexeme != Token.RPAREN)
                 paramsList = ParseFormalParamsList();
 
-            Require<Token>(new List<Token> { Token.RPAREN }, true);
+            Require<Token>(true, Token.RPAREN);
 
             return new CallHeaderNode(funcName, paramsList);
         }
@@ -245,7 +245,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var identsList = ParseIdentsList();
 
-            Require<Token>(new List<Token> { Token.COLON }, true);
+            Require<Token>(true, Token.COLON);
 
             var paramType = ParseParamsType();
 

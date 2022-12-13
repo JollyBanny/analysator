@@ -25,7 +25,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var programName = ParseIdent();
 
-            Require<Token>(new List<Token> { Token.SEMICOLOM }, true);
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new ProgramHeaderNode(programName);
         }
@@ -35,7 +35,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var decls = ParseDecls();
             var statement = ParseCompoundStmt();
 
-            Require<Token>(new List<Token> { Token.DOT }, false);
+            Require<Token>(false, Token.DOT);
 
             return new ProgramBlockNode(decls, statement);
         }

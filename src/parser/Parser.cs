@@ -27,7 +27,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        private void Require<T>(List<T> tokens, bool getNext)
+        private void Require<T>(bool getNext, params T[] tokens)
         {
             foreach (var token in tokens)
                 if (_currentLexeme.Equals(token))

@@ -14,11 +14,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private StmtNode ParseCompoundStmt()
         {
-            Require<Token>(new List<Token> { Token.BEGIN }, true);
+            Require<Token>(true, Token.BEGIN);
 
             var statements = ParseStatements();
 
-            Require<Token>(new List<Token> { Token.END }, true);
+            Require<Token>(true, Token.END);
 
             return new CompoundStmtNode(statements);
         }
@@ -38,8 +38,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 .Contains(_currentLexeme))
             {
                 if (!separatorExist)
-                    Require<Token>(new List<Token> { Token.SEMICOLOM }, false);
-                    // throw ExpectedException(";", _currentLexeme.Source);
+                    Require<Token>(false, Token.SEMICOLOM);
 
                 var statement = ParseStatement();
                 separatorExist = false;
@@ -116,7 +115,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var condition = ParseExpression();
 
-            Require<Token>(new List<Token> { Token.THEN }, true);
+            Require<Token>(true, Token.THEN);
 
             var ifPart = ParseStatement();
             StmtNode? elsePart = null;
@@ -137,7 +136,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var condition = ParseExpression();
 
-            Require<Token>(new List<Token> { Token.DO }, true);
+            Require<Token>(true, Token.DO);
 
             return new WhileStmtNode(lexeme, condition, ParseStatement());
         }
@@ -152,7 +151,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             if (statements.Count == 0)
                 statements.Add(new EmptyStmtNode());
 
-            Require<Token>(new List<Token> { Token.UNTIL }, true);
+            Require<Token>(true, Token.UNTIL);
 
             var condition = ParseExpression();
 
@@ -166,11 +165,11 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var ctrlIdent = ParseIdent();
 
-            Require<Token>(new List<Token> { Token.ASSIGN }, true);
+            Require<Token>(true, Token.ASSIGN);
 
             var forRange = ParseForRange();
 
-            Require<Token>(new List<Token> { Token.DO }, true);
+            Require<Token>(true, Token.DO);
 
             var statement = ParseStatement();
 
@@ -182,7 +181,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             var startValue = ParseExpression();
             var direction = _currentLexeme;
 
-            Require<Token>(new List<Token> { Token.TO, Token.DOWNTO }, true);
+            Require<Token>(true, Token.TO, Token.DOWNTO);
 
             var finalValue = ParseExpression();
 
