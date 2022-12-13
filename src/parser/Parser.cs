@@ -22,12 +22,12 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        public void NextLexeme()
+        private void NextLexeme()
         {
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        public void Require<T>(List<T> tokens, bool getNext)
+        private void Require<T>(List<T> tokens, bool getNext)
         {
             foreach (var token in tokens)
                 if (_currentLexeme.Equals(token))
@@ -46,12 +46,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
         }
 
-        public void ChangeFile(string path)
-        {
-            _lexer.ChangeFile(path);
-            _currentLexeme = _lexer.GetLexeme();
-        }
-
         private SyntaxException ExpectedException(string expected, string found)
         {
             return new SyntaxException(_lexer.Cursor,
@@ -61,6 +55,12 @@ namespace PascalCompiler.SyntaxAnalyzer
         private SyntaxException FatalException(string msg)
         {
             return new SyntaxException(_lexer.Cursor, msg);
+        }
+
+        public void ChangeFile(string path)
+        {
+            _lexer.ChangeFile(path);
+            _currentLexeme = _lexer.GetLexeme();
         }
     }
 }

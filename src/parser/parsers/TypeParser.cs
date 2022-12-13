@@ -5,7 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 {
     public partial class Parser
     {
-        public TypeNode ParseType()
+        private TypeNode ParseType()
         {
             var lexeme = _currentLexeme;
             return lexeme.Type switch
@@ -22,7 +22,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        public TypeNode ParseSimpleType()
+        private TypeNode ParseSimpleType()
         {
             if (_currentLexeme == Token.STRING)
                 return new SimpleTypeNode(ParseKeywordNode());
@@ -30,7 +30,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 return new SimpleTypeNode(ParseIdent());
         }
 
-        public TypeNode ParseArrayType()
+        private TypeNode ParseArrayType()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -48,7 +48,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new ArrayTypeNode(lexeme, rangesList, type);
         }
 
-        public List<SubrangeTypeNode> ParseSubrangesList()
+        private List<SubrangeTypeNode> ParseSubrangesList()
         {
             var rangesList = new List<SubrangeTypeNode>();
 
@@ -65,7 +65,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return rangesList;
         }
 
-        public SubrangeTypeNode ParseSubrange()
+        private SubrangeTypeNode ParseSubrange()
         {
             var leftBound = ParseSimpleExpression();
             var lexeme = _currentLexeme;
@@ -76,7 +76,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new SubrangeTypeNode(lexeme, leftBound, rightBound);
         }
 
-        public TypeNode ParseRecordType()
+        private TypeNode ParseRecordType()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -88,7 +88,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new RecordTypeNode(lexeme, fieldsList);
         }
 
-        public List<RecordFieldNode> ParseRecordFields()
+        private List<RecordFieldNode> ParseRecordFields()
         {
             var fieldsList = new List<RecordFieldNode>();
 
@@ -110,7 +110,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return fieldsList;
         }
 
-        public RecordFieldNode ParseRecordField()
+        private RecordFieldNode ParseRecordField()
         {
             var identsList = ParseIdentsList();
             var lexeme = _currentLexeme;
@@ -121,7 +121,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new RecordFieldNode(lexeme, identsList, type);
         }
 
-        public ParamArrayTypeNode ParseParamArrayType()
+        private ParamArrayTypeNode ParseParamArrayType()
         {
             var lexeme = _currentLexeme;
             NextLexeme();

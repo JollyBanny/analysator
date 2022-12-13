@@ -21,7 +21,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new FullProgramNode(header, block);
         }
 
-        public ProgramNode ParseProgramHeader()
+        private ProgramNode ParseProgramHeader()
         {
             var programName = ParseIdent();
 
@@ -30,7 +30,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new ProgramHeaderNode(programName);
         }
 
-        public ProgramNode ParseProgramBlock()
+        private ProgramNode ParseProgramBlock()
         {
             var decls = ParseDecls();
             var statement = ParseCompoundStmt();

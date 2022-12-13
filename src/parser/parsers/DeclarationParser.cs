@@ -5,7 +5,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 {
     public partial class Parser
     {
-        public List<SyntaxNode> ParseDecls()
+        private List<SyntaxNode> ParseDecls()
         {
             var delcsList = new List<SyntaxNode>();
 
@@ -34,7 +34,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
         }
 
-        public DeclsPartNode ParseConstDecls()
+        private DeclsPartNode ParseConstDecls()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -52,7 +52,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new ConstDeclsPartNode(lexeme, constDecls);
         }
 
-        public SyntaxNode ParseConsts()
+        private SyntaxNode ParseConsts()
         {
             Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
 
@@ -74,7 +74,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new ConstDeclNode(constIdent, type, expression);
         }
 
-        public DeclsPartNode ParseVarDecls()
+        private DeclsPartNode ParseVarDecls()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -92,7 +92,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new VarDeclsPartNode(lexeme, varDecls);
         }
 
-        public SyntaxNode ParseVars()
+        private SyntaxNode ParseVars()
         {
             Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
 
@@ -116,7 +116,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new VarDeclNode(varIdents, type, expression);
         }
 
-        public DeclsPartNode ParseTypeDecls()
+        private DeclsPartNode ParseTypeDecls()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -134,7 +134,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new TypeDeclsPartNode(lexeme, typeDecls);
         }
 
-        public SyntaxNode ParseTypes()
+        private SyntaxNode ParseTypes()
         {
             Require<TokenType>(new List<TokenType> { TokenType.Identifier }, false);
 
@@ -149,7 +149,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new TypeDeclNode(typeIdent, type);
         }
 
-        public SyntaxNode ParseFuncDecl()
+        private SyntaxNode ParseFuncDecl()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -165,7 +165,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallDeclNode(lexeme, header, block);
         }
 
-        public SyntaxNode ParseProcDecl()
+        private SyntaxNode ParseProcDecl()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -181,7 +181,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallDeclNode(lexeme, header, block);
         }
 
-        public CallHeaderNode ParseFuncHeader()
+        private CallHeaderNode ParseFuncHeader()
         {
             var funcName = ParseIdent();
             List<FormalParamNode>? paramsList = null;
@@ -199,7 +199,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallHeaderNode(funcName, paramsList, resultType);
         }
 
-        public CallHeaderNode ParseProcHeader()
+        private CallHeaderNode ParseProcHeader()
         {
             var funcName = ParseIdent();
             List<FormalParamNode>? paramsList = null;
@@ -214,7 +214,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CallHeaderNode(funcName, paramsList);
         }
 
-        public List<FormalParamNode> ParseFormalParamsList()
+        private List<FormalParamNode> ParseFormalParamsList()
         {
             var paramsList = new List<FormalParamNode>();
 
@@ -231,7 +231,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return paramsList;
         }
 
-        public FormalParamNode ParseFormalParam()
+        private FormalParamNode ParseFormalParam()
         {
             SyntaxNode? modifier = null;
             switch (_currentLexeme.Value)
@@ -252,7 +252,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new FormalParamNode(identsList, paramType, modifier);
         }
 
-        public TypeNode ParseParamsType()
+        private TypeNode ParseParamsType()
         {
             return _currentLexeme.Type switch
             {
@@ -267,7 +267,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        public SyntaxNode ParseSubroutineBlock()
+        private SyntaxNode ParseSubroutineBlock()
         {
             var decls = ParseDecls();
             var block = ParseCompoundStmt();
@@ -275,7 +275,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new SubroutineBlockNode(decls, block);
         }
 
-        public SyntaxNode ParseKeywordNode()
+        private SyntaxNode ParseKeywordNode()
         {
             var lexeme = _currentLexeme;
             NextLexeme();

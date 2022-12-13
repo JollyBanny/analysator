@@ -12,7 +12,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             Token.DIV_ASSIGN,
         };
 
-        public StmtNode ParseCompoundStmt()
+        private StmtNode ParseCompoundStmt()
         {
             Require<Token>(new List<Token> { Token.BEGIN }, true);
 
@@ -23,7 +23,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new CompoundStmtNode(statements);
         }
 
-        public List<StmtNode> ParseStatements()
+        private List<StmtNode> ParseStatements()
         {
             var statements = new List<StmtNode>();
             var separatorExist = true;
@@ -58,7 +58,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return statements;
         }
 
-        public StmtNode ParseStatement()
+        private StmtNode ParseStatement()
         {
             var statement = ParseStructStmt();
 
@@ -68,7 +68,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return statement;
         }
 
-        public StmtNode ParseSimpleStmt()
+        private StmtNode ParseSimpleStmt()
         {
             if (_currentLexeme == Token.END)
                 return new EmptyStmtNode();
@@ -76,7 +76,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return ParseAssignStmt();
         }
 
-        public StmtNode ParseAssignStmt()
+        private StmtNode ParseAssignStmt()
         {
             var left = ParseExpression();
             var lexeme = _currentLexeme;
@@ -96,7 +96,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new AssignStmtNode(lexeme, left, ParseExpression());
         }
 
-        public StmtNode? ParseStructStmt()
+        private StmtNode? ParseStructStmt()
         {
             return _currentLexeme.Value switch
             {
@@ -109,7 +109,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        public StmtNode ParseIfStmt()
+        private StmtNode ParseIfStmt()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -130,7 +130,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new IfStmtNode(lexeme, condition, ifPart, elsePart);
         }
 
-        public StmtNode ParseWhileStmt()
+        private StmtNode ParseWhileStmt()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -142,7 +142,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new WhileStmtNode(lexeme, condition, ParseStatement());
         }
 
-        public StmtNode ParseRepeatStmt()
+        private StmtNode ParseRepeatStmt()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -159,7 +159,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new RepeatStmtNode(lexeme, condition, statements);
         }
 
-        public StmtNode ParseForStmt()
+        private StmtNode ParseForStmt()
         {
             var lexeme = _currentLexeme;
             NextLexeme();

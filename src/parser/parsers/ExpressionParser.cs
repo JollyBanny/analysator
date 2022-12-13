@@ -28,7 +28,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             Token.ADD, Token.SUB, Token.NOT,
         };
 
-        public ExprNode ParseExpression()
+        private ExprNode ParseExpression()
         {
             var left = ParseSimpleExpression();
             var lexeme = _currentLexeme;
@@ -42,7 +42,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return left;
         }
 
-        public ExprNode ParseSimpleExpression()
+        private ExprNode ParseSimpleExpression()
         {
             var left = ParseTerm();
             var lexeme = _currentLexeme;
@@ -191,7 +191,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new IdentNode(lexeme);
         }
 
-        public List<IdentNode> ParseIdentsList()
+        private List<IdentNode> ParseIdentsList()
         {
             var idents = new List<IdentNode>();
 
