@@ -80,7 +80,7 @@ namespace PascalCompiler.Extensions
             {Token.COLON, ":"},
         };
 
-        public static string ToString(this Token token, bool test)
+        public static string Stringify(this Token token)
         {
             if (StringTokens.Any(st => st.Key == token))
                 return StringTokens.First(st => st.Key == token).Value;

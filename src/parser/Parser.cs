@@ -38,9 +38,8 @@ namespace PascalCompiler.SyntaxAnalyzer
                 }
             if (tokens[0] is Token)
             {
-                object a = tokens[0]!;
-                Token tok = (Token)a;
-                throw ExpectedException(tok.ToString(true)!, _currentLexeme.Source);
+                Token tok = (Token)(object)tokens[0]!;
+                throw ExpectedException(tok.Stringify()!, _currentLexeme.Source);
             }
 
             throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
