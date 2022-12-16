@@ -35,8 +35,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class BinOperNode : ExprNode
     {
-        public BinOperNode(Lexeme lexeme, ExprNode left, ExprNode right)
-        : base(lexeme)
+        public BinOperNode(Lexeme lexeme, ExprNode left, ExprNode right) : base(lexeme)
         {
             Left = left;
             Right = right;
@@ -80,8 +79,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class RecordAccessNode : ExprNode
     {
-        public RecordAccessNode(ExprNode record, IdentNode field)
-        : base()
+        public RecordAccessNode(ExprNode record, IdentNode field) : base()
         {
             Record = record;
             Field = field;
@@ -106,8 +104,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ArrayAccessNode : ExprNode
     {
-        public ArrayAccessNode(ExprNode arrayIdent, List<ExprNode> accessExprs)
-        : base()
+        public ArrayAccessNode(ExprNode arrayIdent, List<ExprNode> accessExprs) : base()
         {
             ArrayIdent = arrayIdent;
             AccessExprs = accessExprs;
@@ -143,8 +140,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class FunctionCallNode : ExprNode
     {
-        public FunctionCallNode(IdentNode funcIdent, List<ExprNode> args)
-        : base(funcIdent.Lexeme)
+        public FunctionCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent.Lexeme)
         {
             Args = args;
         }
@@ -175,15 +171,13 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CustomCallNode : FunctionCallNode
     {
-        public CustomCallNode(IdentNode funcIdent, List<ExprNode> args)
-        : base(funcIdent, args)
+        public CustomCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent, args)
         { }
     }
 
     public class WriteCallNode : FunctionCallNode
     {
-        public WriteCallNode(IdentNode funcIdent, List<ExprNode> args, bool newLine)
-        : base(funcIdent, args)
+        public WriteCallNode(IdentNode funcIdent, List<ExprNode> args, bool newLine) : base(funcIdent, args)
         {
             NewLine = newLine;
         }
@@ -193,7 +187,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class IdentNode : ExprNode
     {
-        public IdentNode(Lexeme lexeme) : base(lexeme) { }
+        public IdentNode(Lexeme lexeme) : base(lexeme)
+        { }
 
         public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);

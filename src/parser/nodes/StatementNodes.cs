@@ -10,9 +10,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CompoundStmtNode : StmtNode
     {
-        public CompoundStmtNode(List<StmtNode> statements) : base()
+        public CompoundStmtNode(List<StmtNode> stmts) : base()
         {
-            Statements = statements;
+            Statements = stmts;
         }
 
         public List<StmtNode> Statements { get; }
@@ -52,9 +52,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallStmtNode : StmtNode
     {
-        public CallStmtNode(ExprNode expression) : base()
+        public CallStmtNode(ExprNode expr) : base()
         {
-            Expression = expression;
+            Expression = expr;
         }
 
         public ExprNode Expression { get; }
@@ -97,10 +97,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class IfStmtNode : StmtNode
     {
-        public IfStmtNode(Lexeme lexeme, ExprNode condition, StmtNode ifPart,
+        public IfStmtNode(Lexeme lexeme, ExprNode cond, StmtNode ifPart,
             StmtNode? elsePart) : base(lexeme)
         {
-            Condition = condition;
+            Condition = cond;
             IfPart = ifPart;
             ElsePart = elsePart;
         }
@@ -138,11 +138,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class WhileStmtNode : StmtNode
     {
-        public WhileStmtNode(Lexeme lexeme, ExprNode condition, StmtNode statement)
-        : base(lexeme)
+        public WhileStmtNode(Lexeme lexeme, ExprNode cond, StmtNode stmts) : base(lexeme)
         {
-            Condition = condition;
-            Statement = statement;
+            Condition = cond;
+            Statement = stmts;
         }
 
         public ExprNode Condition { get; }
@@ -164,11 +163,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class RepeatStmtNode : StmtNode
     {
-        public RepeatStmtNode(Lexeme lexeme, ExprNode condition, List<StmtNode> statements)
-        : base(lexeme)
+        public RepeatStmtNode(Lexeme lexeme, ExprNode cond, List<StmtNode> stmts) : base(lexeme)
         {
-            Condition = condition;
-            Statements = statements;
+            Condition = cond;
+            Statements = stmts;
         }
 
         public ExprNode Condition { get; }
@@ -232,8 +230,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ForRangeNode : SyntaxNode
     {
-        public ForRangeNode(Lexeme lexeme, ExprNode startValue, ExprNode finalValue)
-        : base(lexeme)
+        public ForRangeNode(Lexeme lexeme, ExprNode startValue, ExprNode finalValue) : base(lexeme)
         {
             StartValue = startValue;
             FinalValue = finalValue;

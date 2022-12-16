@@ -25,8 +25,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ArrayTypeNode : TypeNode
     {
-        public ArrayTypeNode(Lexeme lexeme, List<SubrangeTypeNode> ranges, TypeNode type)
-        : base(lexeme)
+        public ArrayTypeNode(Lexeme lexeme, List<SubrangeTypeNode> ranges, TypeNode type) : base(lexeme)
         {
             Ranges = ranges;
             Type = type;
@@ -54,8 +53,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class SubrangeTypeNode : TypeNode
     {
-        public SubrangeTypeNode(Lexeme lexeme, ExprNode left, ExprNode right)
-        : base(lexeme)
+        public SubrangeTypeNode(Lexeme lexeme, ExprNode left, ExprNode right) : base(lexeme)
         {
             LeftBound = left;
             RightBound = right;
@@ -110,8 +108,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class RecordFieldNode : TypeNode
     {
-        public RecordFieldNode(Lexeme lexeme, List<IdentNode> identsList, TypeNode type)
-        : base(lexeme)
+        public RecordFieldNode(Lexeme lexeme, List<IdentNode> identsList, TypeNode type) : base(lexeme)
         {
             IdentsList = identsList;
             Type = type;

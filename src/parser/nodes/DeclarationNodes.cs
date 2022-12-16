@@ -4,8 +4,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public class DeclsPartNode : SyntaxNode
     {
-        protected DeclsPartNode(List<SyntaxNode> decls, Lexeme lexeme)
-        : base(lexeme)
+        protected DeclsPartNode(List<SyntaxNode> decls, Lexeme lexeme) : base(lexeme)
         {
             Decls = decls;
         }
@@ -82,8 +81,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class VarDeclNode : SyntaxNode
     {
-        public VarDeclNode(List<IdentNode> identsList, TypeNode type, ExprNode? expr)
-        : base()
+        public VarDeclNode(List<IdentNode> identsList, TypeNode type, ExprNode? expr) : base()
         {
             IdentsList = identsList;
             Type = type;
@@ -155,8 +153,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallDeclNode : SyntaxNode
     {
-        public CallDeclNode(Lexeme lexeme, CallHeaderNode header, SyntaxNode block)
-        : base(lexeme)
+        public CallDeclNode(Lexeme lexeme, CallHeaderNode header, SyntaxNode block) : base(lexeme)
         {
             Header = header;
             Block = block;
@@ -272,8 +269,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class SubroutineBlockNode : SyntaxNode
     {
-        public SubroutineBlockNode(List<SyntaxNode> decls, StmtNode compoundStmt)
-        : base()
+        public SubroutineBlockNode(List<SyntaxNode> decls, StmtNode compoundStmt) : base()
         {
             Decls = decls;
             CompoundStmt = compoundStmt;
