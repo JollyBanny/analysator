@@ -135,9 +135,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override string ToString() => Lexeme.Source;
     }
 
-    public class ParamArrayTypeNode : TypeNode
+    public class ConformatArrayTypeNode : TypeNode
     {
-        public ParamArrayTypeNode(Lexeme lexeme, TypeNode type) : base(lexeme)
+        public ConformatArrayTypeNode(Lexeme lexeme, TypeNode type) : base(lexeme)
         {
             Type = type;
         }

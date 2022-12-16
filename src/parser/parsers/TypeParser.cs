@@ -121,7 +121,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new RecordFieldNode(lexeme, identsList, type);
         }
 
-        private ParamArrayTypeNode ParseParamArrayType()
+        private ConformatArrayTypeNode ParseParamArrayType()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
@@ -129,7 +129,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             Require<Token>(true, Token.OF);
 
             var type = ParseSimpleType();
-            return new ParamArrayTypeNode(lexeme, type);
+            return new ConformatArrayTypeNode(lexeme, type);
         }
     }
 }
