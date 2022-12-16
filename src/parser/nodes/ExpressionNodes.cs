@@ -8,6 +8,31 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
+    public class Cast : ExprNode
+    {
+        public Cast(ExprNode expr, TypeNode toType) : base()
+        {
+            Expr = expr;
+            ToType = toType;
+        }
+
+        public ExprNode Expr { get; }
+        public TypeNode ToType { get; }
+
+        public override void PrintTree(int depth, string indent)
+        {
+            Console.WriteLine(this);
+
+            Console.Write(indent + "├──── ");
+            Expr.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
+
+            Console.Write(indent + "└──── ");
+            ToType.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+        }
+
+        public override string ToString() => "cast";
+    }
+
     public class BinOperNode : ExprNode
     {
         public BinOperNode(Lexeme lexeme, ExprNode left, ExprNode right)
@@ -55,7 +80,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class RecordAccessNode : ExprNode
     {
-        public RecordAccessNode(ExprNode record, ExprNode field)
+        public RecordAccessNode(ExprNode record, IdentNode field)
         : base()
         {
             Record = record;
@@ -63,7 +88,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
 
         public ExprNode Record { get; }
-        public ExprNode Field { get; }
+        public IdentNode Field { get; }
 
         public override void PrintTree(int depth, string indent)
         {
@@ -152,9 +177,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     {
         public CustomCallNode(IdentNode funcIdent, List<ExprNode> args)
         : base(funcIdent, args)
-        {
-
-        }
+        { }
     }
 
     public class WriteCallNode : FunctionCallNode
