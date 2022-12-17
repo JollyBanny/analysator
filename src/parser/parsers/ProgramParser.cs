@@ -6,7 +6,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 {
     public partial class Parser
     {
-        public SyntaxNode ParseProgram()
+        private SyntaxNode ParseProgram()
         {
             ProgramNode? header = null;
 

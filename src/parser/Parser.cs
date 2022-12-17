@@ -1,7 +1,9 @@
 using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
+
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
 {
@@ -22,10 +24,20 @@ namespace PascalCompiler.SyntaxAnalyzer
             _currentLexeme = _lexer.GetLexeme();
         }
 
-        private void NextLexeme()
+        public SyntaxNode Parse()
         {
-            _currentLexeme = _lexer.GetLexeme();
+            try
+            {
+                return ParseProgram();
+            }
+            catch (SemanticException e)
+            {
+                throw new SemanticException(_lexer.Cursor, e.Message);
+            }
         }
+
+        private void NextLexeme() =>
+            _currentLexeme = _lexer.GetLexeme();
 
         private void Require<T>(bool getNext, params T[] tokens)
         {
@@ -45,16 +57,12 @@ namespace PascalCompiler.SyntaxAnalyzer
             throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
         }
 
-        private SyntaxException ExpectedException(string expected, string found)
-        {
-            return new SyntaxException(_lexer.Cursor,
+        private SyntaxException ExpectedException(string expected, string found) =>
+            new SyntaxException(_lexer.Cursor,
                         $"'{expected}' expected but '{found}' found");
-        }
 
-        private SyntaxException FatalException(string msg)
-        {
-            return new SyntaxException(_lexer.Cursor, msg);
-        }
+        private SyntaxException FatalException(string msg) =>
+            new SyntaxException(_lexer.Cursor, msg);
 
         public void ChangeFile(string path)
         {

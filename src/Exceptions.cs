@@ -7,12 +7,6 @@ namespace PascalCompiler.Exceptions
         public LexicalException(Position pos, string message)
             : base($"[Line: {pos.Line}; Column: {pos.Ch}]\t{message}")
         { }
-
-        public LexicalException(LexicalException exception)
-            : base(string.Empty, exception)
-        {
-            throw new Exception(exception.Message);
-        }
     }
 
     class LexemeOverflowException : OverflowException
@@ -27,11 +21,16 @@ namespace PascalCompiler.Exceptions
         public SyntaxException(Position pos, string message)
             : base($"[Line: {pos.Line}; Column: {pos.Ch}]\t{message}")
         { }
+    }
 
-        public SyntaxException(SyntaxException exception)
-            : base(string.Empty, exception)
-        {
-            throw new Exception(exception.Message);
-        }
+    class SemanticException : Exception
+    {
+        public SemanticException(Position pos, string message)
+            : base($"[Line: {pos.Line}; Column: {pos.Ch}]\t{message}")
+        { }
+
+        public SemanticException(string message)
+            : base(message)
+        { }
     }
 }

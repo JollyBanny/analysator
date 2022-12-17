@@ -61,7 +61,7 @@ namespace PascalCompiler
                 else
                 {
                     var _parser = new Parser(inFile);
-                    _parser.ParseProgram().PrintTree();
+                    _parser.Parse().PrintTree();
                 }
             }
             catch (Exception e)
