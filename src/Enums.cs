@@ -91,6 +91,7 @@ namespace PascalCompiler.Enums
         FINALLY,
         FLOAT,
         FOR,
+        FORWARD,
         FUNCTION,
         GOTO,
         IF,

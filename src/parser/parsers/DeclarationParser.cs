@@ -160,7 +160,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var block = ParseSubroutineBlock();
 
-            Require<Token>(true, Token.SEMICOLOM );
+            Require<Token>(true, Token.SEMICOLOM);
 
             return new CallDeclNode(lexeme, header, block);
         }
@@ -267,8 +267,14 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        private SyntaxNode ParseSubroutineBlock()
+        private SyntaxNode? ParseSubroutineBlock()
         {
+            if (_currentLexeme == Token.FORWARD)
+            {
+                NextLexeme();
+                return null;
+            }
+
             var decls = ParseDecls();
             var block = ParseCompoundStmt();
 

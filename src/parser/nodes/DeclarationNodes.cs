@@ -153,14 +153,16 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallDeclNode : SyntaxNode
     {
-        public CallDeclNode(Lexeme lexeme, CallHeaderNode header, SyntaxNode block) : base(lexeme)
+        public CallDeclNode(Lexeme lexeme, CallHeaderNode header, SyntaxNode? block = null) : base(lexeme)
         {
             Header = header;
             Block = block;
+            IsForward = block is null;
         }
 
         public CallHeaderNode Header { get; }
-        public SyntaxNode Block { get; }
+        public SyntaxNode? Block { get; }
+        public bool IsForward { get; }
 
         public override void PrintTree(int depth, string indent)
         {
@@ -170,7 +172,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Header.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
 
             Console.Write(indent + "└──── ");
-            Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            if (IsForward)
+                Console.WriteLine("forward");
+            Block?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
