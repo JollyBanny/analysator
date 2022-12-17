@@ -23,10 +23,8 @@ namespace PascalCompiler.SyntaxAnalyzer
                         delcsList.Add(ParseTypeDecls());
                         break;
                     case Token.FUNCTION:
-                        delcsList.Add(ParseFuncDecl());
-                        break;
                     case Token.PROCEDURE:
-                        delcsList.Add(ParseProcDecl());
+                        delcsList.Add(ParseCallDecl());
                         break;
                     default:
                         return delcsList;
@@ -149,28 +147,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             return new TypeDeclNode(typeIdent, type);
         }
 
-        private SyntaxNode ParseFuncDecl()
+        private SyntaxNode ParseCallDecl()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            var header = ParseFuncHeader();
-
-            Require<Token>(true, Token.SEMICOLOM);
-
-            var block = ParseSubroutineBlock();
-
-            Require<Token>(true, Token.SEMICOLOM);
-
-            return new CallDeclNode(lexeme, header, block);
-        }
-
-        private SyntaxNode ParseProcDecl()
-        {
-            var lexeme = _currentLexeme;
-            NextLexeme();
-
-            var header = ParseProcHeader();
+            var header = lexeme == Token.FUNCTION ? ParseFuncHeader() :
+                                                    ParseProcHeader();
 
             Require<Token>(true, Token.SEMICOLOM);
 
