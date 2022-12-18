@@ -156,7 +156,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     else if (Token.WRITELN.ToString() == identName)
                         left = new WriteCallNode((IdentNode)left, args, true);
                     else
-                        left = new CustomCallNode((IdentNode)left, args);
+                        left = new UserCallNode((IdentNode)left, args);
 
                     lexeme = _currentLexeme;
                 }

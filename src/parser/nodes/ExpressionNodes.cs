@@ -1,3 +1,4 @@
+using PascalCompiler.Semantics;
 using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
@@ -5,6 +6,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     public class ExprNode : SyntaxNode
     {
         protected ExprNode(Lexeme? lexeme = null) : base(lexeme!) { }
+
+        public SymType SymType { get; }
+
         public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
@@ -138,9 +142,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override string ToString() => "array access";
     }
 
-    public class FunctionCallNode : ExprNode
+    public class CallNode : ExprNode
     {
-        public FunctionCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent.Lexeme)
+        public CallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent.Lexeme)
         {
             Args = args;
         }
@@ -166,16 +170,18 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             }
         }
 
-        public override string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!.ToLower();
     }
 
-    public class CustomCallNode : FunctionCallNode
+    public class UserCallNode : CallNode
     {
-        public CustomCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent, args)
+        public UserCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent, args)
         { }
+
+        public SymProc SymProc { get; }
     }
 
-    public class WriteCallNode : FunctionCallNode
+    public class WriteCallNode : CallNode
     {
         public WriteCallNode(IdentNode funcIdent, List<ExprNode> args, bool newLine) : base(funcIdent, args)
         {
@@ -193,7 +199,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        public override string ToString() => Lexeme.Value.ToString()!;
+        public override string ToString() => Lexeme.Value.ToString()!.ToLower();
     }
 
     public class ConstantNode : ExprNode
