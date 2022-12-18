@@ -7,7 +7,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     {
         protected TypeNode(Lexeme? lexeme = null) : base(lexeme!) { }
 
-        public SymType SymType;
+        public SymType SymType { get; }
 
         public override void PrintTree(int depth = 0, string indent = "") { }
     }
@@ -24,7 +24,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public override void PrintTree(int depth, string indent) =>
             Console.WriteLine(this);
 
-        public override string ToString() => TypeIdent is IdentNode ? Lexeme.Value.ToString()!.ToLower() : Lexeme.Value.ToString()!;
+        public override string ToString() => TypeIdent is IdentNode ?
+            Lexeme.Value.ToString()!.ToLower() : Lexeme.Value.ToString()!;
     }
 
     public class ArrayTypeNode : TypeNode
@@ -36,7 +37,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
 
         public List<SubrangeTypeNode> Ranges { get; }
-        public SyntaxNode Type { get; }
+        public TypeNode Type { get; }
 
         public override void PrintTree(int depth, string indent)
         {

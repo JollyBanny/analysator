@@ -130,12 +130,11 @@ namespace PascalCompiler.LexicalAnalyzer
 
                 if (exponentDigits.Length == 0)
                     if (Buffer.Contains('.') && fractionalDigits.Length == 0)
-                        throw new LexicalException(LexemePos,
-                                "Illegal floating point constant");
+                        throw new LexicalException(LexemePos, "Illegal floating point constant");
                     else
                     {
-                        string illegalCh = 6 < Peek() && Peek() < 14 ? $"#{Peek()}" :
-                            ((char)Peek()).ToString();
+                        string illegalCh = 6 < Peek() && Peek() < 14 ?
+                            $"#{Peek()}" : ((char)Peek()).ToString();
                         throw new LexicalException(LexemePos, $"Illegal character '{illegalCh}'");
                     }
             }
@@ -287,8 +286,7 @@ namespace PascalCompiler.LexicalAnalyzer
                     ScanIdentifier();
                     var keyword = LookupKeyword(Buffer);
                     (_lexemeType, _lexemeToken) = keyword.HasValue ?
-                                    (TokenType.Keyword, (Token)keyword) :
-                                    (TokenType.Identifier, Token.IDENTIFIER);
+                        (TokenType.Keyword, (Token)keyword) : (TokenType.Identifier, Token.IDENTIFIER);
                     break;
                 case char ch when ch.IsDigit() || ch == '%' || ch == '&' || ch == '$':
                     ScanNumber();

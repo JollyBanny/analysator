@@ -197,7 +197,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             while (true)
             {
-                var ident = ParseIdent() as IdentNode;
+                var ident = ParseIdent();
                 idents.Add(ident!);
 
                 if (_currentLexeme != Token.COMMA)
