@@ -7,7 +7,7 @@
 7	1	Integer	5	%101
 7	5	Identifier	e	e
 8	1	Integer	342391	&1234567
-8	9	Identifier	a	A
+8	9	Identifier	A	A
 9	1	Integer	11259375	$ABCDEF
-9	8	Identifier	g	G
+9	8	Identifier	G	G
 9	9	EOF

@@ -34,7 +34,7 @@ namespace PascalCompiler.LexicalAnalyzer
             TokenType.Double => StringToDouble(source),
             TokenType.String => NormalizeString(source.ToCharArray()),
             TokenType.Char => NormalizeChar(source),
-            TokenType.Identifier => source.ToLower(),
+            TokenType.Identifier => source,
             _ => token,
         };
 

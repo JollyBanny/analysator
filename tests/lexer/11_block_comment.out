@@ -1,5 +1,5 @@
 4	1	Keyword	Program	program
-4	9	Identifier	hello	Hello
+4	9	Identifier	Hello	Hello
 4	14	Separator	Semicolom	;
 5	1	Keyword	Begin	begin
 7	3	Identifier	writeln	writeln
