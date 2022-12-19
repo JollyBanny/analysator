@@ -60,7 +60,7 @@ namespace PascalCompiler.Semantics
 
     public class SymRecordType : SymType
     {
-        public SymRecordType(SymTable table) : base()
+        public SymRecordType(SymTable table) : base("record")
         {
             Table = table;
         }
@@ -70,13 +70,13 @@ namespace PascalCompiler.Semantics
 
     public class SymArrayType : SymType
     {
-        public SymArrayType(Tuple<ExprNode, ExprNode>[] ranges, SymType elemType) : base()
+        public SymArrayType(List<Tuple<ExprNode, ExprNode>> ranges, SymType elemType) : base("array")
         {
             Ranges = ranges;
             ElemType = elemType;
         }
 
-        public Tuple<ExprNode, ExprNode>[] Ranges { get; }
+        public List<Tuple<ExprNode, ExprNode>> Ranges { get; }
         public SymType ElemType { get; }
     }
 

@@ -1,4 +1,4 @@
-function MyFunc(const b: integer; var b: string; a: double);
+function MyFunc(const a: integer; var b: string; c: double);
 var str: string;
 begin
   writeln('Some text')

@@ -1,5 +1,7 @@
 using PascalCompiler.Enums;
+using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
+using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -198,6 +200,12 @@ namespace PascalCompiler.SyntaxAnalyzer
             while (true)
             {
                 var ident = ParseIdent();
+                var identName = ident.Lexeme.Value.ToString()!;
+
+                if (_symStack.Contains(identName))
+                    throw new SemanticException($"Duplicate identifier {identName}");
+                _symStack.Add(identName, null!);
+
                 idents.Add(ident!);
 
                 if (_currentLexeme != Token.COMMA)

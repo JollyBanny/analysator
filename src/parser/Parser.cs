@@ -1,8 +1,8 @@
 using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
-
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -11,6 +11,8 @@ namespace PascalCompiler.SyntaxAnalyzer
     {
         private Lexer _lexer;
         private Lexeme _currentLexeme;
+        private SymTable _symTable = new SymTable();
+        private SymTableStack _symStack = new SymTableStack();
 
         public Parser()
         {
@@ -55,6 +57,46 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
 
             throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
+        }
+
+        private SymType GetSymType(TypeNode typeNode)
+        {
+            SymType? symType;
+
+            switch (typeNode)
+            {
+                case RecordTypeNode type:
+                    var table = new SymTable();
+                    foreach (var field in type.FieldsList)
+                    {
+                        symType = GetSymType(field.Type);
+                        foreach (var ident in field.IdentsList)
+                            table.Add(ident.Lexeme.ToString()!, symType);
+                    }
+
+                    return new SymRecordType(table);
+
+                case ArrayTypeNode type:
+                    var elemType = GetSymType(type.Type);
+                    var ranges = new List<Tuple<ExprNode, ExprNode>>();
+
+                    foreach (var range in type.Ranges)
+                    {
+                        var range_ = new Tuple<ExprNode, ExprNode>(range.LeftBound, range.RightBound);
+                        ranges.Add(range_);
+                    }
+
+                    return new SymArrayType(ranges, elemType);
+
+                default:
+                    var typeName = typeNode.Lexeme.Value.ToString()!;
+                    symType = _symStack.FindType(typeName);
+
+                    if (symType is not null)
+                        return symType;
+                    else
+                        throw new SemanticException($"type '{typeName}' not found");
+            }
         }
 
         private SyntaxException ExpectedException(string expected, string found) =>

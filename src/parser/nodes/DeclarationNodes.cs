@@ -182,7 +182,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallHeaderNode : SyntaxNode
     {
-        public CallHeaderNode(IdentNode name, List<FormalParamNode>? paramsList,
+        public CallHeaderNode(IdentNode name, List<FormalParamNode> paramsList,
             TypeNode? type = null) : base()
         {
             Name = name;
@@ -191,7 +191,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
 
         public IdentNode Name { get; }
-        public List<FormalParamNode>? ParamsList { get; }
+        public List<FormalParamNode> ParamsList { get; }
         public TypeNode? Type { get; }
 
 

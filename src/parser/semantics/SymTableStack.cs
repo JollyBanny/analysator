@@ -7,7 +7,20 @@ namespace PascalCompiler.Semantics
         public SymTableStack()
         {
             _stack = new Stack<SymTable>();
+            SetBuiltinsTable();
+            Push();
+        }
+
+        public int Count { get { return _stack.Count; } }
+
+        private void SetBuiltinsTable()
+        {
             _stack.Push(new SymTable());
+            Add("integer", new SymIntegerType());
+            Add("double", new SymDoubleType());
+            Add("string", new SymStringType());
+            Add("char", new SymCharType());
+            Add("boolean", new SymBooleanType());
         }
 
         public void Push()
@@ -15,30 +28,31 @@ namespace PascalCompiler.Semantics
             _stack.Push(new SymTable());
         }
 
-        public void Pop()
+        public SymTable Pop()
         {
-            _stack.Pop();
+            return _stack.Pop();
         }
 
         public void Add(string symName, Symbol sym)
         {
             var table = _stack.Peek();
-            table.Add(symName, sym);
+            table.Add(symName.ToLower(), sym);
         }
 
-        public Symbol? Find(string symName, bool inScope)
+        public void Remove(string symName)
+        {
+            var table = _stack.Peek();
+            table.Remove(symName.ToLower());
+        }
+
+        public Symbol? Find(string symName, bool inScope = false)
         {
             if (inScope)
-            {
-                if (!_stack.TryPeek(out var table))
-                    return null;
-
-                return table.Find(symName.ToLower());
-            }
+                return _stack.Peek().Find(symName.ToLower());
 
             foreach (var table in _stack)
             {
-                var symbol = table.Find(symName);
+                var symbol = table.Find(symName.ToLower());
                 if (symbol is not null)
                     return symbol;
             }
@@ -46,12 +60,26 @@ namespace PascalCompiler.Semantics
             return null;
         }
 
-        public bool Contains(string symName, bool inScope)
+        public SymType? FindType(string symName)
+        {
+            var symType = Find(symName);
+
+            if (symType is SymType)
+                return symType as SymType;
+            else
+                return null;
+        }
+
+        public bool Contains(string symName, bool inScope = false)
         {
             if (inScope)
-                return Find(symName, true) is not null;
+                return _stack.Peek().Contains(symName.ToLower());
 
-            return Find(symName, false) is not null;
+            foreach (var table in _stack)
+                if (table.Contains(symName.ToLower()))
+                    return true;
+
+            return false;
         }
     }
 }

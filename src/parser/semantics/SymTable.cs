@@ -1,9 +1,9 @@
-using PascalCompiler.Exceptions;
+using System.Collections;
 using System.Collections.Specialized;
 
 namespace PascalCompiler.Semantics
 {
-    public class SymTable
+    public class SymTable : IEnumerable
     {
         private OrderedDictionary _table;
 
@@ -12,21 +12,34 @@ namespace PascalCompiler.Semantics
             _table = new OrderedDictionary();
         }
 
+        public void Add(string symName, Symbol sym)
+        {
+            _table.Add(symName.ToLower(), sym);
+        }
+
         public Symbol? Find(string symName)
         {
             return _table.Contains(symName) ? _table[symName] as Symbol : null;
         }
 
-        public void Add(string symName, Symbol sym)
+        public bool Contains(string symName)
         {
-            try
-            {
-                _table.Add(symName, sym);
-            }
-            catch
-            {
-                throw new SemanticException($"Duplicate identifier {symName}");
-            }
+            return _table.Contains(symName);
+        }
+
+        public void Remove(string symName)
+        {
+            _table.Remove(symName);
+        }
+
+        public IDictionaryEnumerator GetEnumerator()
+        {
+            return _table.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
