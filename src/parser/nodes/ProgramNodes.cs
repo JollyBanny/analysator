@@ -2,11 +2,9 @@ using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
-    public class ProgramNode : SyntaxNode
+    public abstract class ProgramNode : SyntaxNode
     {
-        protected ProgramNode(Lexeme? lexeme = null) : base(lexeme!) { }
-
-        public override void PrintTree(int depth = 0, string indent = "") { }
+        protected ProgramNode(Lexeme? lexeme = null) : base(lexeme) { }
     }
 
     public class FullProgramNode : ProgramNode

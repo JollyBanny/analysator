@@ -12,9 +12,9 @@ namespace PascalCompiler.Semantics
             _table = new OrderedDictionary();
         }
 
-        public void Add(string symName, Symbol sym)
+        public void Add(Symbol sym)
         {
-            _table.Add(symName.ToLower(), sym);
+            _table.Add(sym.Name.ToLower(), sym);
         }
 
         public Symbol? Find(string symName)

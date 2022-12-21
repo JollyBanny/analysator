@@ -202,9 +202,8 @@ namespace PascalCompiler.SyntaxAnalyzer
                 var ident = ParseIdent();
                 var identName = ident.Lexeme.Value.ToString()!;
 
-                if (_symStack.Contains(identName))
-                    throw new SemanticException($"Duplicate identifier {identName}");
-                _symStack.Add(identName, null!);
+                _symStack.CheckDuplicate(identName);
+                _symStack.AddEmptySym(identName);
 
                 idents.Add(ident!);
 

@@ -3,13 +3,9 @@ using PascalCompiler.Semantics;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
-    public class TypeNode : SyntaxNode
+    public abstract class TypeNode : SyntaxNode
     {
-        protected TypeNode(Lexeme? lexeme = null) : base(lexeme!) { }
-
-        public SymType SymType { get; }
-
-        public override void PrintTree(int depth = 0, string indent = "") { }
+        protected TypeNode(Lexeme? lexeme = null) : base(lexeme) { }
     }
 
     public class SimpleTypeNode : TypeNode

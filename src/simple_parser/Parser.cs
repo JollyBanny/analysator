@@ -70,11 +70,5 @@ namespace PascalCompiler.SimpleSyntaxAnalyzer
             }
             throw new SyntaxException(lexeme.Pos, "Expected factor");
         }
-
-        public void ChangeFile(string path)
-        {
-            _lexer.ChangeFile(path);
-            _currentLexem = _lexer.GetLexeme();
-        }
     }
 }

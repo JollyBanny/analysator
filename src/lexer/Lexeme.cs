@@ -27,16 +27,18 @@ namespace PascalCompiler.LexicalAnalyzer
         public object Value { get => _value; }
         public string Source { get => _source; }
 
-        private object LexemeValue(TokenType type, Token token, string source) =>
-        type switch
+        private object LexemeValue(TokenType type, Token token, string source)
         {
-            TokenType.Integer => StringToInteger(source),
-            TokenType.Double => StringToDouble(source),
-            TokenType.String => NormalizeString(source.ToCharArray()),
-            TokenType.Char => NormalizeChar(source),
-            TokenType.Identifier => source,
-            _ => token,
-        };
+            return type switch
+            {
+                TokenType.Integer => StringToInteger(source),
+                TokenType.Double => StringToDouble(source),
+                TokenType.String => NormalizeString(source.ToCharArray()),
+                TokenType.Char => NormalizeChar(source),
+                TokenType.Identifier => source,
+                _ => token,
+            };
+        }
 
         private char NormalizeChar(string source) => (char)int.Parse(source.Trim('#'));
 
@@ -88,12 +90,15 @@ namespace PascalCompiler.LexicalAnalyzer
         {
             GetBase(source[0], out int @base);
             Int64 result = 0;
+
             for (int i = @base == 10 ? 0 : 1; i < source.Length; i++)
             {
                 result = result * @base + source[i].DigitValue();
+
                 if (result > Int32.MaxValue)
                     throw new LexemeOverflowException(_pos);
             }
+
             return result;
         }
 
@@ -105,14 +110,16 @@ namespace PascalCompiler.LexicalAnalyzer
             if (@base != 10)
             {
                 var splitDouble = source.Split('.');
+
                 for (int i = 1; i < splitDouble[0].Length; i++)
                     result = result * @base + splitDouble[0][i].DigitValue();
+
                 source = result.ToString() + splitDouble[1];
             }
 
-            if (double.TryParse(source, NumberStyles.Float,
-                            CultureInfo.InvariantCulture, out result))
+            if (double.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
                 return result;
+
             throw new LexemeOverflowException(_pos);
         }
 
@@ -127,8 +134,10 @@ namespace PascalCompiler.LexicalAnalyzer
                     .Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t"),
                 _ => _value,
             };
-            return $"{Pos.Line}\t{Pos.Ch}\t{Type}" +
-                    (Type == TokenType.EOF ? "" : $"\t{value}\t{Source}");
+
+            var valueAndSource = Type == TokenType.EOF ? "" : $"\t{value}\t{Source}";
+
+            return $"{Pos.Line}\t{Pos.Ch}\t{Type}" + valueAndSource;
         }
 
         public static bool operator ==(Lexeme lexeme, Token token)

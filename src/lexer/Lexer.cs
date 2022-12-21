@@ -40,15 +40,20 @@ namespace PascalCompiler.LexicalAnalyzer
         {
             var digitSequence = "";
             if (@base <= 10)
+            {
                 while (((char)Peek()).IsDigit())
                 {
                     if (Peek() >= '0' + @base)
                         return digitSequence;
                     digitSequence += Next();
                 }
+            }
             else
+            {
                 while (((char)Peek()).IsHex())
                     digitSequence += Next();
+            }
+
             return digitSequence;
         }
 
@@ -69,8 +74,10 @@ namespace PascalCompiler.LexicalAnalyzer
                         throw new LexicalException(LexemePos, "String exceeds line");
                     WriteToBuffer();
                 }
+
                 if (TryNext('#'))
                     ScanChar();
+
                 if (!TryNext('\''))
                     return;
             }
@@ -109,9 +116,12 @@ namespace PascalCompiler.LexicalAnalyzer
                     Back();
                     return;
                 }
+
                 (_lexemeType, _lexemeToken) = (TokenType.Double, Token.L_DOUBLE);
+
                 if (@base == 10)
                     fractionalDigits = Digits(10);
+
                 WriteToBuffer(fractionalDigits);
             }
 
@@ -125,6 +135,7 @@ namespace PascalCompiler.LexicalAnalyzer
 
                 if (Peek() == '-' || Peek() == '+')
                     WriteToBuffer();
+
                 exponentDigits = Digits(10);
                 WriteToBuffer(exponentDigits);
 
@@ -153,8 +164,8 @@ namespace PascalCompiler.LexicalAnalyzer
                         throw new LexicalException(LexemePos, "Unexpected end of file");
                     WriteToBuffer();
                 }
+
                 WriteToBuffer();
-                return;
             }
             // comment style
             else if (CurrentChar == '/')
@@ -163,10 +174,9 @@ namespace PascalCompiler.LexicalAnalyzer
                 {
                     WriteToBuffer();
                 }
-                return;
             }
             // (* comment style *)
-            else if (CurrentChar == '*')
+            else
             {
                 while (CurrentChar != '*' || Peek() != ')')
                 {
@@ -174,8 +184,8 @@ namespace PascalCompiler.LexicalAnalyzer
                         throw new LexicalException(LexemePos, "Unexpected end of file");
                     WriteToBuffer();
                 }
+
                 WriteToBuffer();
-                return;
             }
         }
 
@@ -193,20 +203,27 @@ namespace PascalCompiler.LexicalAnalyzer
                 {
                     if (TryNext('*'))
                         ScanComment();
-                    else break;
+                    else
+                        break;
                 }
                 else if (CurrentChar == '/')
                 {
                     if (TryNext('/'))
                         ScanComment();
-                    else break;
+                    else
+                        break;
                 }
                 else if (CurrentChar == '{')
+                {
                     ScanComment();
+                }
                 else if (CurrentChar.IsSpace())
+                {
                     SkipWhitespace();
+                }
                 else
                     break;
+
                 WriteToBuffer(null, true);
             }
         }

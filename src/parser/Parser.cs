@@ -38,8 +38,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
         }
 
-        private void NextLexeme() =>
+        private void NextLexeme()
+        {
             _currentLexeme = _lexer.GetLexeme();
+        }
 
         private void Require<T>(bool getNext, params T[] tokens)
         {
@@ -71,7 +73,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     {
                         symType = GetSymType(field.Type);
                         foreach (var ident in field.IdentsList)
-                            table.Add(ident.Lexeme.ToString()!, symType);
+                            table.Add(new SymVar(ident.Lexeme.ToString()!, symType));
                     }
 
                     return new SymRecordType(table);
@@ -99,17 +101,14 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
         }
 
-        private SyntaxException ExpectedException(string expected, string found) =>
-            new SyntaxException(_lexer.Cursor,
-                        $"'{expected}' expected but '{found}' found");
-
-        private SyntaxException FatalException(string msg) =>
-            new SyntaxException(_lexer.Cursor, msg);
-
-        public void ChangeFile(string path)
+        private SyntaxException ExpectedException(string expected, string found)
         {
-            _lexer.ChangeFile(path);
-            _currentLexeme = _lexer.GetLexeme();
+            return new SyntaxException(_lexer.Cursor, $"'{expected}' expected but '{found}' found");
+        }
+
+        private SyntaxException FatalException(string msg)
+        {
+            return new SyntaxException(_lexer.Cursor, msg);
         }
     }
 }

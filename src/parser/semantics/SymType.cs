@@ -5,37 +5,43 @@ namespace PascalCompiler.Semantics
     public abstract class SymType : Symbol
     {
         protected SymType(string? ident = null) : base(ident!)
-        { }
+        {
+        }
     }
 
     public class SymIntegerType : SymType
     {
         public SymIntegerType() : base("integer")
-        { }
+        {
+        }
     }
 
     public class SymDoubleType : SymType
     {
         public SymDoubleType() : base("double")
-        { }
+        {
+        }
     }
 
     public class SymCharType : SymType
     {
         public SymCharType() : base("char")
-        { }
+        {
+        }
     }
 
     public class SymStringType : SymType
     {
         public SymStringType() : base("string")
-        { }
+        {
+        }
     }
 
     public class SymBooleanType : SymType
     {
         public SymBooleanType() : base("boolean")
-        { }
+        {
+        }
     }
 
     public class SymAliasType : SymType

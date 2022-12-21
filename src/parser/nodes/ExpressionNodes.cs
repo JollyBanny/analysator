@@ -3,13 +3,11 @@ using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
-    public class ExprNode : SyntaxNode
+    public abstract class ExprNode : SyntaxNode
     {
         protected ExprNode(Lexeme? lexeme = null) : base(lexeme!) { }
 
         public SymType SymType { get; }
-
-        public override void PrintTree(int depth = 0, string indent = "") { }
     }
 
     public class Cast : ExprNode

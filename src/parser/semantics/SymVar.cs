@@ -13,7 +13,8 @@ namespace PascalCompiler.Semantics
     public class SymConstant : SymVar
     {
         public SymConstant(string ident, SymType type) : base(ident, type)
-        { }
+        {
+        }
     }
 
     public class SymParameter : SymVar

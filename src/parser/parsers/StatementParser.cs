@@ -34,8 +34,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 return statements;
             }
 
-            while (!new List<Token> { Token.END, Token.EOF, Token.UNTIL }
-                .Contains(_currentLexeme))
+            while (!new List<Token> { Token.END, Token.EOF, Token.UNTIL }.Contains(_currentLexeme))
             {
                 if (!separatorExist)
                     Require<Token>(false, Token.SEMICOLOM);
