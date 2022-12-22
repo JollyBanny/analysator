@@ -146,6 +146,9 @@ namespace PascalCompiler.Semantics
 
                     return symArray;
 
+                case ConformatArrayTypeNode type:
+                    return new SymConformatArrayType(GetSymType(type.Type));
+
                 default:
                     var typeName = typeNode.Lexeme.Value.ToString()!;
                     symType = FindType(typeName);

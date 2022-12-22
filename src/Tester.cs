@@ -2,6 +2,7 @@ using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler
 {
@@ -61,7 +62,8 @@ namespace PascalCompiler
                 else
                 {
                     var _parser = new Parser(inFile);
-                    _parser.Parse().PrintTree();
+                    var printTree = _parser.Parse().Accept(new PrintVisitor());
+                    printTree.PrintTree();
                 }
             }
             catch (Exception e)

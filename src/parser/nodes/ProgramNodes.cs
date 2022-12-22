@@ -1,4 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
@@ -18,18 +19,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ProgramNode? Header { get; }
         public ProgramNode Block { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-
-            if (Header is not null)
-                Console.Write(indent + "├──── ");
-
-            Header?.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Block.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "program";
@@ -44,12 +36,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public IdentNode ProgramName { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "└──── ");
-            ProgramName.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "program header";
@@ -66,18 +55,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SyntaxNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            foreach (var decl in Decls)
-            {
-                Console.Write(indent + "├──── ");
-                decl.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-
-            Console.Write(indent + "└──── ");
-            CompoundStmt.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "program block";

@@ -1,4 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
@@ -11,23 +12,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<SyntaxNode> Decls { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            for (int i = 0; i < Decls.Count; ++i)
-            {
-                if (i == Decls.Count - 1)
-                {
-                    Console.Write(indent + "└──── ");
-                    Decls[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                }
-                else
-                {
-                    Console.Write(indent + "├──── ");
-                    Decls[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                }
-            }
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -52,22 +39,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode? Type { get; }
         public ExprNode Expr { get; }
 
-        public override void PrintTree(int depth, string indent)
+
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-
-            Console.Write(indent + "├──── ");
-            Ident.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            if (Type is not null)
-            {
-                Console.Write(indent + "├──── ");
-                Type.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-
-            Console.Write(indent + "└──── ");
-            Expr.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "const declaration";
@@ -92,29 +67,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode Type { get; }
         public ExprNode? Expr { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            for (int i = 0; i < IdentsList.Count; ++i)
-            {
-                Console.Write(IdentsList[i] + (i == IdentsList.Count - 1 ? "\n" : ", "));
-            }
-
-            if (Expr is not null)
-            {
-                Console.Write(indent + "├──── ");
-                Type.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                Console.Write(indent + "└──── ");
-            }
-            else
-            {
-                Console.Write(indent + "└──── ");
-                Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-            }
-
-            Expr?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "var declaration";
@@ -137,15 +92,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public IdentNode Ident { get; }
         public TypeNode Type { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Ident.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "type declaration";
@@ -164,17 +113,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public SyntaxNode? Block { get; }
         public bool IsForward { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Header.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            if (IsForward)
-                Console.WriteLine("forward");
-            Block?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -194,41 +135,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<FormalParamNode> ParamsList { get; }
         public TypeNode? Type { get; }
 
-
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Name.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            if (ParamsList is not null)
-                if (Type is not null)
-                    foreach (var param in ParamsList)
-                    {
-                        Console.Write(indent + "├──── ");
-                        param.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                    }
-                else
-                    for (int i = 0; i < ParamsList.Count; ++i)
-                    {
-                        if (i == ParamsList.Count - 1)
-                        {
-                            Console.Write(indent + "└──── ");
-                            ParamsList[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                        }
-                        else
-                        {
-                            Console.Write(indent + "├──── ");
-                            ParamsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                        }
-                    }
-
-            if (Type is not null)
-            {
-                Console.Write(indent + "└──── ");
-                Type?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-            }
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "header";
@@ -248,24 +157,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public TypeNode Type { get; }
         public SyntaxNode? Modifier { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            if (Modifier is not null)
-            {
-                Console.Write(indent + "├──── ");
-                Modifier.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-
-            Console.Write(indent + "├──── ");
-            for (int i = 0; i < IdentsList.Count; ++i)
-            {
-                Console.Write(IdentsList[i] + (i == IdentsList.Count - 1 ? "\n" : ", "));
-            }
-
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "parameter";
@@ -282,18 +176,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SyntaxNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            foreach (var decl in Decls)
-            {
-                Console.Write(indent + "├──── ");
-                decl.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-
-            Console.Write(indent + "└──── ");
-            CompoundStmt.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "block";
@@ -304,8 +189,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public KeywordNode(Lexeme lexeme) : base(lexeme)
         { }
 
-        public override void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
+        public override T Accept<T>(IVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }

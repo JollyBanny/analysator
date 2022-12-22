@@ -2,7 +2,7 @@ program
 └──── program block
       ├──── PROCEDURE
       │     ├──── header
-      │     │     ├──── myawesomeproc
+      │     │     └──── myawesomeproc
       │     └──── block
       │           ├──── VAR
       │           │     └──── var declaration
@@ -10,7 +10,7 @@ program
       │           │           └──── integer
       │           ├──── PROCEDURE
       │           │     ├──── header
-      │           │     │     ├──── myproc
+      │           │     │     └──── myproc
       │           │     └──── block
       │           │           └──── Compound statement
       │           │                 └──── Call statement

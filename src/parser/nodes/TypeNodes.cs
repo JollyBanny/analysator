@@ -1,5 +1,6 @@
 using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.Semantics;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
@@ -17,8 +18,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public SyntaxNode TypeIdent { get; }
 
-        public override void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
+        public override T Accept<T>(IVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
 
         public override string ToString() => TypeIdent is IdentNode ?
             Lexeme.Value.ToString()!.ToLower() : Lexeme.Value.ToString()!;
@@ -35,18 +38,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SubrangeTypeNode> Ranges { get; }
         public TypeNode Type { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            foreach (var range in Ranges)
-            {
-                Console.Write(indent + "├──── ");
-                range.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -63,15 +57,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode LeftBound { get; }
         public ExprNode RightBound { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            LeftBound.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            RightBound.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Source;
@@ -86,22 +74,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<RecordFieldNode> FieldsList { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-            for (int i = 0; i < FieldsList.Count; ++i)
-            {
-                if (i == FieldsList.Count - 1)
-                {
-                    Console.Write(indent + "└──── ");
-                    FieldsList[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                }
-                else
-                {
-                    Console.Write(indent + "├──── ");
-                    FieldsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                }
-            }
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -118,16 +93,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-            for (int i = 0; i < IdentsList.Count; ++i)
-            {
-                Console.Write(indent + "├──── ");
-                IdentsList[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-            }
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Source;
@@ -142,11 +110,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public TypeNode Type { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-            Console.Write(indent + "└──── ");
-            Type.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;

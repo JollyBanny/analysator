@@ -4,6 +4,7 @@ using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 
 using System.Globalization;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler
 {
@@ -141,7 +142,8 @@ namespace PascalCompiler
             try
             {
                 Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
-                _parser.Parse().PrintTree();
+                var printTree = _parser.Parse().Accept(new PrintVisitor());
+                printTree.PrintTree();
             }
             catch (Exception e)
             {

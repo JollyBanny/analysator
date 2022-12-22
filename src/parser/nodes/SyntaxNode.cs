@@ -1,4 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
@@ -8,6 +9,6 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public Lexeme Lexeme { get; }
 
-        public abstract void PrintTree(int depth = 0, string indent = "");
+        public abstract T Accept<T>(IVisitor<T> visitor);
     }
 }

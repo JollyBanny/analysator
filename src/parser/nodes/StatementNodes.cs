@@ -1,4 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
@@ -16,23 +17,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<StmtNode> Statements { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            for (int i = 0; i < Statements.Count; ++i)
-            {
-                if (i == Statements.Count - 1)
-                {
-                    Console.Write(indent + "└──── ");
-                    Statements[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                }
-                else
-                {
-                    Console.Write(indent + "├──── ");
-                    Statements[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                }
-            }
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "Compound statement";
@@ -43,8 +30,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public EmptyStmtNode() : base()
         { }
 
-        public override void PrintTree(int depth, string indent) =>
-            Console.WriteLine(this);
+        public override T Accept<T>(IVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
 
         public override string ToString() => "Empty statement";
     }
@@ -58,12 +47,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public ExprNode Expression { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "└──── ");
-            Expression.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => "Call statement";
@@ -80,15 +66,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Left { get; }
         public ExprNode Right { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Left.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Right.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Source;
@@ -108,28 +88,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public StmtNode IfPart { get; }
         public StmtNode? ElsePart { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Condition.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            if (ElsePart is not null)
-            {
-                Console.Write(indent + "├──── ");
-                IfPart.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-                Console.Write(indent + "└──── ");
-            }
-            else
-            {
-                Console.Write(indent + "└──── ");
-                IfPart.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-
-            }
-
-            ElsePart?.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -146,15 +107,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public StmtNode Statement { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Condition.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Statement.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -171,26 +126,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public List<StmtNode> Statements { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            Condition.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            for (int i = 0; i < Statements.Count; ++i)
-            {
-                if (i == Statements.Count - 1)
-                {
-                    Console.Write(indent + "└──── ");
-                    Statements[i].PrintTree(depth + 1, indent + "".PadRight(6, ' '));
-                }
-                else
-                {
-                    Console.Write(indent + "├──── ");
-                    Statements[i].PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-                }
-            }
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -210,18 +148,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ForRangeNode ForRange { get; }
         public StmtNode Statement { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            CtrlIdent.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "├──── ");
-            ForRange.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            Statement.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
@@ -238,15 +167,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode StartValue { get; }
         public ExprNode FinalValue { get; }
 
-        public override void PrintTree(int depth, string indent)
+        public override T Accept<T>(IVisitor<T> visitor)
         {
-            Console.WriteLine(this);
-
-            Console.Write(indent + "├──── ");
-            StartValue.PrintTree(depth + 1, indent + "│".PadRight(6, ' '));
-
-            Console.Write(indent + "└──── ");
-            FinalValue.PrintTree(depth + 1, indent + "".PadRight(6, ' '));
+            return visitor.Visit(this);
         }
 
         public override string ToString() => Lexeme.Value.ToString()!;
