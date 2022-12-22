@@ -1,5 +1,4 @@
 using PascalCompiler.Enums;
-using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
 using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
@@ -118,6 +117,7 @@ namespace PascalCompiler.SyntaxAnalyzer
         private ExprNode ParseVarReference()
         {
             var left = ParseIdent() as ExprNode;
+
             var lexeme = _currentLexeme;
 
             while (true)
@@ -190,7 +190,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             Require<TokenType>(true, TokenType.Identifier);
 
-            return new IdentNode(lexeme);
+            return new IdentNode(lexeme, null);
         }
 
         private List<IdentNode> ParseIdentsList()
@@ -219,35 +219,35 @@ namespace PascalCompiler.SyntaxAnalyzer
         {
             var lexeme = _currentLexeme;
             NextLexeme();
-            return new ConstIntegerLiteral(lexeme);
+            return new ConstIntegerLiteral(lexeme, new SymIntegerType());
         }
 
         private ConstantNode ParseConstDoubleLiteral()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
-            return new ConstDoubleLiteral(lexeme);
+            return new ConstDoubleLiteral(lexeme, new SymDoubleType());
         }
 
         private ConstantNode ParseConstStringLiteral()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
-            return new ConstStringLiteral(lexeme);
+            return new ConstStringLiteral(lexeme, new SymStringType());
         }
 
         private ConstantNode ParseConstCharLiteral()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
-            return new ConstCharLiteral(lexeme);
+            return new ConstCharLiteral(lexeme, new SymCharType());
         }
 
         private ConstantNode ParseConstBooleanLiteral()
         {
             var lexeme = _currentLexeme;
             NextLexeme();
-            return new ConstBooleanLiteral(lexeme);
+            return new ConstBooleanLiteral(lexeme, new SymBooleanType());
         }
     }
 }

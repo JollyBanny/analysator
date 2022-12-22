@@ -7,6 +7,26 @@ using System.Globalization;
 
 namespace PascalCompiler
 {
+    public struct Position
+    {
+        public Position() { }
+
+        public int Line = 1;
+        public int Ch = 0;
+    }
+
+    public struct Pair<T>
+    {
+        public Pair(T first, T second)
+        {
+            First = first;
+            Second = second;
+        }
+
+        public T First;
+        public T Second;
+    }
+
     class Program
     {
         static void WrongArgs(string message)

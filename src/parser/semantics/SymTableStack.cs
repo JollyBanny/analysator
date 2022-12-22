@@ -116,6 +116,47 @@ namespace PascalCompiler.Semantics
             return false;
         }
 
+        public SymType GetSymType(TypeNode typeNode)
+        {
+            SymType? symType;
+
+            switch (typeNode)
+            {
+                case RecordTypeNode type:
+                    var symRecord = new SymRecordType(new SymTable());
+
+                    foreach (var field in type.FieldsList)
+                    {
+                        symType = GetSymType(field.Type);
+                        foreach (var ident in field.IdentsList)
+                            symRecord.Table.Add(new SymVar(ident.Lexeme.ToString()!, symType));
+                    }
+
+                    return symRecord;
+
+                case ArrayTypeNode type:
+                    var ranges = new List<Pair<ExprNode>>();
+                    var symArray = new SymArrayType(ranges, GetSymType(type.Type));
+
+                    foreach (var range in type.Ranges)
+                    {
+                        var range_ = new Pair<ExprNode>(range.LeftBound, range.RightBound);
+                        ranges.Add(range_);
+                    }
+
+                    return symArray;
+
+                default:
+                    var typeName = typeNode.Lexeme.Value.ToString()!;
+                    symType = FindType(typeName);
+
+                    if (symType is not null)
+                        return symType;
+                    else
+                        throw new SemanticException($"type '{typeName}' not found");
+            }
+        }
+
         public void CheckDuplicate(string symName)
         {
             if (Contains(symName, true))

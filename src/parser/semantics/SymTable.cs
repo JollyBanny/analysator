@@ -17,6 +17,11 @@ namespace PascalCompiler.Semantics
             _table.Add(sym.Name.ToLower(), sym);
         }
 
+        public void Remove(string symName)
+        {
+            _table.Remove(symName);
+        }
+
         public Symbol? Find(string symName)
         {
             return _table.Contains(symName) ? _table[symName] as Symbol : null;
@@ -25,11 +30,6 @@ namespace PascalCompiler.Semantics
         public bool Contains(string symName)
         {
             return _table.Contains(symName);
-        }
-
-        public void Remove(string symName)
-        {
-            _table.Remove(symName);
         }
 
         public IDictionaryEnumerator GetEnumerator()

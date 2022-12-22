@@ -5,7 +5,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public abstract class ExprNode : SyntaxNode
     {
-        protected ExprNode(Lexeme? lexeme = null) : base(lexeme!) { }
+        protected ExprNode(Lexeme? lexeme = null, SymType type = null!) : base(lexeme!)
+        {
+            SymType = type;
+        }
 
         public SymType SymType { get; }
     }
@@ -173,8 +176,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class UserCallNode : CallNode
     {
-        public UserCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent, args)
-        { }
+        public UserCallNode(IdentNode funcIdent, List<ExprNode> args, SymProc sym = null!) : base(funcIdent, args)
+        {
+            SymProc = sym;
+        }
 
         public SymProc SymProc { get; }
     }
@@ -191,51 +196,68 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class IdentNode : ExprNode
     {
-        public IdentNode(Lexeme lexeme) : base(lexeme)
-        { }
+        public IdentNode(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
 
-        public override void PrintTree(int depth, string indent) =>
+        public override void PrintTree(int depth, string indent)
+        {
             Console.WriteLine(this);
+        }
 
         public override string ToString() => Lexeme.Value.ToString()!.ToLower();
     }
 
     public class ConstantNode : ExprNode
     {
-        protected ConstantNode(Lexeme lexeme) : base(lexeme) { }
+        protected ConstantNode(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
 
-        public override void PrintTree(int depth, string indent) =>
+        public override void PrintTree(int depth, string indent)
+        {
             Console.WriteLine(this);
+        }
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstIntegerLiteral : ConstantNode
     {
-        public ConstIntegerLiteral(Lexeme lexeme) : base(lexeme) { }
+        public ConstIntegerLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
     }
 
     public class ConstDoubleLiteral : ConstantNode
     {
-        public ConstDoubleLiteral(Lexeme lexeme) : base(lexeme) { }
+        public ConstDoubleLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
     }
 
     public class ConstCharLiteral : ConstantNode
     {
-        public ConstCharLiteral(Lexeme lexeme) : base(lexeme) { }
+        public ConstCharLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
 
         public override string ToString() => $"'{Lexeme.Value}'";
     }
 
     public class ConstStringLiteral : ConstantNode
     {
-        public ConstStringLiteral(Lexeme lexeme) : base(lexeme) { }
+        public ConstStringLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
 
         public override string ToString() => $"'{Lexeme.Value}'";
     }
 
     public class ConstBooleanLiteral : ConstantNode
     {
-        public ConstBooleanLiteral(Lexeme lexeme) : base(lexeme) { }
+        public ConstBooleanLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        {
+        }
     }
 }

@@ -1,13 +1,5 @@
 namespace PascalCompiler.LexicalAnalyzer
 {
-    public struct Position
-    {
-        public int Line = 1;
-        public int Ch = 0;
-
-        public Position() { }
-    }
-
     class LexerBuffer
     {
         private StreamReader _fstream;

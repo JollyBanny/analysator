@@ -76,13 +76,13 @@ namespace PascalCompiler.Semantics
 
     public class SymArrayType : SymType
     {
-        public SymArrayType(List<Tuple<ExprNode, ExprNode>> ranges, SymType elemType) : base("array")
+        public SymArrayType(List<Pair<ExprNode>> ranges, SymType elemType) : base("array")
         {
             Ranges = ranges;
             ElemType = elemType;
         }
 
-        public List<Tuple<ExprNode, ExprNode>> Ranges { get; }
+        public List<Pair<ExprNode>> Ranges { get; }
         public SymType ElemType { get; }
     }
 

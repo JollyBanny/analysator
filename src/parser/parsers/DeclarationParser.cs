@@ -1,5 +1,4 @@
 using System.Collections;
-using PascalCompiler.Exceptions;
 using PascalCompiler.Enums;
 using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
@@ -111,7 +110,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var type = ParseType();
 
-            var symType = GetSymType(type);
+            var symType = _symStack.GetSymType(type);
 
             ExprNode? expression = null;
             if (_currentLexeme == Token.EQUAL)
@@ -165,7 +164,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             Require<Token>(true, Token.SEMICOLOM);
 
-            var symType = GetSymType(type);
+            var symType = _symStack.GetSymType(type);
             _symStack.AddAliasType(typeName, symType);
 
             return new TypeDeclNode(typeIdent, type);
@@ -180,7 +179,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var header = lexeme == Token.FUNCTION ? ParseFuncHeader() : ParseProcHeader();
             var callName = header.Name.Lexeme.Value.ToString()!;
-            var symType = lexeme == Token.FUNCTION ? GetSymType(header.Type!) : null;
+            var symType = header.Type is not null ? _symStack.GetSymType(header.Type) : null;
 
             Require<Token>(true, Token.SEMICOLOM);
 
@@ -288,7 +287,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var paramsTable = _symStack.Pop();
             var symModifier = modifier is null ? "" : modifier.ToString()!.ToLower();
-            var symTypeParam = GetSymType(paramType);
+            var symTypeParam = _symStack.GetSymType(paramType);
 
             foreach (DictionaryEntry ident in paramsTable)
                 _symStack.AddParameter(ident.Key.ToString()!, symTypeParam, symModifier);
