@@ -120,7 +120,7 @@ namespace PascalCompiler.Semantics
             if (proc is SymFunc)
                 return proc as SymFunc;
             if (proc is SymProc)
-                return proc as SymFunc;
+                return proc as SymProc;
             else
                 return null;
         }
@@ -198,11 +198,11 @@ namespace PascalCompiler.Semantics
                 throw new SemanticException($"Duplicate identifier {symName}");
         }
 
-        public void CheckCallNameDuplicate(string symName)
+        public void CheckPreLastScopeDuplicate(string symName)
         {
             CheckDuplicate(symName);
-
             var cache_table = Pop();
+
             if (Contains(symName, true))
                 throw new SemanticException($"Duplicate identifier {symName}");
 

@@ -32,9 +32,6 @@ begin
 	writeln(a div 100 + 5);
 	writeln(a mod 100 - 5);
 
-	writeln(c or d);
-	writeln(c and d);
-	writeln(c xor d);
 	writeln(c shr 1);
 	writeln(c shl 1);
 end.

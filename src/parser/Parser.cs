@@ -40,10 +40,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 throw new SemanticException(_lexer.Cursor, e.Message);
             }
-            catch (SyntaxException e)
-            {
-                throw new SyntaxException(_lexer.Cursor, e.Message);
-            }
         }
 
         private void NextLexeme()

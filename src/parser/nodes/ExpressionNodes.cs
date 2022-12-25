@@ -22,7 +22,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Expr = expr;
         }
 
-        public ExprNode Expr { get; set; }
+        public ExprNode Expr { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -58,7 +58,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Expr = expr;
         }
 
-        public ExprNode Expr { get; set; }
+        public ExprNode Expr { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -76,8 +76,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Field = field;
         }
 
-        public ExprNode Record { get; set; }
-        public IdentNode Field { get; set; }
+        public ExprNode Record { get; }
+        public IdentNode Field { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -95,8 +95,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             AccessExprs = accessExprs;
         }
 
-        public ExprNode ArrayIdent { get; set; }
-        public List<ExprNode> AccessExprs { get; set; }
+        public ExprNode ArrayIdent { get; }
+        public List<ExprNode> AccessExprs { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -113,7 +113,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Args = args;
         }
 
-        public List<ExprNode> Args { get; set; }
+        public List<ExprNode> Args { get; }
 
         public override string ToString() => Lexeme.Value.ToString()!.ToLower();
     }
@@ -139,7 +139,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             NewLine = newLine;
         }
 
-        public bool NewLine { get; set; }
+        public bool NewLine { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {

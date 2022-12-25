@@ -28,7 +28,7 @@ namespace PascalCompiler.Semantics
 
         public SymTable Params { get; }
         public SymTable Locals { get; }
-        public StmtNode? Block { get; }
+        public StmtNode? Block { get; set; }
     }
 
     public class SymFunc : SymProc
@@ -39,6 +39,6 @@ namespace PascalCompiler.Semantics
             ReturnType = type;
         }
 
-        public SymType ReturnType { get; }
+        public SymType ReturnType { get; set; }
     }
 }

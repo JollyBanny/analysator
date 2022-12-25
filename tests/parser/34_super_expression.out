@@ -112,12 +112,13 @@ program
             │                 │     │           │     └──── a
             │                 │     │           └──── 2
             │                 │     └──── 2
-            │                 └──── -
+            │                 └──── cast to double
             │                       └──── -
             │                             └──── -
             │                                   └──── -
-            │                                         └──── +
-            │                                               └──── 10
+            │                                         └──── -
+            │                                               └──── +
+            │                                                     └──── 10
             ├──── Call statement
             │     └──── writeln
             │           └──── +
@@ -132,21 +133,6 @@ program
             │                 │     ├──── a
             │                 │     └──── 100
             │                 └──── 5
-            ├──── Call statement
-            │     └──── writeln
-            │           └──── or
-            │                 ├──── c
-            │                 └──── d
-            ├──── Call statement
-            │     └──── writeln
-            │           └──── and
-            │                 ├──── c
-            │                 └──── d
-            ├──── Call statement
-            │     └──── writeln
-            │           └──── xor
-            │                 ├──── c
-            │                 └──── d
             ├──── Call statement
             │     └──── writeln
             │           └──── shr

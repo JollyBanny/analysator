@@ -7,7 +7,7 @@ namespace PascalCompiler.Semantics
             Type = type;
         }
 
-        public SymType Type { get; }
+        public SymType Type { get; set; }
 
         public override string ToString()
         {

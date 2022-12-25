@@ -1,5 +1,5 @@
 const a = 5;
     b:string = 'hello world';
 begin
-      writeln(1 + 2, str);
+      writeln(1 + 2, a);
 end.
