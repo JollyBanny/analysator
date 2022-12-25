@@ -73,7 +73,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             ExprNode expression = ParseExpression();
 
-            _symStack.AddConst(constName, expression.SymType);
+            _symStack.AddConst(constName, expression.SymType!);
 
             Require<Token>(true, Token.SEMICOLOM);
 

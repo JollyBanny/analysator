@@ -6,26 +6,23 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public abstract class ExprNode : SyntaxNode
     {
-        protected ExprNode(Lexeme? lexeme = null, SymType type = null!) : base(lexeme!)
+        protected ExprNode(Lexeme? lexeme = null) : base(lexeme!)
         {
-            SymType = type;
         }
 
-        public SymType SymType { get; }
+        public SymType? SymType { get; set; }
 
-        public override string ToString() => $"'{Lexeme.Value}'";
+        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class CastNode : ExprNode
     {
-        public CastNode(ExprNode expr, TypeNode toType) : base()
+        public CastNode(ExprNode expr) : base()
         {
             Expr = expr;
-            ToType = toType;
         }
 
-        public ExprNode Expr { get; }
-        public TypeNode ToType { get; }
+        public ExprNode Expr { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -43,8 +40,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Right = right;
         }
 
-        public ExprNode Left { get; }
-        public ExprNode Right { get; }
+        public ExprNode Left { get; set; }
+        public ExprNode Right { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -60,7 +57,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             Expr = expr;
         }
-        public ExprNode Expr { get; }
+
+        public ExprNode Expr { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -78,8 +76,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Field = field;
         }
 
-        public ExprNode Record { get; }
-        public IdentNode Field { get; }
+        public ExprNode Record { get; set; }
+        public IdentNode Field { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -97,8 +95,8 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             AccessExprs = accessExprs;
         }
 
-        public ExprNode ArrayIdent { get; }
-        public List<ExprNode> AccessExprs { get; }
+        public ExprNode ArrayIdent { get; set; }
+        public List<ExprNode> AccessExprs { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -115,19 +113,18 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             Args = args;
         }
 
-        public List<ExprNode> Args { get; }
+        public List<ExprNode> Args { get; set; }
 
         public override string ToString() => Lexeme.Value.ToString()!.ToLower();
     }
 
     public class UserCallNode : CallNode
     {
-        public UserCallNode(IdentNode funcIdent, List<ExprNode> args, SymProc sym = null!) : base(funcIdent, args)
+        public UserCallNode(IdentNode funcIdent, List<ExprNode> args) : base(funcIdent, args)
         {
-            SymProc = sym;
         }
 
-        public SymProc SymProc { get; }
+        public SymProc? SymProc { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -142,7 +139,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
             NewLine = newLine;
         }
 
-        public bool NewLine { get; }
+        public bool NewLine { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -152,9 +149,11 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class IdentNode : ExprNode
     {
-        public IdentNode(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public IdentNode(Lexeme lexeme) : base(lexeme)
         {
         }
+
+        public SymVar? SymVar { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -166,14 +165,14 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public abstract class ConstantNode : ExprNode
     {
-        protected ConstantNode(Lexeme lexeme, SymType type) : base(lexeme, type)
+        protected ConstantNode(Lexeme lexeme) : base(lexeme)
         {
         }
     }
 
     public class ConstIntegerLiteral : ConstantNode
     {
-        public ConstIntegerLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public ConstIntegerLiteral(Lexeme lexeme) : base(lexeme)
         {
         }
 
@@ -181,13 +180,11 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             return visitor.Visit(this);
         }
-
-        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstDoubleLiteral : ConstantNode
     {
-        public ConstDoubleLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public ConstDoubleLiteral(Lexeme lexeme) : base(lexeme)
         {
         }
 
@@ -195,13 +192,11 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             return visitor.Visit(this);
         }
-
-        public override string ToString() => Lexeme.Value.ToString()!;
     }
 
     public class ConstCharLiteral : ConstantNode
     {
-        public ConstCharLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public ConstCharLiteral(Lexeme lexeme) : base(lexeme)
         {
         }
 
@@ -215,7 +210,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ConstStringLiteral : ConstantNode
     {
-        public ConstStringLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public ConstStringLiteral(Lexeme lexeme) : base(lexeme)
         {
         }
 
@@ -229,7 +224,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ConstBooleanLiteral : ConstantNode
     {
-        public ConstBooleanLiteral(Lexeme lexeme, SymType type) : base(lexeme, type)
+        public ConstBooleanLiteral(Lexeme lexeme) : base(lexeme)
         {
         }
 
@@ -237,7 +232,5 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             return visitor.Visit(this);
         }
-
-        public override string ToString() => Lexeme.Value.ToString()!;
     }
 }

@@ -3,11 +3,17 @@ using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.Semantics
 {
-    public class SymTableStack
+    public class SymStack
     {
+        public static readonly SymType SymInt = new SymIntegerType();
+        public static readonly SymType SymDouble = new SymDoubleType();
+        public static readonly SymType SymChar = new SymCharType();
+        public static readonly SymType SymString = new SymStringType();
+        public static readonly SymType SymBoolean = new SymBooleanType();
+
         private Stack<SymTable> _stack;
 
-        public SymTableStack()
+        public SymStack()
         {
             _stack = new Stack<SymTable>();
             SetBuiltinsTable();
@@ -17,11 +23,11 @@ namespace PascalCompiler.Semantics
         private void SetBuiltinsTable()
         {
             _stack.Push(new SymTable());
-            Add(new SymIntegerType());
-            Add(new SymDoubleType());
-            Add(new SymStringType());
-            Add(new SymCharType());
-            Add(new SymBooleanType());
+            Add(SymInt);
+            Add(SymDouble);
+            Add(SymChar);
+            Add(SymString);
+            Add(SymBoolean);
         }
 
         public void Push()
@@ -97,11 +103,26 @@ namespace PascalCompiler.Semantics
             return null;
         }
 
-        public SymType? FindType(string symName)
+        public SymVar? FindIdent(string symName, bool inScope = false)
         {
-            var symType = Find(symName);
+            var ident = Find(symName, inScope);
 
-            return symType is SymType ? symType as SymType : null;
+            if (ident is SymVar)
+                return ident as SymVar;
+            else
+                return null;
+        }
+
+        public SymProc? FindProc(string symName, bool inScope = false)
+        {
+            var proc = Find(symName, inScope);
+
+            if (proc is SymFunc)
+                return proc as SymFunc;
+            if (proc is SymProc)
+                return proc as SymFunc;
+            else
+                return null;
         }
 
         public bool Contains(string symName, bool inScope = false)
@@ -114,6 +135,20 @@ namespace PascalCompiler.Semantics
                     return true;
 
             return false;
+        }
+
+        public SymType? FindType(string symName)
+        {
+            var symType = Find(symName);
+
+            return symType is SymType ? symType as SymType : null;
+        }
+
+        public SymProc? FindCall(string symName)
+        {
+            var symType = Find(symName);
+
+            return symType is SymFunc || symType is SymProc ? symType as SymProc : null;
         }
 
         public SymType GetSymType(TypeNode typeNode)
@@ -139,10 +174,7 @@ namespace PascalCompiler.Semantics
                     var symArray = new SymArrayType(ranges, GetSymType(type.Type));
 
                     foreach (var range in type.Ranges)
-                    {
-                        var range_ = new Pair<ExprNode>(range.LeftBound, range.RightBound);
-                        ranges.Add(range_);
-                    }
+                        ranges.Add(new Pair<ExprNode>(range.LeftBound, range.RightBound));
 
                     return symArray;
 

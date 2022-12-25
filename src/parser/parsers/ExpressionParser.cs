@@ -1,6 +1,5 @@
 using PascalCompiler.Enums;
 using PascalCompiler.Extensions;
-using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -38,6 +37,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 NextLexeme();
                 left = new BinOperNode(lexeme, left, ParseSimpleExpression());
+                left.Accept(_symVisitor);
             }
 
             return left;
@@ -52,6 +52,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 NextLexeme();
                 left = new BinOperNode(lexeme, left, ParseTerm());
+                left.Accept(_symVisitor);
                 lexeme = _currentLexeme;
             }
 
@@ -67,6 +68,7 @@ namespace PascalCompiler.SyntaxAnalyzer
             {
                 NextLexeme();
                 left = new BinOperNode(lexeme, left, ParseSimpleTerm());
+                left.Accept(_symVisitor);
                 lexeme = _currentLexeme;
             }
 
@@ -80,7 +82,9 @@ namespace PascalCompiler.SyntaxAnalyzer
             if (UnaryOperators.Contains(lexeme))
             {
                 NextLexeme();
-                return new UnaryOperNode(lexeme, ParseSimpleTerm());
+                var left = new UnaryOperNode(lexeme, ParseSimpleTerm());
+                left.Accept(_symVisitor);
+                return left;
             }
 
             return ParseFactor();
@@ -117,7 +121,6 @@ namespace PascalCompiler.SyntaxAnalyzer
         private ExprNode ParseVarReference()
         {
             var left = ParseIdent() as ExprNode;
-
             var lexeme = _currentLexeme;
 
             while (true)
@@ -127,6 +130,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     NextLexeme();
 
                     left = new ArrayAccessNode(left, ParseParamsList());
+                    left.Accept(_symVisitor);
 
                     Require<Token>(true, Token.RBRACK);
 
@@ -136,6 +140,8 @@ namespace PascalCompiler.SyntaxAnalyzer
                 {
                     NextLexeme();
                     left = new RecordAccessNode(left, ParseIdent());
+                    left.Accept(_symVisitor);
+
                     lexeme = _currentLexeme;
                 }
                 else if (lexeme == Token.LPAREN)
@@ -158,12 +164,24 @@ namespace PascalCompiler.SyntaxAnalyzer
                     else if (Token.WRITELN.ToString() == identName)
                         left = new WriteCallNode((IdentNode)left, args, true);
                     else
+                    {
                         left = new UserCallNode((IdentNode)left, args);
+                        left.Accept(_symVisitor);
+                    }
 
                     lexeme = _currentLexeme;
                 }
                 else
+                {
+                    var symProc = _symStack.FindProc(left.ToString());
+                    if (symProc is not null && left is IdentNode)
+                    {
+                        left = new UserCallNode((IdentNode)left, new List<ExprNode>());
+                    }
+
+                    left.Accept(_symVisitor);
                     return left;
+                }
             }
         }
 
@@ -190,7 +208,7 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             Require<TokenType>(true, TokenType.Identifier);
 
-            return new IdentNode(lexeme, null);
+            return new IdentNode(lexeme);
         }
 
         private List<IdentNode> ParseIdentsList()
@@ -217,37 +235,42 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private ConstantNode ParseConstIntegerLiteral()
         {
-            var lexeme = _currentLexeme;
+            var constantNode = new ConstIntegerLiteral(_currentLexeme);
+            constantNode.Accept(_symVisitor);
             NextLexeme();
-            return new ConstIntegerLiteral(lexeme, new SymIntegerType());
+            return constantNode;
         }
 
         private ConstantNode ParseConstDoubleLiteral()
         {
-            var lexeme = _currentLexeme;
+            var constantNode = new ConstDoubleLiteral(_currentLexeme);
+            constantNode.Accept(_symVisitor);
             NextLexeme();
-            return new ConstDoubleLiteral(lexeme, new SymDoubleType());
+            return constantNode;
         }
 
         private ConstantNode ParseConstStringLiteral()
         {
-            var lexeme = _currentLexeme;
+            var constantNode = new ConstStringLiteral(_currentLexeme);
+            constantNode.Accept(_symVisitor);
             NextLexeme();
-            return new ConstStringLiteral(lexeme, new SymStringType());
+            return constantNode;
         }
 
         private ConstantNode ParseConstCharLiteral()
         {
-            var lexeme = _currentLexeme;
+            var constantNode = new ConstCharLiteral(_currentLexeme);
+            constantNode.Accept(_symVisitor);
             NextLexeme();
-            return new ConstCharLiteral(lexeme, new SymCharType());
+            return constantNode;
         }
 
         private ConstantNode ParseConstBooleanLiteral()
         {
-            var lexeme = _currentLexeme;
+            var constantNode = new ConstBooleanLiteral(_currentLexeme);
+            constantNode.Accept(_symVisitor);
             NextLexeme();
-            return new ConstBooleanLiteral(lexeme, new SymBooleanType());
+            return constantNode;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace PascalCompiler.Semantics
 {
     public abstract class SymType : Symbol
     {
-        protected SymType(string? ident = null) : base(ident!)
+        protected SymType(string ident) : base(ident)
         {
         }
     }
@@ -88,7 +88,7 @@ namespace PascalCompiler.Semantics
 
     public class SymConformatArrayType : SymType
     {
-        public SymConformatArrayType(SymType elemType) : base()
+        public SymConformatArrayType(SymType elemType) : base("сonformat array")
         {
             ElemType = elemType;
         }

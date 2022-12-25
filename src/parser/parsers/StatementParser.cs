@@ -49,7 +49,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                     NextLexeme();
 
                     if (_currentLexeme == Token.ELSE)
-                        throw ExpectedException(";", $"{Token.ELSE}");
+                        Require<Token>(false, Token.SEMICOLOM);
                 }
             }
 

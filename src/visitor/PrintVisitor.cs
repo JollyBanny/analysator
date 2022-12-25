@@ -37,9 +37,8 @@ namespace PascalCompiler.Visitor
 
         public PrintVisitorNode Visit(CastNode node)
         {
-            var printNode = new PrintVisitorNode(node.ToString());
+            var printNode = new PrintVisitorNode($"{node.ToString()} to {node.SymType}");
             printNode.AddChild(node.Expr.Accept(this));
-            printNode.AddChild(node.ToType.Accept(this));
 
             return printNode;
         }
