@@ -328,10 +328,7 @@ namespace PascalCompiler.Visitor
         public PrintVisitorNode Visit(ArrayTypeNode node)
         {
             var printNode = new PrintVisitorNode(node.ToString());
-
-            foreach (var range in node.Ranges)
-                printNode.AddChild(range.Accept(this));
-
+            printNode.AddChild(node.Range.Accept(this));
             printNode.AddChild(node.Type.Accept(this));
 
             return printNode;

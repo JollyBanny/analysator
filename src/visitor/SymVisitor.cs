@@ -1,3 +1,4 @@
+using System.Collections;
 using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Semantics;
@@ -7,12 +8,6 @@ namespace PascalCompiler.Visitor
 {
     public class SymVisitor : IVisitor<bool>
     {
-        private static readonly List<Token> RelationalOperators = new List<Token>
-        {
-            Token.EQUAL, Token.NOT_EQUAL, Token.MORE, Token.LESS,
-            Token.MORE_EQUAL, Token.LESS_EQUAL
-        };
-
         private static readonly List<SymType> WritableTypes = new List<SymType>
         {
             SymStack.SymBoolean, SymStack.SymChar, SymStack.SymString,
@@ -156,11 +151,41 @@ namespace PascalCompiler.Visitor
 
         public bool Visit(RecordAccessNode node)
         {
+            node.Record.Accept(this);
+
+            if (node.Record.SymType is not SymRecordType)
+                throw new SemanticException("Illegal qualifier");
+
+            var table = (node.Record.SymType as SymRecordType)!.Table;
+            var member = table.Find(node.Field.ToString()) as SymVar;
+
+            if (member is null)
+                throw new SemanticException($"identifier idents no member '{node.Field}'");
+
+            node.SymType = member.Type;
             return true;
         }
 
         public bool Visit(ArrayAccessNode node)
         {
+            node.ArrayIdent.Accept(this);
+
+            if (node.ArrayIdent.SymType is not SymArrayType)
+                throw new SemanticException("Illegal qualifier");
+
+            foreach (var expr in node.AccessExprs)
+                if (expr.SymType != SymStack.SymInt)
+                    throw new SemanticException("index is not integer");
+
+            SymType type = (node.ArrayIdent.SymType as SymArrayType)!.ElemType;
+
+            for (int i = 1; i < node.AccessExprs.Count; i++)
+                if (type is SymArrayType)
+                    type = (type as SymArrayType)!.ElemType;
+                else
+                    throw new SemanticException("Illegal qualifier");
+
+            node.SymType = type;
             return true;
         }
 
@@ -168,23 +193,23 @@ namespace PascalCompiler.Visitor
         {
             var symProc = _symStack.FindProc(node.ToString()!);
 
-            if (symProc is SymFunc)
-            {
-                node.SymProc = symProc;
-                node.SymType = (symProc as SymFunc)!.ReturnType;
-            }
-            else if (symProc is SymProc)
-            {
-                node.SymProc = symProc;
-            }
-            else
+            if (symProc is null)
                 throw new SemanticException($"procedure {node} is not declared");
+            else
+                node.SymProc = symProc;
+
+            if (symProc is SymFunc)
+                node.SymType = (symProc as SymFunc)!.ReturnType;
 
             return true;
         }
 
         public bool Visit(WriteCallNode node)
         {
+            foreach (var arg in node.Args)
+                if (!WritableTypes.Contains(arg.SymType!))
+                    throw new SemanticException($"{arg.SymType} is not writable type");
+
             return true;
         }
 

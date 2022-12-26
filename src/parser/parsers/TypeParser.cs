@@ -1,4 +1,5 @@
 using PascalCompiler.Enums;
+using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -45,7 +46,20 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var type = ParseType();
 
-            return new ArrayTypeNode(lexeme, rangesList, type);
+            return NormalizeArrayType(lexeme, rangesList, type);
+        }
+
+        private ArrayTypeNode NormalizeArrayType(Lexeme lexeme, List<SubrangeTypeNode> rangesList, TypeNode type)
+        {
+            while (rangesList.Count > 1)
+            {
+                var range = rangesList.First();
+                rangesList.Remove(range);
+
+                return new ArrayTypeNode(lexeme, range, NormalizeArrayType(lexeme, rangesList, type));
+            }
+
+            return new ArrayTypeNode(lexeme, rangesList.First(), type);
         }
 
         private List<SubrangeTypeNode> ParseSubrangesList()

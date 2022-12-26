@@ -29,13 +29,13 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ArrayTypeNode : TypeNode
     {
-        public ArrayTypeNode(Lexeme lexeme, List<SubrangeTypeNode> ranges, TypeNode type) : base(lexeme)
+        public ArrayTypeNode(Lexeme lexeme, SubrangeTypeNode range, TypeNode type) : base(lexeme)
         {
-            Ranges = ranges;
+            Range = range;
             Type = type;
         }
 
-        public List<SubrangeTypeNode> Ranges { get; }
+        public SubrangeTypeNode Range { get; }
         public TypeNode Type { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)

@@ -13,6 +13,8 @@ namespace PascalCompiler.Semantics
 
         private Stack<SymTable> _stack;
 
+        public int Count { get { return _stack.Count; } }
+
         public SymStack()
         {
             _stack = new Stack<SymTable>();
@@ -164,17 +166,14 @@ namespace PascalCompiler.Semantics
                     {
                         symType = GetSymType(field.Type);
                         foreach (var ident in field.IdentsList)
-                            symRecord.Table.Add(new SymVar(ident.Lexeme.ToString()!, symType));
+                            symRecord.Table.Add(new SymVar(ident.ToString()!, symType));
                     }
 
                     return symRecord;
 
                 case ArrayTypeNode type:
-                    var ranges = new List<Pair<ExprNode>>();
-                    var symArray = new SymArrayType(ranges, GetSymType(type.Type));
-
-                    foreach (var range in type.Ranges)
-                        ranges.Add(new Pair<ExprNode>(range.LeftBound, range.RightBound));
+                    var range = new Pair<ExprNode>(type.Range.LeftBound, type.Range.RightBound);
+                    var symArray = new SymArrayType(range, GetSymType(type.Type));
 
                     return symArray;
 
@@ -184,6 +183,9 @@ namespace PascalCompiler.Semantics
                 default:
                     var typeName = typeNode.Lexeme.Value.ToString()!;
                     symType = FindType(typeName);
+
+                    if (symType is SymAliasType)
+                        symType = (symType as SymAliasType)!.GetBase();
 
                     if (symType is not null)
                         return symType;

@@ -53,7 +53,7 @@ namespace PascalCompiler.Semantics
 
         public SymType Origin { get; }
 
-        private SymType GetBase()
+        public SymType GetBase()
         {
             var type = Origin;
 
@@ -76,13 +76,13 @@ namespace PascalCompiler.Semantics
 
     public class SymArrayType : SymType
     {
-        public SymArrayType(List<Pair<ExprNode>> ranges, SymType elemType) : base("array")
+        public SymArrayType(Pair<ExprNode> range, SymType elemType) : base("array")
         {
-            Ranges = ranges;
+            Range = range;
             ElemType = elemType;
         }
 
-        public List<Pair<ExprNode>> Ranges { get; }
+        public Pair<ExprNode> Range { get; }
         public SymType ElemType { get; }
     }
 
