@@ -8,7 +8,7 @@ namespace PascalCompiler.Visitor
 {
     public class SymVisitor : IVisitor<bool>
     {
-        private static readonly List<SymType> WritableTypes = new List<SymType>
+        private static readonly List<SymType> ReadWriteTypes = new List<SymType>
         {
             SymStack.SymBoolean, SymStack.SymChar, SymStack.SymString,
             SymStack.SymInt, SymStack.SymDouble,
@@ -213,8 +213,17 @@ namespace PascalCompiler.Visitor
         public bool Visit(WriteCallNode node)
         {
             foreach (var arg in node.Args)
-                if (!WritableTypes.Contains(arg.SymType!))
+                if (!ReadWriteTypes.Contains(arg.SymType!))
                     throw new SemanticException($"{arg.SymType} is not writable type");
+
+            return true;
+        }
+
+        public bool Visit(ReadCallNode node)
+        {
+            foreach (var arg in node.Args)
+                if (!ReadWriteTypes.Contains(arg.SymType!))
+                    throw new SemanticException($"{arg.SymType} is not readable type");
 
             return true;
         }

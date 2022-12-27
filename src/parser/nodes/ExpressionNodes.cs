@@ -147,6 +147,21 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
     }
 
+    public class ReadCallNode : CallNode
+    {
+        public ReadCallNode(IdentNode funcIdent, List<ExprNode> args, bool newLine) : base(funcIdent, args)
+        {
+            NewLine = newLine;
+        }
+
+        public bool NewLine { get; }
+
+        public override T Accept<T>(IVisitor<T> visitor)
+        {
+            return visitor.Visit(this);
+        }
+    }
+
     public class IdentNode : ExprNode
     {
         public IdentNode(Lexeme lexeme) : base(lexeme)

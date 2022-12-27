@@ -100,6 +100,16 @@ namespace PascalCompiler.Visitor
             return printNode;
         }
 
+        public PrintVisitorNode Visit(ReadCallNode node)
+        {
+            var printNode = new PrintVisitorNode(node.ToString());
+
+            foreach (var arg in node.Args)
+                printNode.AddChild(arg.Accept(this));
+
+            return printNode;
+        }
+
         public PrintVisitorNode Visit(IdentNode node)
         {
             return new PrintVisitorNode(node.ToString());

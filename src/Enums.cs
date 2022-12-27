@@ -20,8 +20,6 @@ namespace PascalCompiler.Enums
 
         COMMENT,
         IDENTIFIER,
-        WRITE,
-        WRITELN,
         L_CHAR,             // literal char
         L_STRING,           // literal string
         L_INTEGER,          // literal integer
@@ -75,7 +73,6 @@ namespace PascalCompiler.Enums
         CONSTRUCTOR,
         CONTINUE,
         DESTRUCTOR,
-        DEC,
         DIV,
         DISPOSE,
         DO,
@@ -97,7 +94,6 @@ namespace PascalCompiler.Enums
         IF,
         IMPLEMENTATION,
         IN,
-        INC,
         INLINE,
         INHERITED,
         INITIALIZATION,
@@ -107,7 +103,6 @@ namespace PascalCompiler.Enums
         LIBRARY,
         MOD,
         NEW,
-        NIL,
         NOT,
         OBJECT,
         OF,
@@ -120,6 +115,8 @@ namespace PascalCompiler.Enums
         PROGRAM,
         PROPERTY,
         RAISE,
+        READ,
+        READLN,
         REAL,
         RECORD,
         REPEAT,
@@ -140,6 +137,8 @@ namespace PascalCompiler.Enums
         VAR,
         WHILE,
         WITH,
+        WRITE,
+        WRITELN,
         XOR,
         keyword_end,
     }

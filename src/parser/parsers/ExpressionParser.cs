@@ -96,6 +96,9 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             switch (lexeme.Type)
             {
+                case TokenType.Keyword when lexeme == Token.WRITE || lexeme == Token.WRITELN:
+                case TokenType.Keyword when lexeme == Token.READ || lexeme == Token.READLN:
+                    return ParseStreamNode();
                 case TokenType.Identifier:
                     return ParseVarReference();
                 case TokenType.Integer:
@@ -147,7 +150,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 else if (lexeme == Token.LPAREN)
                 {
                     if (left is not IdentNode)
-                        throw ExpectedException("Identifier", left.Lexeme.Source);
+                        throw ExpectedException("Identifier", left.ToString());
                     NextLexeme();
 
                     List<ExprNode> args = new List<ExprNode>();
@@ -157,17 +160,8 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                     Require<Token>(true, Token.RPAREN);
 
-                    var identName = left.Lexeme.Value.ToString()!.ToUpper();
-
-                    if (Token.WRITE.ToString() == identName)
-                        left = new WriteCallNode((IdentNode)left, args, false);
-                    else if (Token.WRITELN.ToString() == identName)
-                        left = new WriteCallNode((IdentNode)left, args, true);
-                    else
-                    {
-                        left = new UserCallNode((IdentNode)left, args);
-                        left.Accept(_symVisitor);
-                    }
+                    left = new UserCallNode((IdentNode)left, args);
+                    left.Accept(_symVisitor);
 
                     lexeme = _currentLexeme;
                 }
@@ -200,6 +194,26 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
 
             return paramsList;
+        }
+
+        private CallNode ParseStreamNode()
+        {
+            var lexeme = _currentLexeme;
+            NextLexeme();
+
+            Require<Token>(true, Token.LPAREN);
+
+            List<ExprNode> args = new List<ExprNode>();
+
+            if (_currentLexeme != Token.RPAREN)
+                args = ParseParamsList();
+
+            Require<Token>(true, Token.RPAREN);
+
+            if (lexeme == Token.WRITE || lexeme == Token.WRITELN)
+                return new WriteCallNode(new IdentNode(lexeme), args, lexeme == Token.WRITELN);
+            else
+                return new ReadCallNode(new IdentNode(lexeme), args, lexeme == Token.READLN);
         }
 
         private IdentNode ParseIdent()

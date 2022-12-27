@@ -11,6 +11,22 @@ program
       │           └──── 10
       ├──── FUNCTION
       │     ├──── header
+      │     │     ├──── length
+      │     │     ├──── parameter
+      │     │     │     ├──── str
+      │     │     │     └──── STRING
+      │     │     └──── STRING
+      │     └──── forward
+      ├──── FUNCTION
+      │     ├──── header
+      │     │     ├──── inc
+      │     │     ├──── parameter
+      │     │     │     ├──── str
+      │     │     │     └──── integer
+      │     │     └──── integer
+      │     └──── forward
+      ├──── FUNCTION
+      │     ├──── header
       │     │     ├──── smallalpha
       │     │     ├──── parameter
       │     │     │     ├──── ps
@@ -42,7 +58,7 @@ program
       │                 │                 │           │     └──── i
       │                 │                 │           └──── 'Z'
       │                 │                 ├──── Call statement
-      │                 │                 │     └──── inc_
+      │                 │                 │     └──── inc
       │                 │                 │           ├──── array access
       │                 │                 │           │     ├──── ps
       │                 │                 │           │     └──── i

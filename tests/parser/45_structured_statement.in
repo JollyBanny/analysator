@@ -1,12 +1,16 @@
 var s:string;
 var j:integer = 10;
 
+function Length(str: string): string; forward;
+
+function Inc(str: integer): integer; forward;
+
 function SmallAlpha(ps:string):string;
 var i:integer;
 begin
    for i:=1 to length(ps) do begin
       if ((ps[i] >= 'A') and (ps[i] <= 'Z')) then
-    	   inc_(ps[i],32)
+    	   inc(ps[i],32)
       else
          ps[i] := ps[i];
    end;

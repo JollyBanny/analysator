@@ -17,6 +17,7 @@ namespace PascalCompiler.Visitor
         T Visit(ArrayAccessNode node);
         T Visit(UserCallNode node);
         T Visit(WriteCallNode node);
+        T Visit(ReadCallNode node);
 
         T Visit(IdentNode node);
         T Visit(ConstIntegerLiteral node);
