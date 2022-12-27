@@ -251,6 +251,9 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private ConstantNode ParseConstStringLiteral()
         {
+            if (_currentLexeme.Value.ToString()!.Length == 1)
+                return ParseConstCharLiteral();
+
             var constantNode = new ConstStringLiteral(_currentLexeme);
             constantNode.Accept(_symVisitor);
             NextLexeme();
