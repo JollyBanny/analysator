@@ -169,15 +169,21 @@ namespace PascalCompiler.Visitor
         public bool Visit(ArrayAccessNode node)
         {
             node.ArrayIdent.Accept(this);
+            var symType = node.ArrayIdent.SymType;
 
-            if (node.ArrayIdent.SymType is not SymArrayType)
+            if (symType is not SymArrayType && symType is not SymStringType)
                 throw new SemanticException("Illegal qualifier");
 
             foreach (var expr in node.AccessExprs)
                 if (expr.SymType != SymStack.SymInt)
                     throw new SemanticException("index is not integer");
 
-            SymType type = (node.ArrayIdent.SymType as SymArrayType)!.ElemType;
+            SymType type;
+
+            if (symType is SymArrayType)
+                type = (symType as SymArrayType)!.ElemType;
+            else
+                type = SymStack.SymChar;
 
             for (int i = 1; i < node.AccessExprs.Count; i++)
                 if (type is SymArrayType)
