@@ -12,6 +12,8 @@ namespace PascalCompiler.Semantics
             _table = new OrderedDictionary();
         }
 
+        public int Count { get { return _table.Count; } }
+
         public void Add(Symbol sym)
         {
             _table.Add(sym.Name.ToLower(), sym);
@@ -30,6 +32,11 @@ namespace PascalCompiler.Semantics
         public bool Contains(string symName)
         {
             return _table.Contains(symName);
+        }
+
+        public object? this[string key]
+        {
+            get => _table[key];
         }
 
         public IDictionaryEnumerator GetEnumerator()

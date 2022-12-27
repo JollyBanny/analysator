@@ -1,5 +1,4 @@
 using PascalCompiler.LexicalAnalyzer;
-using PascalCompiler.Semantics;
 using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
