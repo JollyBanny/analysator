@@ -3,7 +3,7 @@ using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
-    public class DeclsPartNode : SyntaxNode
+    public abstract class DeclsPartNode : SyntaxNode
     {
         protected DeclsPartNode(List<SyntaxNode> decls, Lexeme lexeme) : base(lexeme)
         {

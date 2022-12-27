@@ -1,11 +1,9 @@
-using System.Collections;
 using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
 using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
-using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer
 {
@@ -13,21 +11,18 @@ namespace PascalCompiler.SyntaxAnalyzer
     {
         private Lexer _lexer;
         private Lexeme _currentLexeme;
-        private SymVisitor _symVisitor;
         private SymStack _symStack = new SymStack();
 
         public Parser()
         {
             _lexer = new Lexer();
             _currentLexeme = _lexer.GetLexeme();
-            _symVisitor = new SymVisitor(_symStack);
         }
 
         public Parser(string path)
         {
             _lexer = new Lexer(path);
             _currentLexeme = _lexer.GetLexeme();
-            _symVisitor = new SymVisitor(_symStack);
         }
 
         public SyntaxNode Parse()

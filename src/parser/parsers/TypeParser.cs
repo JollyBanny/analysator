@@ -104,8 +104,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private List<RecordFieldNode> ParseRecordFields()
         {
-            _symStack.Push();
-
             var fieldsList = new List<RecordFieldNode>();
 
             while (_currentLexeme == TokenType.Identifier)
@@ -122,8 +120,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
                 NextLexeme();
             }
-
-            _symStack.Pop();
 
             return fieldsList;
         }

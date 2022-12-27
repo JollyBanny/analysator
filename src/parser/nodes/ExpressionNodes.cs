@@ -8,9 +8,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     {
         protected ExprNode(Lexeme? lexeme = null) : base(lexeme!)
         {
+            SymType = null!;
         }
 
-        public SymType? SymType { get; set; }
+        public SymType SymType { get; set; }
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }

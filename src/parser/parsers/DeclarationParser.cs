@@ -1,7 +1,4 @@
-using System.Collections;
 using PascalCompiler.Enums;
-using PascalCompiler.Exceptions;
-using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.SyntaxAnalyzer
@@ -59,9 +56,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var constIdent = ParseIdent();
 
-            var constName = constIdent.Lexeme.Value.ToString()!;
-            _symStack.CheckDuplicate(constName);
-
             TypeNode? type = null;
 
             if (_currentLexeme == Token.COLON)
@@ -73,8 +67,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             Require<Token>(true, Token.EQUAL);
 
             ExprNode expression = ParseExpression();
-
-            _symStack.AddConst(constName, expression.SymType!);
 
             Require<Token>(true, Token.SEMICOLOM);
 
@@ -109,8 +101,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var type = ParseType();
 
-            var symType = _symStack.GetSymType(type);
-
             ExprNode? expression = null;
             if (_currentLexeme == Token.EQUAL)
             {
@@ -121,12 +111,6 @@ namespace PascalCompiler.SyntaxAnalyzer
             }
 
             Require<Token>(true, Token.SEMICOLOM);
-
-            foreach (var ident in varIdents)
-            {
-                var sym = _symStack.Find(ident.ToString(), true) as SymVar;
-                sym!.Type = symType;
-            }
 
             return new VarDeclNode(varIdents, type, expression);
         }
@@ -155,78 +139,34 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var typeIdent = ParseIdent();
 
-            var typeName = typeIdent.Lexeme.Value.ToString()!;
-            _symStack.CheckDuplicate(typeName);
-
             Require<Token>(true, Token.EQUAL);
 
             var type = ParseType();
 
             Require<Token>(true, Token.SEMICOLOM);
 
-            var symType = _symStack.GetSymType(type);
-            _symStack.AddAliasType(typeName, symType);
-
             return new TypeDeclNode(typeIdent, type);
         }
 
         private SyntaxNode ParseCallDecl()
         {
-            _symStack.Push();
-
             var lexeme = _currentLexeme;
             NextLexeme();
 
-            var header = lexeme == Token.FUNCTION ? ParseFuncHeader() : ParseProcHeader();
+            var header = ParseHeader(lexeme == Token.FUNCTION);
 
             Require<Token>(true, Token.SEMICOLOM);
 
-            var symCall = _symStack.FindProc(header.Name.ToString(), true)!;
-
-            if (symCall is not SymFunc)
-                _symStack.Remove(header.Name.ToString());
-
-            var block = ParseSubroutineBlock(symCall);
-
-            if (block is not null)
-                symCall.Block = block.CompoundStmt;
-            else
-                symCall.IsForward = true;
+            var block = ParseSubroutineBlock();
 
             Require<Token>(true, Token.SEMICOLOM);
-
-            var symCallTable = _symStack.Pop();
-
-            foreach (DictionaryEntry item in symCallTable)
-            {
-                if (item.Value is SymParameter)
-                    symCall.Params.Add((item.Value as Symbol)!);
-                else
-                    symCall.Locals.Add((item.Value as Symbol)!);
-            }
-
-            var oldSymCall = _symStack.FindProc(header.Name.ToString());
-
-            if (oldSymCall is not null && oldSymCall.IsForward)
-            {
-                if (!CompareParams(oldSymCall.Params, symCall.Params))
-                    throw new SemanticException("headers doesn't match");
-
-                _symStack.Remove(oldSymCall.Name);
-            }
-
-            _symStack.Add(symCall);
 
             return new CallDeclNode(lexeme, header, block);
         }
 
-        private CallHeaderNode ParseFuncHeader()
+        private CallHeaderNode ParseHeader(bool isFunc)
         {
-            var funcIdent = ParseIdent();
-            var funcName = funcIdent.Lexeme.Value.ToString()!;
-
-            _symStack.CheckProcedureDuplicate(funcName);
-            _symStack.AddEmptySym(funcName);
+            var callIdent = ParseIdent();
 
             var paramsList = new List<FormalParamNode>();
 
@@ -236,36 +176,15 @@ namespace PascalCompiler.SyntaxAnalyzer
                 paramsList = ParseFormalParamsList();
 
             Require<Token>(true, Token.RPAREN);
+
+            if (!isFunc)
+                return new CallHeaderNode(callIdent, paramsList);
+
             Require<Token>(true, Token.COLON);
 
             var returnType = ParseSimpleType();
-            var symType = _symStack.GetSymType(returnType);
 
-            _symStack.Remove(funcName);
-            _symStack.AddCall(funcName, new SymTable(), new SymTable(), symType);
-
-            return new CallHeaderNode(funcIdent, paramsList, returnType);
-        }
-
-        private CallHeaderNode ParseProcHeader()
-        {
-            var procIdent = ParseIdent();
-            var procName = procIdent.Lexeme.Value.ToString()!;
-
-            _symStack.CheckProcedureDuplicate(procName);
-
-            var paramsList = new List<FormalParamNode>();
-
-            Require<Token>(true, Token.LPAREN);
-
-            if (_currentLexeme != Token.RPAREN)
-                paramsList = ParseFormalParamsList();
-
-            Require<Token>(true, Token.RPAREN);
-
-            _symStack.AddCall(procName, new SymTable(), new SymTable());
-
-            return new CallHeaderNode(procIdent, paramsList);
+            return new CallHeaderNode(callIdent, paramsList, returnType);
         }
 
         private List<FormalParamNode> ParseFormalParamsList()
@@ -299,15 +218,6 @@ namespace PascalCompiler.SyntaxAnalyzer
 
             var paramType = ParseParamsType();
 
-            var symModifier = modifier is null ? "" : modifier.ToString()!.ToLower();
-            var symTypeParam = _symStack.GetSymType(paramType);
-
-            foreach (var ident in identsList)
-            {
-                _symStack.Remove(ident.ToString());
-                _symStack.AddParameter(ident.ToString()!, symTypeParam, symModifier);
-            }
-
             return new FormalParamNode(identsList, paramType, modifier);
         }
 
@@ -326,42 +236,13 @@ namespace PascalCompiler.SyntaxAnalyzer
             };
         }
 
-        private bool CompareParams(SymTable oldTable, SymTable newTable)
+        private SubroutineBlockNode? ParseSubroutineBlock()
         {
-            if (oldTable.Count != newTable.Count)
-                return false;
+            if (_currentLexeme != Token.FORWARD)
+                return new SubroutineBlockNode(ParseDecls(), ParseCompoundStmt());
 
-            foreach (DictionaryEntry item in oldTable)
-            {
-                var oldItem = item.Value as SymParameter;
-                var newItem = newTable[item.Key.ToString()!] as SymParameter;
-
-                if (newItem is null)
-                    return false;
-
-                if (oldItem?.Type.IsEquivalent(newItem.Type) is false)
-                    return false;
-            }
-
-            return true;
-        }
-
-        private SubroutineBlockNode? ParseSubroutineBlock(SymProc symCall)
-        {
-            if (_currentLexeme == Token.FORWARD)
-            {
-                NextLexeme();
-                return null;
-            }
-
-            var decls = ParseDecls();
-
-            if (symCall is not SymFunc && !_symStack.Contains(symCall.Name))
-                _symStack.Add(symCall);
-
-            var block = ParseCompoundStmt();
-
-            return new SubroutineBlockNode(decls, block);
+            NextLexeme();
+            return null;
         }
 
         private SyntaxNode ParseKeywordNode()

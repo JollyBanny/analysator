@@ -6,7 +6,12 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 {
     public abstract class TypeNode : SyntaxNode
     {
-        protected TypeNode(Lexeme? lexeme = null) : base(lexeme) { }
+        protected TypeNode(Lexeme? lexeme = null) : base(lexeme)
+        {
+            SymType = null!;
+        }
+
+        public SymType SymType { get; set; }
     }
 
     public class SimpleTypeNode : TypeNode

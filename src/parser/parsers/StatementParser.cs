@@ -79,12 +79,9 @@ namespace PascalCompiler.SyntaxAnalyzer
             var left = ParseExpression();
             var lexeme = _currentLexeme;
 
-            if (left is CallNode && !AssignOperators.Contains(_currentLexeme))
-                return new CallStmtNode(left);
-
             if (!AssignOperators.Contains(lexeme))
             {
-                if (left is IdentNode)
+                if (left is IdentNode || left is CallNode)
                     return new CallStmtNode(left);
                 else
                     throw FatalException("Illegal expression");
