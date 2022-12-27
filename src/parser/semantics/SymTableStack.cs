@@ -67,12 +67,12 @@ namespace PascalCompiler.Semantics
             Add(new SymAliasType(symName, type));
         }
 
-        public void AddCall(string symName, SymTable @params, SymTable locals, StmtNode? block, SymType? type)
+        public void AddCall(string symName, SymTable @params, SymTable locals, SymType? type = null)
         {
             if (type is null)
-                Add(new SymProc(symName, @params, locals, block));
+                Add(new SymProc(symName, @params, locals));
             else
-                Add(new SymFunc(symName, @params, locals, type, block));
+                Add(new SymFunc(symName, @params, locals, type));
         }
 
         public void AddParameter(string symName, SymType type, string modifier = "")
@@ -109,22 +109,22 @@ namespace PascalCompiler.Semantics
         {
             var ident = Find(symName, inScope);
 
-            if (ident is SymVar)
-                return ident as SymVar;
-            else
-                return null;
+            return ident is SymVar ? ident as SymVar : null;
         }
 
         public SymProc? FindProc(string symName, bool inScope = false)
         {
             var proc = Find(symName, inScope);
 
-            if (proc is SymFunc)
-                return proc as SymFunc;
-            if (proc is SymProc)
-                return proc as SymProc;
-            else
-                return null;
+            return proc is SymFunc ? proc as SymFunc :
+                    proc is SymProc ? proc as SymProc : null;
+        }
+
+        public SymType? FindType(string symName, bool inScope = false)
+        {
+            var symType = Find(symName, inScope);
+
+            return symType is SymType ? symType as SymType : null;
         }
 
         public bool Contains(string symName, bool inScope = false)
@@ -137,20 +137,6 @@ namespace PascalCompiler.Semantics
                     return true;
 
             return false;
-        }
-
-        public SymType? FindType(string symName)
-        {
-            var symType = Find(symName);
-
-            return symType is SymType ? symType as SymType : null;
-        }
-
-        public SymProc? FindCall(string symName)
-        {
-            var symType = Find(symName);
-
-            return symType is SymFunc || symType is SymProc ? symType as SymProc : null;
         }
 
         public SymType GetSymType(TypeNode typeNode)
@@ -184,8 +170,8 @@ namespace PascalCompiler.Semantics
                     var typeName = typeNode.Lexeme.Value.ToString()!;
                     symType = FindType(typeName);
 
-                    if (symType is SymAliasType)
-                        symType = (symType as SymAliasType)!.GetBase();
+                    if (symType is SymAliasType aliasType)
+                        symType = aliasType.GetBase();
 
                     if (symType is not null)
                         return symType;
@@ -200,13 +186,31 @@ namespace PascalCompiler.Semantics
                 throw new SemanticException($"Duplicate identifier {symName}");
         }
 
-        public void CheckPreLastScopeDuplicate(string symName)
+        public void CheckProcedureDuplicate(string symName)
         {
-            CheckDuplicate(symName);
-            var cache_table = Pop();
 
-            if (Contains(symName, true))
-                throw new SemanticException($"Duplicate identifier {symName}");
+            var symbol = Find(symName, true);
+
+            if (symbol is not null)
+            {
+                if (symbol is SymProc && !(symbol as SymProc)!.IsForward)
+                    throw new SemanticException($"Duplicate identifier {symName}");
+
+                if (symbol is not SymProc)
+                    throw new SemanticException($"Duplicate identifier {symName}");
+            }
+
+            var cache_table = Pop();
+            symbol = Find(symName, true);
+
+            if (symbol is not null)
+            {
+                if (symbol is SymProc && !(symbol as SymProc)!.IsForward)
+                    throw new SemanticException($"Duplicate identifier {symName}");
+
+                if (symbol is not SymProc)
+                    throw new SemanticException($"Duplicate identifier {symName}");
+            }
 
             Push(cache_table);
         }

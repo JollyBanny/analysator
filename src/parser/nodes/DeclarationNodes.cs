@@ -124,19 +124,16 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CallHeaderNode : SyntaxNode
     {
-        public CallHeaderNode(IdentNode name, List<FormalParamNode> paramsList, SymProc? symCall,
-            TypeNode? type = null) : base()
+        public CallHeaderNode(IdentNode name, List<FormalParamNode> paramsList, TypeNode? type = null) : base()
         {
             Name = name;
             ParamsList = paramsList;
             Type = type;
-            SymCall = symCall;
         }
 
         public IdentNode Name { get; }
         public List<FormalParamNode> ParamsList { get; }
         public TypeNode? Type { get; }
-        public SymProc? SymCall { get; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
