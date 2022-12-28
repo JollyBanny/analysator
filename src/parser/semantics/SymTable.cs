@@ -39,6 +39,11 @@ namespace PascalCompiler.Semantics
             get => _table[key];
         }
 
+        public object? this[int key]
+        {
+            get => _table[key];
+        }
+
         public IDictionaryEnumerator GetEnumerator()
         {
             return _table.GetEnumerator();

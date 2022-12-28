@@ -26,7 +26,7 @@ namespace PascalCompiler.Semantics
 
     public class SymParameter : SymVar
     {
-        public SymParameter(string ident, SymType type, string modifier = "") : base(ident, type)
+        public SymParameter(string ident, SymType type, string modifier) : base(ident, type)
         {
             Modifier = modifier;
         }
@@ -40,10 +40,11 @@ namespace PascalCompiler.Semantics
         {
             Params = @params;
             Locals = locals;
+            IsForward = true;
         }
 
-        public SymTable Params { get; }
-        public SymTable Locals { get; }
+        public SymTable Params { get; set; }
+        public SymTable Locals { get; set; }
         public StmtNode? Block { get; set; }
         public bool IsForward { get; set; }
     }

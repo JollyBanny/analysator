@@ -1,4 +1,5 @@
 using PascalCompiler.Exceptions;
+using PascalCompiler.SyntaxAnalyzer.Nodes;
 
 namespace PascalCompiler.Semantics
 {
@@ -74,14 +75,9 @@ namespace PascalCompiler.Semantics
                 Add(new SymFunc(symName, @params, locals, type));
         }
 
-        public void AddParameter(string symName, SymType type, string modifier = "")
+        public void AddParameter(string symName, SymType type, string modifier)
         {
             Add(new SymParameter(symName, type, modifier));
-        }
-
-        public void AddEmptySym(string symName)
-        {
-            Add(new SymVar(symName, null!));
         }
 
         public void Remove(string symName)
@@ -149,10 +145,10 @@ namespace PascalCompiler.Semantics
             return false;
         }
 
-        public void CheckDuplicate(string symName)
+        public void CheckDuplicate(SyntaxNode node)
         {
-            if (Contains(symName, true))
-                throw new SemanticException($"Duplicate identifier {symName}");
+            if (Contains(node.ToString()!, true))
+                throw new SemanticException(node.Lexeme.Pos, $"Duplicate identifier {node}");
         }
     }
 }
