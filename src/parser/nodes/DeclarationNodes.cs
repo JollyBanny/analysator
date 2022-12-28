@@ -1,4 +1,5 @@
 using PascalCompiler.LexicalAnalyzer;
+using PascalCompiler.Semantics;
 using PascalCompiler.Visitor;
 
 namespace PascalCompiler.SyntaxAnalyzer.Nodes
@@ -133,6 +134,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public IdentNode Name { get; }
         public List<FormalParamNode> ParamsList { get; }
         public TypeNode? Type { get; }
+        public SymProc? symCall { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {

@@ -12,5 +12,5 @@ begin
 	writeln((100 = 20) or (100 <> 20));
 	writeln((100 = 20) and (100 <> 20));
 
-	writeln(not 1);
+	writeln(not true);
 end.

@@ -64,7 +64,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         }
 
         public ExprNode Left { get; }
-        public ExprNode Right { get; }
+        public ExprNode Right { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {

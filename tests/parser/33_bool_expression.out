@@ -61,4 +61,4 @@ program
             └──── Call statement
                   └──── writeln
                         └──── not
-                              └──── 1
+                              └──── TRUE

@@ -15,8 +15,10 @@ program
       │     │     ├──── parameter
       │     │     │     ├──── str
       │     │     │     └──── STRING
-      │     │     └──── STRING
-      │     └──── forward
+      │     │     └──── integer
+      │     └──── block
+      │           └──── Compound statement
+      │                 └──── Empty statement
       ├──── FUNCTION
       │     ├──── header
       │     │     ├──── inc
@@ -24,7 +26,9 @@ program
       │     │     │     ├──── str
       │     │     │     └──── integer
       │     │     └──── integer
-      │     └──── forward
+      │     └──── block
+      │           └──── Compound statement
+      │                 └──── Empty statement
       ├──── FUNCTION
       │     ├──── header
       │     │     ├──── smallalpha

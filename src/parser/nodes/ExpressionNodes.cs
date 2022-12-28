@@ -9,7 +9,10 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         protected ExprNode(Lexeme? lexeme = null) : base(lexeme!)
         {
             SymType = null!;
+            IsLValue = false;
         }
+
+        public bool IsLValue { get; set; }
 
         public SymType SymType { get; set; }
 
