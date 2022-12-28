@@ -142,8 +142,10 @@ namespace PascalCompiler
             try
             {
                 Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
-                var printTree = _parser.Parse().Accept(new PrintVisitor());
-                printTree.PrintTree();
+                var syntaxTree = _parser.Parse();
+                syntaxTree.Accept(new SymVisitor(_parser._symStack));
+                syntaxTree.Accept(new PrintVisitor()).PrintTree();
+                _parser.PrintTables();
             }
             catch (Exception e)
             {

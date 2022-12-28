@@ -10,11 +10,6 @@ namespace PascalCompiler.Semantics
         }
 
         public SymType Type { get; set; }
-
-        public override string ToString()
-        {
-            return $"name: {Name}\ttype: {Type}";
-        }
     }
 
     public class SymConstant : SymVar

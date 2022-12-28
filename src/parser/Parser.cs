@@ -1,3 +1,4 @@
+using System.Collections;
 using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
 using PascalCompiler.Extensions;
@@ -11,7 +12,7 @@ namespace PascalCompiler.SyntaxAnalyzer
     {
         private Lexer _lexer;
         private Lexeme _currentLexeme;
-        private SymStack _symStack = new SymStack();
+        public SymStack _symStack = new SymStack();
 
         public Parser()
         {
@@ -27,14 +28,97 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         public SyntaxNode Parse()
         {
-            try
-            {
-                return ParseProgram();
-            }
-            catch (SemanticException e)
-            {
-                throw new SemanticException(_lexer.Cursor, e.Message);
-            }
+            return ParseProgram();
+        }
+
+        public void PrintTables()
+        {
+            var tables = new List<Tuple<string, SymTable>>();
+            var global = _symStack.Pop();
+            var builtins = _symStack.Pop();
+
+            PrintLine();
+            PrintTable("builtins", builtins);
+            PrintLine();
+            PrintTable("global", global);
+        }
+
+        private void PrintTable(string tableName, SymTable table, string indent = "")
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            PrintRow(indent, tableName);
+            Console.ResetColor();
+
+            foreach (DictionaryEntry item in table)
+                switch (item.Value)
+                {
+                    case SymAliasType aliasType:
+                        PrintRow(indent, "AliasType", $"{item.Key}", $"{aliasType.Origin}");
+                        break;
+                    case SymArrayType arrayType:
+                        PrintRow(indent, "ArrayType", $"{item.Key}", $"{arrayType.ElemType}");
+                        break;
+                    case SymRecordType recordType:
+                        PrintRow(indent, "RecordType", $"{item.Key}");
+                        PrintLine();
+                        PrintLine(indent + "".PadLeft(4));
+                        PrintTable($"{item.Key} fields:", recordType.Table, indent + "".PadLeft(4));
+                        break;
+                    case SymType symType:
+                        PrintRow(indent, "Type", $"{symType}");
+                        break;
+                    case SymParameter symParam:
+                        PrintRow(indent, "Parameter", symParam.Name, $"{symParam.Type}", symParam.Modifier);
+                        break;
+                    case SymConstant symConst:
+                        PrintRow(indent, "Constant", symConst.Name, $"{symConst.Type}");
+                        break;
+                    case SymVar symVar:
+                        PrintRow(indent, "Var", symVar.Name, $"{symVar.Type}");
+                        break;
+                    case SymProc symProc:
+                        if (symProc is SymFunc symFunc)
+                        {
+                            symProc.Locals.Remove(symProc.Name);
+                            PrintRow(indent, "Function", symProc.Name, $"{symFunc.ReturnType}");
+                        }
+                        else
+                            PrintRow(indent, "Procedure", symProc.Name);
+
+                        PrintLine(indent + "".PadLeft(4));
+                        PrintTable($"{symProc.Name} params:", symProc.Params, indent + "".PadLeft(4));
+                        PrintTable($"{symProc.Name} locals:", symProc.Locals, indent + "".PadLeft(4));
+                        break;
+                }
+        }
+
+        private void PrintLine(string indent = "")
+        {
+            var tableWidth = 60;
+            Console.WriteLine(indent + new string('-', tableWidth));
+        }
+
+        private void PrintRow(string indent, params string[] columns)
+        {
+            var tableWidth = 60;
+            int width = (tableWidth - columns.Length) / columns.Length;
+            string row = "|";
+
+            foreach (string column in columns)
+                row += AlignCentre(column, width) + "|";
+
+            Console.WriteLine(indent + row);
+            PrintLine(indent);
+        }
+
+        private string AlignCentre(string text, int width)
+        {
+            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
+
+            if (string.IsNullOrEmpty(text))
+                return new string(' ', width);
+            else
+                return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
         }
 
         private void NextLexeme()
