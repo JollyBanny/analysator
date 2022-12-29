@@ -2,7 +2,7 @@ var a: integer;
 
 function pow(x: integer): integer;
 begin
-   pow := x * x;
+   result := x * x;
 end;
 
 begin

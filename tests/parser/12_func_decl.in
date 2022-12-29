@@ -2,12 +2,12 @@ function MyAwesomeFunc() : string;
   var x: integer;
   function MyFunc() : string;
   begin
-	  MyFunc := 'hello world';
+	  result := 'hello world';
   end;
 begin
-  MyAwesomeFunc := MyFunc + '!';
+  result := MyFunc() + '!';
 end;
 
 begin
-  write(MyAwesomeFunc);
+  write(MyAwesomeFunc());
 end.

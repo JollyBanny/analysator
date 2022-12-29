@@ -47,37 +47,38 @@ namespace PascalCompiler.Semantics
             return _stack.Pop();
         }
 
-        public void Add(Symbol sym)
+        public Symbol Add(Symbol sym)
         {
             _stack.Peek().Add(sym);
+            return sym;
         }
 
-        public void AddConst(string symName, SymType type)
+        public Symbol AddConst(string symName, SymType type)
         {
-            Add(new SymConstant(symName, type));
+            return Add(new SymConstant(symName, type));
         }
 
-        public void AddVar(string symName, SymType type)
+        public Symbol AddVar(string symName, SymType type)
         {
-            Add(new SymVar(symName, type));
+            return Add(new SymVar(symName, type));
         }
 
-        public void AddAliasType(string symName, SymType type)
+        public Symbol AddAliasType(string symName, SymType type)
         {
-            Add(new SymAliasType(symName, type));
+            return Add(new SymAliasType(symName, type));
         }
 
-        public void AddCall(string symName, SymTable @params, SymTable locals, SymType? type = null)
+        public Symbol AddCall(string symName, SymTable @params, SymTable locals, SymType? type = null)
         {
-            if (type is null)
-                Add(new SymProc(symName, @params, locals));
-            else
-                Add(new SymFunc(symName, @params, locals, type));
+            SymProc symProc = type is null ?
+                new SymProc(symName, @params, locals) : new SymFunc(symName, @params, locals, type);
+
+            return Add(symProc);
         }
 
-        public void AddParameter(string symName, SymType type, string modifier)
+        public Symbol AddParameter(string symName, SymType type, string modifier)
         {
-            Add(new SymParameter(symName, type, modifier));
+            return Add(new SymParameter(symName, type, modifier));
         }
 
         public void Remove(string symName)
@@ -133,21 +134,9 @@ namespace PascalCompiler.Semantics
             }
         }
 
-        public bool Contains(string symName, bool inScope = false)
-        {
-            if (inScope)
-                return _stack.Peek().Contains(symName.ToLower());
-
-            foreach (var table in _stack)
-                if (table.Contains(symName.ToLower()))
-                    return true;
-
-            return false;
-        }
-
         public void CheckDuplicate(SyntaxNode node)
         {
-            if (Contains(node.ToString()!, true))
+            if (_stack.Peek().Contains(node.ToString()!.ToLower()))
                 throw new SemanticException(node.Lexeme.Pos, $"Duplicate identifier {node}");
         }
     }

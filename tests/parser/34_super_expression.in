@@ -5,7 +5,7 @@ var a: integer = 100;
 
 function Pow(x: integer): integer;
 begin
-	Pow:= x * x;
+	result := x * x;
 end;
 
 begin

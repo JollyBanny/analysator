@@ -14,7 +14,7 @@ program
       │     └──── block
       │           └──── Compound statement
       │                 └──── :=
-      │                       ├──── pow
+      │                       ├──── result
       │                       └──── *
       │                             ├──── x
       │                             └──── x

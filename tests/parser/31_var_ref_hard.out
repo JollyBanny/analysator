@@ -46,7 +46,7 @@ program
       │                 │     │     └──── 1
       │                 │     └──── cursor2
       │                 └──── :=
-      │                       ├──── awesomefunc
+      │                       ├──── result
       │                       └──── arr
       └──── Compound statement
             ├──── :=

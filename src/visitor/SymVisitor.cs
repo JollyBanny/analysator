@@ -259,27 +259,19 @@ namespace PascalCompiler.Visitor
 
         public bool Visit(IdentNode node)
         {
-            var symVar = _inScope ? _symStack.FindIdent(node.ToString()!, true) :
-                                    _symStack.FindIdent(node.ToString()!);
-
-            var symReturn = _symStack.FindCall(node.ToString(), true);
+            var symVar = _symStack.FindIdent(node.ToString()!, _inScope);
 
             if (symVar is null)
             {
-                if (symReturn is SymFunc symFunc)
-                {
-                    node.SymVar = new SymVar(node.ToString(), symFunc.ReturnType);
-                    node.SymType = node.SymVar.Type;
-                    node.IsLValue = true;
-                    return true;
-                }
-                else if (symReturn is SymProc)
-                    throw new SemanticException(node.Lexeme.Pos, $"procedure {node} no return type");
+                if (node.ToString() == "result")
+                    throw new SemanticException(node.Lexeme.Pos, $"procedure {node} has no return type");
                 else if (_inScope)
-                    throw new SemanticException(node.Lexeme.Pos, $"identifier idents no member '{node}'");
+                    throw new SemanticException(node.Lexeme.Pos, $"identifier idents has no member '{node}'");
                 else
                     throw new SemanticException(node.Lexeme.Pos, $"variable {node} is not declared");
             }
+
+            var symCall = _symStack.FindCall(node.ToString(), true);
 
             SymType type = symVar.Type;
             while (type is SymAliasType aliasType)
@@ -405,9 +397,8 @@ namespace PascalCompiler.Visitor
             foreach (var ident in node.IdentsList)
             {
                 _symStack.CheckDuplicate(ident);
-                _symStack.AddVar(ident.ToString(), node.Type.SymType);
 
-                ident.SymVar = _symStack.FindIdent(ident.ToString(), true);
+                ident.SymVar = _symStack.AddVar(ident.ToString(), node.Type.SymType) as SymVar;
                 ident.SymType = ident.SymVar!.Type;
             }
 
@@ -482,18 +473,17 @@ namespace PascalCompiler.Visitor
 
         public bool Visit(CallHeaderNode node)
         {
-            _symStack.Push();
+            node.Type?.Accept(this);
+
+            var locals = new SymTable();
+            _symStack.Push(locals);
 
             var symCall = node.Type is null ?
-                new SymProc(node.Name.ToString(), new SymTable(), new SymTable()) :
-                new SymFunc(node.Name.ToString(), new SymTable(), new SymTable(), null!);
+                new SymProc(node.Name.ToString(), new SymTable(), locals) :
+                new SymFunc(node.Name.ToString(), new SymTable(), locals, node.Type.SymType);
 
-            if (node.Type is not null)
-            {
-                node.Type.Accept(this);
-                (symCall as SymFunc)!.ReturnType = node.Type.SymType;
-                _symStack.Add(symCall);
-            }
+            if (symCall is SymFunc symFunc)
+                _symStack.AddVar("result", symFunc.ReturnType);
 
             foreach (var param in node.ParamsList)
             {
@@ -503,8 +493,7 @@ namespace PascalCompiler.Visitor
                     symCall.Params.Add(_symStack.Find(ident.ToString(), true)!);
             }
 
-            symCall.Locals = _symStack.Pop();
-
+            _symStack.Pop();
             node.symCall = symCall;
             return true;
         }
@@ -575,7 +564,7 @@ namespace PascalCompiler.Visitor
                 throw new SemanticException(node.Left.Lexeme.Pos, "variable identifier expected");
 
             if (node.Right is CallNode callNode && callNode.SymType is null)
-                throw new SemanticException(node.Right.Lexeme.Pos, $"procedure {node.Right} no return type");
+                throw new SemanticException(node.Right.Lexeme.Pos, $"procedure {node.Right} has no return type");
 
             if (node.Left.SymType == SymStack.SymDouble && node.Right.SymType == SymStack.SymInt)
             {
@@ -586,23 +575,21 @@ namespace PascalCompiler.Visitor
             var left = node.Left.SymType;
             var right = node.Right.SymType;
 
+            if (!left.IsEquivalent(right))
+                throw new SemanticException(node.Right.Lexeme.Pos,
+                    $"incompatible types: got '{right}' expected '{left}'");
+
             switch (node.Lexeme.Value)
             {
-                case Token.ASSIGN:
-                    if (left.IsEquivalent(right))
-                        return true;
-
-                    throw new SemanticException(node.Right.Lexeme.Pos,
-                        $"incompatible types: got '{right}' expected '{left}'");
                 case Token.ADD_ASSIGN:
                 case Token.SUB_ASSIGN:
                 case Token.MUL_ASSIGN:
                 case Token.DIV_ASSIGN:
-                    if ((left == SymStack.SymInt || left == SymStack.SymDouble) && left.IsEquivalent(right))
-                        return true;
+                    if (left != SymStack.SymInt && left != SymStack.SymDouble)
+                        throw new SemanticException(node.Right.Lexeme.Pos,
+                          $"incompatible types: got '{right}' expected '{left}'");
 
-                    throw new SemanticException(node.Right.Lexeme.Pos,
-                      $"incompatible types: got '{right}' expected '{left}'");
+                    return true;
             }
 
             return true;

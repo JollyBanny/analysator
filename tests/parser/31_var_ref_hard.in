@@ -12,7 +12,7 @@ var arr: PointArr;
 begin
 	arr[0] := cursor_;
 	arr[1] := cursor2;
- 	AwesomeFunc := arr;
+ 	result := arr;
 end;
 
 begin
