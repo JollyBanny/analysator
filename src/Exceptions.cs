@@ -1,5 +1,3 @@
-using PascalCompiler.LexicalAnalyzer;
-
 namespace PascalCompiler.Exceptions
 {
     class LexicalException : Exception

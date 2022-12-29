@@ -1,0 +1,11 @@
+var a: integer;
+    b: double;
+    c: array [1..2] of integer;
+    d: string;
+
+begin
+    write(a + c[0]);
+    write(a + b);
+    write(d + d[2] + 'c');
+    write(d + c);
+end.

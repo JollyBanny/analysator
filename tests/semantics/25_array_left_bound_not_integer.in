@@ -1,0 +1,6 @@
+var a: string;
+    c: array [a..2] of integer;
+
+begin
+    write(a);
+end.

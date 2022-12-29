@@ -1,0 +1,10 @@
+type Point = record
+    x: integer;
+    y: integer;
+    end;
+
+var p: Point;
+begin
+    writeln(p.x);
+    writeln(p.z);
+end.

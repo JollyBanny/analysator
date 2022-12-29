@@ -7,10 +7,15 @@ namespace PascalCompiler.Visitor
 {
     public class SymVisitor : IVisitor<bool>
     {
-        private static readonly List<SymType> ReadWriteTypes = new List<SymType>
+        private static readonly List<SymType> WritableTypes = new List<SymType>
         {
             SymStack.SymBoolean, SymStack.SymChar, SymStack.SymString,
             SymStack.SymInt, SymStack.SymDouble,
+        };
+
+        private static readonly List<SymType> ReadableTypes = new List<SymType>
+        {
+            SymStack.SymChar, SymStack.SymString, SymStack.SymInt, SymStack.SymDouble,
         };
 
         private SymStack _symStack;
@@ -223,13 +228,13 @@ namespace PascalCompiler.Visitor
             var symType = node.ArrayIdent.SymType;
 
             if (symType is not SymArrayType && symType is not SymStringType)
-                throw new SemanticException(node.Lexeme.Pos, "Illegal qualifier");
+                throw new SemanticException(node.AccessExprs[0].Lexeme.Pos, "illegal qualifier");
 
             foreach (var expr in node.AccessExprs)
             {
                 expr.Accept(this);
                 if (expr.SymType != SymStack.SymInt)
-                    throw new SemanticException(node.Lexeme.Pos, "index is not integer");
+                    throw new SemanticException(expr.Lexeme.Pos, "index is not integer");
             }
 
             SymType type;
@@ -242,8 +247,10 @@ namespace PascalCompiler.Visitor
             for (int i = 1; i < node.AccessExprs.Count; i++)
                 if (type is SymArrayType)
                     type = (type as SymArrayType)!.ElemType;
+                else if (type is SymStringType)
+                    type = SymStack.SymChar;
                 else
-                    throw new SemanticException(node.Lexeme.Pos, "Illegal qualifier");
+                    throw new SemanticException(node.AccessExprs[0].Lexeme.Pos, "illegal qualifier");
 
             node.SymType = type;
             node.IsLValue = true;
@@ -259,17 +266,17 @@ namespace PascalCompiler.Visitor
 
             if (symVar is null)
             {
-                if (_inScope && symReturn is null)
-                    throw new SemanticException(node.Lexeme.Pos, $"procedure {node} no return type");
-                else if (_inScope)
-                    throw new SemanticException(node.Lexeme.Pos, $"identifier idents no member '{node}'");
-                else if (symReturn is SymFunc symFunc)
+                if (symReturn is SymFunc symFunc)
                 {
                     node.SymVar = new SymVar(node.ToString(), symFunc.ReturnType);
                     node.SymType = node.SymVar.Type;
                     node.IsLValue = true;
                     return true;
                 }
+                else if (symReturn is SymProc)
+                    throw new SemanticException(node.Lexeme.Pos, $"procedure {node} no return type");
+                else if (_inScope)
+                    throw new SemanticException(node.Lexeme.Pos, $"identifier idents no member '{node}'");
                 else
                     throw new SemanticException(node.Lexeme.Pos, $"variable {node} is not declared");
             }
@@ -293,6 +300,20 @@ namespace PascalCompiler.Visitor
             else
                 node.SymProc = symProc;
 
+            if (node.Args.Count != symProc.Params.Count)
+                throw new SemanticException(node.Lexeme.Pos, $"call doesn't match header");
+
+            for (int i = 0; i < node.Args.Count; i++)
+            {
+                var callParam = node.Args[i];
+                callParam.Accept(this);
+
+                var headerParam = symProc.Params[i] as SymParameter;
+
+                if (!callParam.SymType.IsEquivalent(headerParam!.Type))
+                    throw new SemanticException(callParam.Lexeme.Pos, $"call doesn't match header");
+            }
+
             if (symProc is SymFunc)
                 node.SymType = (symProc as SymFunc)!.ReturnType;
 
@@ -305,7 +326,7 @@ namespace PascalCompiler.Visitor
             {
                 arg.Accept(this);
 
-                if (!ReadWriteTypes.Contains(arg.SymType))
+                if (!WritableTypes.Contains(arg.SymType))
                     throw new SemanticException(node.Lexeme.Pos, $"{arg.SymType} is not writable type");
             }
 
@@ -318,7 +339,7 @@ namespace PascalCompiler.Visitor
             {
                 arg.Accept(this);
 
-                if (!ReadWriteTypes.Contains(arg.SymType))
+                if (!ReadableTypes.Contains(arg.SymType))
                     throw new SemanticException(node.Lexeme.Pos, $"{arg.SymType} is not readable type");
             }
 
@@ -476,21 +497,13 @@ namespace PascalCompiler.Visitor
 
             foreach (var param in node.ParamsList)
             {
-                var modifier = param.Modifier is not null ? param.Modifier.ToString() : "";
-                param.Type.Accept(this);
+                param.Accept(this);
 
                 foreach (var ident in param.IdentsList)
-                {
-                    _symStack.CheckDuplicate(ident);
-                    _symStack.AddParameter(ident.ToString(), param.Type.SymType, modifier!);
-                }
+                    symCall.Params.Add(_symStack.Find(ident.ToString(), true)!);
             }
 
             symCall.Locals = _symStack.Pop();
-
-            for (int i = 0; i < symCall.Locals.Count; i++)
-                if (symCall.Locals[i] is SymParameter symParam)
-                    symCall.Params.Add(symParam);
 
             node.symCall = symCall;
             return true;
@@ -498,6 +511,14 @@ namespace PascalCompiler.Visitor
 
         public bool Visit(FormalParamNode node)
         {
+            node.Type.Accept(this);
+            var modifier = node.Modifier is not null ? node.Modifier.ToString() : "";
+
+            foreach (var ident in node.IdentsList)
+            {
+                _symStack.CheckDuplicate(ident);
+                _symStack.AddParameter(ident.ToString(), node.Type.SymType, modifier!);
+            }
             return true;
         }
 

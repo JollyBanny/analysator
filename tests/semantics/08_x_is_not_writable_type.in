@@ -1,0 +1,10 @@
+var a: array [1..2] of integer;
+
+begin
+    writeln(1);
+    writeln(1.1);
+    writeln('a');
+    writeln('aaa');
+    writeln(true);
+    writeln(a);
+end.

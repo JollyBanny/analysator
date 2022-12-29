@@ -5,6 +5,8 @@ function Length(str: string): integer;
 begin
 end;
 
+function Inc(str: integer): integer; forward;
+
 function Inc(str: integer): integer;
 begin
 end;

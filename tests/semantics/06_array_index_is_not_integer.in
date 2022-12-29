@@ -1,0 +1,9 @@
+type arr = array [1..2] of string;
+var x: string;
+function b(var n: integer): arr;
+begin
+end;
+
+begin
+    writeln(b(10)[1, x]);
+end.
