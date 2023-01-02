@@ -14,44 +14,20 @@ namespace PascalCompiler.Semantics
 
         public int Count { get { return _table.Count; } }
 
-        public void Add(Symbol sym)
-        {
-            _table.Add(sym.Name.ToLower(), sym);
-        }
+        public object? this[string key] { get => _table[key]; }
 
-        public void Remove(string symName)
-        {
-            _table.Remove(symName);
-        }
+        public object? this[int key] { get => _table[key]; }
 
-        public Symbol? Find(string symName)
-        {
-            return _table.Contains(symName) ? _table[symName] as Symbol : null;
-        }
+        public void Add(Symbol sym) => _table.Add(sym.Name.ToLower(), sym);
 
-        public bool Contains(string symName)
-        {
-            return _table.Contains(symName);
-        }
+        public void Remove(string symName) => _table.Remove(symName);
 
-        public object? this[string key]
-        {
-            get => _table[key];
-        }
+        public Symbol? Find(string symName) => _table[symName] as Symbol ?? null;
 
-        public object? this[int key]
-        {
-            get => _table[key];
-        }
+        public bool Contains(string symName) => _table.Contains(symName);
 
-        public IDictionaryEnumerator GetEnumerator()
-        {
-            return _table.GetEnumerator();
-        }
+        public IDictionaryEnumerator GetEnumerator() => _table.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

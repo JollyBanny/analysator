@@ -1,10 +1,4 @@
-type arr = array [1..2] of integer;
-
 var x: integer;
-
-function b(var n: integer): arr;
-begin
-end;
 
 begin
     writeln(x[1, 1]);

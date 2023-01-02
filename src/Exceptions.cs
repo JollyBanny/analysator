@@ -22,20 +22,12 @@ namespace PascalCompiler.Exceptions
             : base($"[Line: {pos.Line}; Column: {pos.Ch}]\t{message}")
         {
         }
-
-        public SyntaxException(string message) : base(message)
-        {
-        }
     }
 
     class SemanticException : Exception
     {
         public SemanticException(Position pos, string message)
             : base($"[Line: {pos.Line}; Column: {pos.Ch}]\t{message}")
-        {
-        }
-
-        public SemanticException(string message) : base(message)
         {
         }
     }

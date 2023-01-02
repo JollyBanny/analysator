@@ -117,7 +117,6 @@ namespace PascalCompiler.Enums
         RAISE,
         READ,
         READLN,
-        REAL,
         RECORD,
         REPEAT,
         SELF,

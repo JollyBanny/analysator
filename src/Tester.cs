@@ -64,7 +64,11 @@ namespace PascalCompiler
                     var _parser = new Parser(inFile);
                     var syntaxTree = _parser.Parse();
                     syntaxTree.Accept(new SymVisitor(_parser._symStack));
-                    syntaxTree.Accept(new PrintVisitor()).PrintTree();
+
+                    if (mode == "-p")
+                        syntaxTree.Accept(new PrintVisitor()).PrintTree();
+                    else
+                        _parser.PrintTables();
                 }
             }
             catch (Exception e)
@@ -83,10 +87,13 @@ namespace PascalCompiler
         }
 
         static private bool SimpleParserTest(string inFile, string outFile) =>
-             ParserTest(inFile, outFile, "-sp");
+            ParserTest(inFile, outFile, "-sp");
 
-        static private bool FullParserTest(string inFile, string outFile) =>
-             ParserTest(inFile, outFile, "-p");
+        static private bool ParserTest(string inFile, string outFile) =>
+            ParserTest(inFile, outFile, "-p");
+
+        static private bool SemanticTest(string inFile, string outFile) =>
+            ParserTest(inFile, outFile, "-s");
 
         static public void RunTests(string mode)
         {
@@ -94,7 +101,8 @@ namespace PascalCompiler
             {
                 "-l" => LexerTest,
                 "-sp" => SimpleParserTest,
-                "-p" => FullParserTest,
+                "-p" => ParserTest,
+                "-s" => SemanticTest,
                 _ => LexerTest,
             };
 
@@ -103,13 +111,13 @@ namespace PascalCompiler
                 "-l" => "/lexer",
                 "-sp" => "/simple_parser",
                 "-p" => "/parser",
+                "-s" => "/semantics",
                 _ => "/lexer",
             };
 
-            var files = Directory.GetFiles(path, "*.in")
-                .Select((f) => Path.GetFileName(f)[..^3]).ToList();
+            var files = Directory.GetFiles(path, "*.in").Select((f) => Path.GetFileName(f)[..^3]);
 
-            foreach (var file in files)
+            foreach (var file in files.ToList())
             {
                 if (TestFile($"{path}/{file}.in", $"{path}/{file}.out"))
                 {
@@ -119,8 +127,9 @@ namespace PascalCompiler
                     _totalSuccess++;
                 }
             }
+
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\nTotal: {_totalSuccess}/{files.Capacity}");
+            Console.WriteLine($"\nTotal: {_totalSuccess}/{files.Count()}");
             Console.ResetColor();
         }
     }

@@ -37,17 +37,17 @@
 6	1	Keyword	End	end
 6	4	Separator	Semicolom	;
 8	1	Keyword	Begin	begin
-9	6	Identifier	writeln	writeln
+9	6	Keyword	Writeln	writeln
 9	13	Separator	Lparen	(
 9	14	String	Enter N (N=1..13)	'Enter N (N=1..13)'
 9	33	Separator	Rparen	)
 9	34	Separator	Semicolom	;
-10	6	Identifier	readln	readln
+10	6	Keyword	Readln	readln
 10	12	Separator	Lparen	(
 10	13	Identifier	n	n
 10	14	Separator	Rparen	)
 10	15	Separator	Semicolom	;
-11	6	Identifier	writeln	writeln
+11	6	Keyword	Writeln	writeln
 11	13	Separator	Lparen	(
 11	14	String	N!=	'N!='
 11	19	Separator	Comma	,

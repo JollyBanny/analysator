@@ -10,7 +10,6 @@ const
 constructor
 continue
 destructor
-dec
 div
 dispose
 do
@@ -26,12 +25,12 @@ finalization
 finally
 float
 for
+forward
 function
 goto
 if
 implementation
 in
-inc
 inline
 inherited
 initialization
@@ -41,7 +40,6 @@ label
 library
 mod
 new
-nil
 not
 object
 of
@@ -53,10 +51,10 @@ packed
 procedure
 program
 property
-real
+raise
+read
 record
 repeat
-raise
 self
 set
 shl
@@ -74,4 +72,5 @@ uses
 var
 while
 with
+write
 xor

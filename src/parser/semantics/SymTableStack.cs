@@ -13,14 +13,14 @@ namespace PascalCompiler.Semantics
 
         private Stack<SymTable> _stack;
 
-        public int Count { get { return _stack.Count; } }
-
         public SymStack()
         {
             _stack = new Stack<SymTable>();
             SetBuiltinsTable();
             Push();
         }
+
+        public int Count { get { return _stack.Count; } }
 
         private void SetBuiltinsTable()
         {
@@ -32,20 +32,11 @@ namespace PascalCompiler.Semantics
             Add(SymBoolean);
         }
 
-        public void Push()
-        {
-            _stack.Push(new SymTable());
-        }
+        public void Push() => _stack.Push(new SymTable());
 
-        public void Push(SymTable table)
-        {
-            _stack.Push(table);
-        }
+        public void Push(SymTable table) => _stack.Push(table);
 
-        public SymTable Pop()
-        {
-            return _stack.Pop();
-        }
+        public SymTable Pop() => _stack.Pop();
 
         public Symbol Add(Symbol sym)
         {
@@ -53,20 +44,11 @@ namespace PascalCompiler.Semantics
             return sym;
         }
 
-        public Symbol AddConst(string symName, SymType type)
-        {
-            return Add(new SymConstant(symName, type));
-        }
+        public Symbol AddConst(string symName, SymType type) => Add(new SymConstant(symName, type));
 
-        public Symbol AddVar(string symName, SymType type)
-        {
-            return Add(new SymVar(symName, type));
-        }
+        public Symbol AddVar(string symName, SymType type) => Add(new SymVar(symName, type));
 
-        public Symbol AddAliasType(string symName, SymType type)
-        {
-            return Add(new SymAliasType(symName, type));
-        }
+        public Symbol AddAliasType(string symName, SymType type) => Add(new SymAliasType(symName, type));
 
         public Symbol AddCall(string symName, SymTable @params, SymTable locals, SymType? type = null)
         {
@@ -76,15 +58,10 @@ namespace PascalCompiler.Semantics
             return Add(symProc);
         }
 
-        public Symbol AddParameter(string symName, SymType type, string modifier)
-        {
-            return Add(new SymParameter(symName, type, modifier));
-        }
+        public Symbol AddParameter(string symName, SymType type, string modifier) =>
+            Add(new SymParameter(symName, type, modifier));
 
-        public void Remove(string symName)
-        {
-            _stack.Peek().Remove(symName.ToLower());
-        }
+        public void Remove(string symName) => _stack.Peek().Remove(symName.ToLower());
 
         public Symbol? Find(string symName, bool inScope = false)
         {
@@ -108,31 +85,22 @@ namespace PascalCompiler.Semantics
             return ident is SymVar ? ident as SymVar : null;
         }
 
-        public SymProc? FindCall(string symName, bool inScope = false)
-        {
-            switch (Find(symName, inScope))
+        public SymProc? FindCall(string symName, bool inScope = false) =>
+            Find(symName, inScope) switch
             {
-                case SymFunc symFunc:
-                    return symFunc;
-                case SymProc symProc:
-                    return symProc;
-                default:
-                    return null;
-            }
-        }
+                SymFunc symFunc => symFunc,
+                SymProc symProc => symProc,
+                _ => null,
+            };
 
-        public SymType? FindType(string symName, bool inScope = false)
-        {
-            switch (Find(symName, inScope))
+        public SymType? FindType(string symName, bool inScope = false) =>
+            Find(symName, inScope) switch
             {
-                case SymAliasType symAliasType:
-                    return symAliasType;
-                case SymType symType:
-                    return symType;
-                default:
-                    return null;
-            }
-        }
+                SymAliasType symAliasType => symAliasType,
+                SymType symType => symType,
+                _ => null,
+            };
+
 
         public void CheckDuplicate(SyntaxNode node)
         {

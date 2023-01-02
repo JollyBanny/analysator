@@ -1,9 +1,6 @@
-type arr = array [1..2] of string;
-var x: string;
-function b(var n: integer): arr;
-begin
-end;
+type arr = array [1..2] of integer;
+var x: arr;
 
 begin
-    writeln(b(10)[1, x]);
+    writeln(x['x']);
 end.

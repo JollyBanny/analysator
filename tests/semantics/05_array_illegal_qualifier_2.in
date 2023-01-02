@@ -1,6 +1,6 @@
 type arr = array [1..2] of integer;
 
-function b(var n: integer): arr;
+function b(n: integer): arr;
 begin
 end;
 

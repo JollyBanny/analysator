@@ -12,12 +12,12 @@
 1	19	Identifier	double	double
 1	25	Separator	Semicolom	;
 2	1	Keyword	Begin	begin
-3	6	Identifier	writeln	writeln
+3	6	Keyword	Writeln	writeln
 3	13	Separator	Lparen	(
 3	14	String	Enter A(X1,Y1) и B(X2,Y2)	'Enter A(X1,Y1) и B(X2,Y2)'
 3	41	Separator	Rparen	)
 3	42	Separator	Semicolom	;
-4	6	Identifier	readln	readln
+4	6	Keyword	Readln	readln
 4	12	Separator	Lparen	(
 4	14	Identifier	x1	x1
 4	16	Separator	Comma	,
@@ -47,7 +47,7 @@
 5	34	Separator	Rparen	)
 5	35	Separator	Rparen	)
 5	36	Separator	Semicolom	;
-6	6	Identifier	writeln	writeln
+6	6	Keyword	Writeln	writeln
 6	13	Separator	Lparen	(
 6	14	String	length segment |AB|=	'length segment |AB|='
 6	36	Separator	Comma	,
