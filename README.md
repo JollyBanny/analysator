@@ -7,15 +7,16 @@ Developer: FEFU student Б9120-09.03.03пикд Ponomarenko Maxim
 ## Usage
 
 ```console
-dotnet run -- <mode> [option]
+dotnet run -- <mode> <option>
 ```
 
 Mode
-| Flag | Description                 |
-| ---- | --------------------------- |
-|  -l  | Run lexical analysis        |
-|  -sp | Run simple parser analysis  |
-|  -p  | Run parser analysis         |
+| Flag | Description                      |
+| ---- | -------------------------------- |
+|  -l  | Run lexical analysis             |
+|  -sp | Run simple syntax parser         |
+|  -p  | Run syntax parser                |
+|  -s  | Run parser with semantics cheker |
 
 Option
 | Flag       | Arguments           | Description            |
