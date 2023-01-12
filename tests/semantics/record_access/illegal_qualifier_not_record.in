@@ -1,0 +1,5 @@
+var rec : integer;
+
+begin
+    write(rec.y);
+end.

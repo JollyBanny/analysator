@@ -1,0 +1,7 @@
+var rec : record
+    x: integer;
+    end;
+
+begin
+    write(rec.x);
+end.
