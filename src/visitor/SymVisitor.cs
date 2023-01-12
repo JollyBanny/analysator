@@ -208,6 +208,10 @@ namespace PascalCompiler.Visitor
         public bool Visit(RecordAccessNode node)
         {
             node.Record.Accept(this);
+            if (node.Record.SymType is not SymRecordType)
+                throw new SemanticException(node.Record.Lexeme.Pos,
+                    $"illegal qualifier");
+
             _symStack.Push((node.Record.SymType as SymRecordType)!.Table);
             _inScope = true;
 
