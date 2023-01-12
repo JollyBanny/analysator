@@ -1,0 +1,5 @@
+var arr1: array [1..100] of integer;
+
+begin
+    write(arr1[1 + 999 / 2 - 450]);
+end.

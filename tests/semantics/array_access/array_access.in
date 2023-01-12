@@ -1,0 +1,17 @@
+var arr1: array [1..2] of integer;
+var arr2: array [1..2, 1..2] of integer;
+var arr3: array [1..2, 1..2, 1..2] of integer;
+
+var arr2_: array [1..2] of array [1..2] of integer;
+var arr3_: array [1..2] of array [1..2] of array [1..2] of integer;
+
+begin
+    write(arr1[1]);
+    write(arr2[1][1]);
+    write(arr3[1, 1][1]);
+
+    write(arr2_[1, 1]);
+    write(arr3_[1][1][1]);
+
+    write(arr1[1 + 1000 - 500 * 2]);
+end.

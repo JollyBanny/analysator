@@ -1,0 +1,5 @@
+var arr1: integer;
+
+begin
+    write(arr1[1]);
+end.

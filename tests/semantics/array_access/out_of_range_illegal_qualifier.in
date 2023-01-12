@@ -1,0 +1,5 @@
+var arr1: array [1..10] of integer;
+
+begin
+    write(arr1[2][10]);
+end.
