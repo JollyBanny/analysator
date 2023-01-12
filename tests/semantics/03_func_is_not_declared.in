@@ -1,7 +1,0 @@
-function b(var n: integer): integer;
-begin
-end;
-
-begin
-    c();
-end.

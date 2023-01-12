@@ -1,7 +1,0 @@
-var a: integer;
-
-begin
-    write(a << 1);
-    write(1 shl a);
-    write(1 shl 'hello')
-end.

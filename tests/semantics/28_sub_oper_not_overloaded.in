@@ -1,9 +1,0 @@
-var a: integer;
-    b: double;
-    c: array [1..2] of integer;
-
-begin
-    write(a - c[0]);
-    write(a - b);
-    write(a - 's');
-end.

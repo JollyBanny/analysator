@@ -1,7 +1,0 @@
-var a: integer;
-var b: double;
-
-begin
-    write(a mod 1);
-    write(a mod b);
-end.

@@ -1,7 +1,0 @@
-var a: t;
-
-type t = array [1..2] of array [1..2] of integer;
-
-begin
-
-end.

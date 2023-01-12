@@ -1,5 +1,0 @@
-const a: integer = 10;
-const b: string = 10;
-
-begin
-end.

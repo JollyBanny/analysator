@@ -1,7 +1,0 @@
-var a: integer;
-var b: double;
-
-begin
-    write(a div 1);
-    write(a div b);
-end.

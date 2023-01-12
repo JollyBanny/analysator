@@ -1,9 +1,0 @@
-type arr = array [1..2] of integer;
-
-function b(n: integer): arr;
-begin
-end;
-
-begin
-    writeln(b(10)[1, 1]);
-end.

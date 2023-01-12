@@ -1,6 +1,0 @@
-var a: string;
-    c: array [1..a] of integer;
-
-begin
-    write(a);
-end.
