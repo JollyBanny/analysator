@@ -38,7 +38,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public IdentNode Ident { get; }
         public TypeNode? Type { get; }
-        public ExprNode Expr { get; }
+        public ExprNode Expr { get; set; }
 
 
         public override T Accept<T>(IVisitor<T> visitor)
@@ -66,7 +66,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
-        public ExprNode? Expr { get; }
+        public ExprNode? Expr { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {
@@ -134,7 +134,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public IdentNode Name { get; }
         public List<FormalParamNode> ParamsList { get; }
         public TypeNode? Type { get; }
-        public SymProc? symCall { get; set; }
+        public SymProc? symCallable { get; set; }
 
         public override T Accept<T>(IVisitor<T> visitor)
         {

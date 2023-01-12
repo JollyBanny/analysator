@@ -382,9 +382,17 @@ namespace PascalCompiler.Visitor
             node.Expr.Accept(this);
             node.Type?.Accept(this);
 
-            if (node.Type is not null && !node.Type.SymType.IsEquivalent(node.Expr.SymType))
-                throw new SemanticException(node.Type.Lexeme.Pos,
-                    $"incompatible types: got '{node.Type.SymType}' expected '{node.Expr.SymType}'");
+            if (node.Type is not null)
+            {
+                if (node.Expr.SymType is SymIntegerType && node.Type.SymType is SymDoubleType)
+                    node.Expr = new CastNode(node.Expr) { SymType = SymStack.SymDouble };
+                if (node.Expr.SymType is SymCharType && node.Type.SymType is SymStringType)
+                    node.Expr = new CastNode(node.Expr) { SymType = SymStack.SymString };
+
+                if (!node.Type.SymType.IsEquivalent(node.Expr.SymType))
+                    throw new SemanticException(node.Type.Lexeme.Pos,
+                        $"incompatible types: got '{node.Expr.SymType}' expected '{node.Type.SymType}'");
+            }
 
             _symStack.AddConst(node.Ident.ToString(), node.Expr.SymType);
             return true;
@@ -397,6 +405,20 @@ namespace PascalCompiler.Visitor
             foreach (var ident in node.IdentsList)
             {
                 _symStack.CheckDuplicate(ident);
+
+                if (node.Expr is not null)
+                {
+                    node.Expr.Accept(this);
+
+                    if (node.Expr.SymType is SymIntegerType && node.Type.SymType is SymDoubleType)
+                        node.Expr = new CastNode(node.Expr) { SymType = SymStack.SymDouble };
+                    if (node.Expr.SymType is SymCharType && node.Type.SymType is SymStringType)
+                        node.Expr = new CastNode(node.Expr) { SymType = SymStack.SymString };
+
+                    if (!node.Type.SymType.IsEquivalent(node.Expr.SymType))
+                        throw new SemanticException(node.Type.Lexeme.Pos,
+                            $"incompatible types: got '{node.Expr.SymType}' expected '{node.Type.SymType}'");
+                }
 
                 ident.SymVar = _symStack.AddVar(ident.ToString(), node.Type.SymType) as SymVar;
                 ident.SymType = ident.SymVar!.Type;
@@ -420,25 +442,25 @@ namespace PascalCompiler.Visitor
         {
             node.Header.Accept(this);
 
-            var forwardedCall = _symStack.FindCall(node.Header.Name.ToString(), true);
+            var forwardedCallable = _symStack.FindCall(node.Header.Name.ToString(), true);
 
-            if (forwardedCall is not null)
+            if (forwardedCallable is not null)
             {
-                if (forwardedCall.Params.Count != node.Header.symCall?.Params.Count)
+                if (forwardedCallable.Params.Count != node.Header.symCallable?.Params.Count)
                     throw new SemanticException(node.Header.Name.Lexeme.Pos,
                         $"function header {node.Header.Name} doesn't match forward");
 
-                var forwardedCallType = forwardedCall is SymFunc oldSymFunc ? oldSymFunc.ReturnType : null;
-                var newCallType = node.Header.symCall is SymFunc newSymFunc ? newSymFunc.ReturnType : null;
+                var forwardedCallType = forwardedCallable is SymFunc oldSymFunc ? oldSymFunc.ReturnType : null;
+                var newCallType = node.Header.symCallable is SymFunc newSymFunc ? newSymFunc.ReturnType : null;
 
                 if (forwardedCallType?.IsEquivalent(newCallType!) == false)
                     throw new SemanticException(node.Header.Name.Lexeme.Pos,
                          $"function header {node.Header.Name} doesn't match forward");
 
-                for (int i = 0; i < forwardedCall.Params.Count; i++)
+                for (int i = 0; i < forwardedCallable.Params.Count; i++)
                 {
-                    var oldParam = forwardedCall.Params[i] as SymParameter;
-                    var newParam = node.Header.symCall.Params[i] as SymParameter;
+                    var oldParam = forwardedCallable.Params[i] as SymParameter;
+                    var newParam = node.Header.symCallable.Params[i] as SymParameter;
 
                     if (oldParam!.Name != newParam!.Name ||
                         oldParam.Modifier != newParam.Modifier ||
@@ -450,23 +472,23 @@ namespace PascalCompiler.Visitor
 
             if (node.Block is not null)
             {
-                node.Header.symCall!.IsForward = false;
-                _symStack.Push(node.Header.symCall!.Locals);
+                node.Header.symCallable!.IsForward = false;
+                _symStack.Push(node.Header.symCallable!.Locals);
                 _inScope = true;
 
                 node.Block.Accept(this);
 
                 _inScope = false;
-                node.Header.symCall.Locals = _symStack.Pop();
-                node.Header.symCall.Block = node.Block as StmtNode;
+                node.Header.symCallable.Locals = _symStack.Pop();
+                node.Header.symCallable.Block = node.Block as StmtNode;
 
-                if (forwardedCall is not null)
-                    _symStack.Remove(forwardedCall.Name);
+                if (forwardedCallable is not null)
+                    _symStack.Remove(forwardedCallable.Name);
             }
             else
                 _symStack.CheckDuplicate(node.Header.Name);
 
-            _symStack.Add(node.Header.symCall!);
+            _symStack.Add(node.Header.symCallable!);
 
             return true;
         }
@@ -478,11 +500,11 @@ namespace PascalCompiler.Visitor
             var locals = new SymTable();
             _symStack.Push(locals);
 
-            var symCall = node.Type is null ?
+            var symCallable = node.Type is null ?
                 new SymProc(node.Name.ToString(), new SymTable(), locals) :
                 new SymFunc(node.Name.ToString(), new SymTable(), locals, node.Type.SymType);
 
-            if (symCall is SymFunc symFunc)
+            if (symCallable is SymFunc symFunc)
                 _symStack.AddVar("result", symFunc.ReturnType);
 
             foreach (var param in node.ParamsList)
@@ -490,11 +512,11 @@ namespace PascalCompiler.Visitor
                 param.Accept(this);
 
                 foreach (var ident in param.IdentsList)
-                    symCall.Params.Add(_symStack.Find(ident.ToString(), true)!);
+                    symCallable.Params.Add(_symStack.Find(ident.ToString(), true)!);
             }
 
             _symStack.Pop();
-            node.symCall = symCall;
+            node.symCallable = symCallable;
             return true;
         }
 
