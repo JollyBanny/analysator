@@ -1,0 +1,6 @@
+type A = integer;
+
+var new_var : A;
+
+begin
+end.
