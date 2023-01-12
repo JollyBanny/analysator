@@ -1,0 +1,4 @@
+const a : integer = 'some string';
+
+begin
+end.

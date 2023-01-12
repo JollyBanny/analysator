@@ -1,0 +1,8 @@
+var a : integer;
+var b : string;
+var c : char;
+var d : double;
+var f : boolean;
+
+begin
+end.

@@ -1,0 +1,4 @@
+const a : integer = 1.1;
+
+begin
+end.

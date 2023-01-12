@@ -1,0 +1,10 @@
+var a : integer = 1;
+var b : string = 'some string';
+var c : char = 'c';
+var d : double = 1.1;
+var d1 : double = 11;
+var f : boolean = false;
+var t : boolean = true;
+
+begin
+end.
