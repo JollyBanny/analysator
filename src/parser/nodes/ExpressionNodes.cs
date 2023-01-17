@@ -24,6 +24,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public CastNode(ExprNode expr) : base(expr.Lexeme)
         {
             Expr = expr;
+            IsLValue = expr.IsLValue;
         }
 
         public ExprNode Expr { get; }

@@ -315,6 +315,10 @@ namespace PascalCompiler.Visitor
                 if (!callParam.SymType.IsEquivalent(headerParam!.Type))
                     throw new SemanticException(node.Lexeme.Pos, $"call doesn't match header");
 
+                if (callParam.IsLValue is false && headerParam.Modifier == Token.VAR.ToString())
+                    throw new SemanticException(node.Lexeme.Pos, "variable identifier expected");
+
+
                 node.Args[i] = callParam;
             }
 
