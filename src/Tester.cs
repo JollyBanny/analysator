@@ -1,5 +1,4 @@
 using PascalCompiler.LexicalAnalyzer;
-using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 using PascalCompiler.Visitor;
@@ -54,21 +53,18 @@ namespace PascalCompiler
 
             try
             {
-                if (mode == "-sp")
-                {
-                    var _parser = new SimpleParser(inFile);
-                    _parser.ParseExpression().PrintTree();
-                }
-                else
                 {
                     var _parser = new Parser(inFile);
                     var syntaxTree = _parser.Parse();
                     syntaxTree.Accept(new SymVisitor(_parser._symStack));
 
-                    if (mode == "-p")
-                        syntaxTree.Accept(new PrintVisitor()).PrintTree();
-                    else
+                    syntaxTree.Accept(new PrintVisitor()).PrintTree();
+
+                    if (mode == "-s")
+                    {
+                        Console.WriteLine();
                         _parser.PrintTables();
+                    }
                 }
             }
             catch (Exception e)
@@ -86,9 +82,6 @@ namespace PascalCompiler
             return true;
         }
 
-        static private bool SimpleParserTest(string inFile, string outFile) =>
-            ParserTest(inFile, outFile, "-sp");
-
         static private bool ParserTest(string inFile, string outFile) =>
             ParserTest(inFile, outFile, "-p");
 
@@ -100,7 +93,6 @@ namespace PascalCompiler
             Func<string, string, bool> TestFile = mode switch
             {
                 "-l" => LexerTest,
-                "-sp" => SimpleParserTest,
                 "-p" => ParserTest,
                 "-s" => SemanticTest,
                 _ => LexerTest,
@@ -109,20 +101,20 @@ namespace PascalCompiler
             var path = "./tests" + mode switch
             {
                 "-l" => "/lexer",
-                "-sp" => "/simple_parser",
                 "-p" => "/parser",
                 "-s" => "/semantics",
                 _ => "/lexer",
             };
 
-            var files = Directory.GetFiles(path, "*.in").Select((f) => Path.GetFileName(f)[..^3]);
+            var files = Directory.EnumerateFiles(path, "*.in", SearchOption.AllDirectories)
+                .Select((f) => f[..^3]).ToList();
 
-            foreach (var file in files.ToList())
+            for (var i = 0; i < files.Count; ++i)
             {
-                if (TestFile($"{path}/{file}.in", $"{path}/{file}.out"))
+                if (TestFile($"{files[i]}.in", $"{files[i]}.out"))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Test {file[..2]} OK");
+                    Console.WriteLine($"Test {(i + 1).ToString().PadLeft(2, '0')} OK");
                     Console.ResetColor();
                     _totalSuccess++;
                 }

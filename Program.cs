@@ -1,6 +1,5 @@
 ﻿using PascalCompiler.Enums;
 using PascalCompiler.LexicalAnalyzer;
-using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Visitor;
 
@@ -124,20 +123,6 @@ namespace PascalCompiler
             }
         }
 
-        static public void RunSimpleParser(string path)
-        {
-            try
-            {
-                SimpleParser _simpleParser = path == string.Empty ?
-                    new SimpleParser() : new SimpleParser(path);
-                _simpleParser.ParseExpression().PrintTree();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-
         static public void RunParser(string path)
         {
             try
@@ -173,13 +158,6 @@ namespace PascalCompiler
 
             switch (mode)
             {
-                case "-sp":
-                    if (options.Count() > 0 &&
-                        (options.Contains("--test") || options.Contains("-t")))
-                        Tester.RunTests(mode);
-                    else
-                        RunSimpleParser(path);
-                    break;
                 case "-p":
                 case "-s":
                     if (options.Count() > 0 &&
