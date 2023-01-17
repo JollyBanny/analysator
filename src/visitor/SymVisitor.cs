@@ -449,30 +449,7 @@ namespace PascalCompiler.Visitor
             var forwardedCallable = _symStack.FindCall(node.Header.Name.ToString(), true);
 
             if (forwardedCallable is not null)
-            {
-                if (forwardedCallable.Params.Count != node.Header.symCallable?.Params.Count)
-                    throw new SemanticException(node.Header.Name.Lexeme.Pos,
-                        $"function header {node.Header.Name} doesn't match forward");
-
-                var forwardedCallType = forwardedCallable is SymFunc oldSymFunc ? oldSymFunc.ReturnType : null;
-                var newCallType = node.Header.symCallable is SymFunc newSymFunc ? newSymFunc.ReturnType : null;
-
-                if (forwardedCallType?.IsEquivalent(newCallType!) == false)
-                    throw new SemanticException(node.Header.Name.Lexeme.Pos,
-                         $"function header {node.Header.Name} doesn't match forward");
-
-                for (int i = 0; i < forwardedCallable.Params.Count; i++)
-                {
-                    var oldParam = forwardedCallable.Params[i] as SymParameter;
-                    var newParam = node.Header.symCallable.Params[i] as SymParameter;
-
-                    if (oldParam!.Name != newParam!.Name ||
-                        oldParam.Modifier != newParam.Modifier ||
-                        !oldParam.Type.IsEquivalent(newParam.Type))
-                        throw new SemanticException(node.Header.Name.Lexeme.Pos,
-                         $"function header {node.Header.Name} doesn't match forward");
-                }
-            }
+                CheckCallableParams(forwardedCallable, node.Header.symCallable!, node.Header.Name.Lexeme.Pos);
 
             if (node.Block is not null)
             {
@@ -760,6 +737,32 @@ namespace PascalCompiler.Visitor
             node.Type.Accept(this);
             node.SymType = new SymConformatArrayType(node.Type.SymType);
             return true;
+        }
+
+        private void CheckCallableParams(SymProc oldCallable, SymProc newCallable, Position pos)
+        {
+            if (oldCallable.Params.Count != newCallable.Params.Count)
+                throw new SemanticException(pos, $"function header {newCallable.Name} doesn't match forward");
+
+            var forwardedCallType = oldCallable is SymFunc oldSymFunc ? oldSymFunc.ReturnType : null;
+            var newCallType = newCallable is SymFunc newSymFunc ? newSymFunc.ReturnType : null;
+
+            if (forwardedCallType?.IsEquivalent(newCallType!) == false)
+                throw new SemanticException(pos, $"function header {newCallable.Name} doesn't match forward");
+
+            for (int i = 0; i < oldCallable.Params.Count; i++)
+            {
+                var oldParam = oldCallable.Params[i] as SymParameter;
+                var newParam = newCallable.Params[i] as SymParameter;
+
+                bool namesIsSame = oldParam!.Name != newParam!.Name,
+                    modifiersIsSame = oldParam.Modifier != newParam.Modifier,
+                    typesIsSame = oldParam.Type.IsEquivalent(newParam.Type);
+
+                if (namesIsSame && modifiersIsSame && typesIsSame) continue;
+
+                throw new SemanticException(pos, $"function header {newCallable.Name} doesn't match forward");
+            }
         }
     }
 }
