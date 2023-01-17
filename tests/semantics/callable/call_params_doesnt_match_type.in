@@ -1,0 +1,7 @@
+function doSomething(d:double; int: string): integer;
+begin
+end;
+
+begin
+    doSomething(1.0, 1);
+end.

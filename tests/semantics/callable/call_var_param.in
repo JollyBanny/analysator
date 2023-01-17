@@ -1,0 +1,9 @@
+procedure doSomething(var a: double);
+begin
+end;
+
+var a: integer = 1;
+
+begin
+    doSomething(a);
+end.

@@ -1,0 +1,7 @@
+procedure doSomething(var a: double);
+begin
+end;
+
+begin
+    doSomething(1);
+end.

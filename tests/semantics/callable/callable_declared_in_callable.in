@@ -1,0 +1,11 @@
+function a():integer;
+    function b(): double;
+    begin
+    end;
+
+begin
+    b();
+end;
+
+begin
+end.

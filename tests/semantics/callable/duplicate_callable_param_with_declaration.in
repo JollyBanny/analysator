@@ -1,0 +1,7 @@
+function a(b: integer): integer;
+var b: integer;
+begin
+end;
+
+begin
+end.

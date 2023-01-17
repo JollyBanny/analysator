@@ -1,0 +1,10 @@
+function doSomething(): integer;
+begin
+    result := 20;
+end;
+
+var a: integer;
+
+begin
+    a:=doSomething();
+end.

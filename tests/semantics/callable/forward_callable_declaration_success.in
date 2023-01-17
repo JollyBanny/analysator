@@ -1,0 +1,8 @@
+procedure doSomething(); forward;
+
+procedure doSomething();
+begin
+end;
+
+begin
+end.

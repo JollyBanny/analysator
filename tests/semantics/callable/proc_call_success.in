@@ -1,0 +1,7 @@
+procedure doSomething(d:double; int: integer; str: string; ch: char; bool: boolean);
+begin
+end;
+
+begin
+    doSomething(1.0, 1, 'aa', 'a', true);
+end.

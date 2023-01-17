@@ -1,0 +1,7 @@
+var a: Record
+    x: integer;
+    end;
+
+begin
+    read(a);
+end.

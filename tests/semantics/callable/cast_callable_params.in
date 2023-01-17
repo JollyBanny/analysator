@@ -1,0 +1,7 @@
+procedure doSomething(a: double; b: string);
+begin
+end;
+
+begin
+    doSomething(1, 'c');
+end.
