@@ -1,0 +1,6 @@
+var a: string;
+var b: string;
+
+begin
+  a /= b;
+end.
