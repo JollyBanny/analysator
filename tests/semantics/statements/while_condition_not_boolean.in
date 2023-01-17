@@ -1,0 +1,8 @@
+var i : integer = 0;
+
+begin
+    while i + 1 do begin
+        write(i);
+        i += 1;
+    end;
+end.

@@ -1,0 +1,5 @@
+var i : integer = 1;
+
+begin
+    if i then write('true');
+end.

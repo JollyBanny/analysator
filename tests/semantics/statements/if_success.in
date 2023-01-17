@@ -1,0 +1,5 @@
+var i : boolean = true;
+
+begin
+    if i then write('true');
+end.
