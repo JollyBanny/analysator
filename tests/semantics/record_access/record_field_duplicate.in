@@ -1,0 +1,7 @@
+var a: record
+    x: integer;
+    x: integer;
+    end;
+
+begin
+end.
