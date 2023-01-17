@@ -43,66 +43,55 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private void PrintTable(string tableName, SymTable table, string indent = "")
         {
-            PrintLine(PTPos.Start, indent);
-            PrintRow(indent, PTPos.Center, tableName);
+            PrintLine(TableLinePos.Start, indent);
+            PrintRow(indent, TableLinePos.Center, null, tableName);
 
             foreach (DictionaryEntry item in table)
             {
-                var sym = item.Value;
-                var ptpos = sym == table.Last() ? PTPos.End : PTPos.Center;
+                var linePos = item.Value == table.Last() ? TableLinePos.End : TableLinePos.Center;
 
-                switch (sym)
+                switch (item.Value)
                 {
-                    case SymAliasType aliasType:
-                        PrintRow(indent, ptpos, "AliasType", aliasType.Name, aliasType.Origin.ToString());
-                        break;
-                    case SymType symType:
-                        PrintRow(indent, ptpos, "Type", symType.ToString());
-                        break;
-                    case SymParameter symParam:
-                        PrintRow(indent, ptpos, "Parameter", symParam.Name, symParam.Type.ToString(), symParam.Modifier);
-                        break;
-                    case SymConstant symConst:
-                        PrintRow(indent, ptpos, "Constant", symConst.Name, symConst.Type.ToString());
-                        break;
-                    case SymVar symVar:
-                        PrintRow(indent, ptpos, "Var", symVar.Name, symVar.Type.ToString());
-                        break;
                     case SymProc symProc:
-                        if (symProc is SymFunc symFunc)
-                            PrintRow(indent, ptpos, "Function", symProc.Name, symFunc.ReturnType.ToString());
-                        else
-                            PrintRow(indent, ptpos, "Procedure", symProc.Name);
+                        PrintRow(indent, linePos, symProc);
 
                         PrintTable($"{symProc.Name} params:", symProc.Params, indent + "".PadLeft(4));
                         PrintTable($"{symProc.Name} locals:", symProc.Locals, indent + "".PadLeft(4));
-                        Console.WriteLine();
                         break;
+                    default:
+                        PrintRow(indent, linePos, item.Value as Symbol);
+                        break;
+
                 }
             }
         }
 
-        private void PrintLine(PTPos ptpos, string indent = "")
+        private void PrintLine(TableLinePos linePos, string indent = "")
         {
             var tableWidth = 120;
-            var line = ptpos switch
-            {
-                PTPos.Start => $"┌{new string('─', tableWidth - 2)}┐",
-                PTPos.Center => $"├{new string('─', tableWidth - 2)}┤",
-                PTPos.End => $"└{new string('─', tableWidth - 2)}┘",
-                _ => ""
-            };
+            var line = new string('─', tableWidth - 2);
+            var template = linePos == TableLinePos.Start ? @"┌{0}┐" : linePos == TableLinePos.End ? @"└{0}┘" : @"├{0}┤";
 
-            if (ptpos == PTPos.Start)
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-            else
-                Console.ResetColor();
+            if (linePos == TableLinePos.Start) Console.ForegroundColor = ConsoleColor.DarkGray;
+            else Console.ResetColor();
 
-            Console.WriteLine(indent + line);
+            Console.WriteLine(indent + string.Format(template, line));
         }
 
-        private void PrintRow(string indent, PTPos ptpos, params string[] columns)
+        private void PrintRow(string indent, TableLinePos linePos, Symbol? sym, string title = "")
         {
+            var columns = sym switch
+            {
+                SymAliasType aliasType => new string[] { "AliasType", aliasType.Name, aliasType.Origin.ToString() },
+                SymType symType => new string[] { "Type", symType.ToString() },
+                SymParameter symParam => new string[] { "Parameter", symParam.Name, symParam.Type.ToString(), symParam.Modifier },
+                SymConstant symConst => new string[] { "Constant", symConst.Name, symConst.Type.ToString() },
+                SymVar symVar => new string[] { "Var", symVar.Name, symVar.Type.ToString() },
+                SymFunc symFunc => new string[] { "Function", symFunc.Name, symFunc.ReturnType.ToString() },
+                SymProc symProc => new string[] { "Procedure", symProc.Name, "No return type" },
+                _ => new string[] { title },
+            };
+
             var width = columns.Length switch
             {
                 2 => new int[] { 20, 99 },
@@ -116,7 +105,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 row += columns[i].PadLeft(columns[i].Length + 2).PadRight(width[i] - 1) + "│";
 
             Console.WriteLine(indent + row);
-            PrintLine(ptpos, indent);
+            PrintLine(linePos, indent);
         }
 
         private void NextLexeme() => _currentLexeme = _lexer.GetLexeme();

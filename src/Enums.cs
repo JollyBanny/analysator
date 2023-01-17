@@ -1,6 +1,6 @@
 namespace PascalCompiler.Enums
 {
-    public enum PTPos
+    public enum TableLinePos
     {
         Start,
         Center,
