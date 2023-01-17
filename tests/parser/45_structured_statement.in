@@ -5,9 +5,9 @@ function Length(str: string): integer;
 begin
 end;
 
-function Inc(str: integer): integer; forward;
+function Inc(str: char; arg0: integer): integer; forward;
 
-function Inc(str: integer): integer;
+function Inc(str: char; arg0: integer): integer;
 begin
 end;
 
@@ -20,7 +20,7 @@ begin
       else
          ps[i] := ps[i];
    end;
-   SmallAlpha:=ps;
+   result:=ps;
 end;
 
 begin

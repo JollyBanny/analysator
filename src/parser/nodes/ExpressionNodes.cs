@@ -21,7 +21,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class CastNode : ExprNode
     {
-        public CastNode(ExprNode expr) : base()
+        public CastNode(ExprNode expr) : base(expr.Lexeme)
         {
             Expr = expr;
         }
@@ -74,7 +74,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class RecordAccessNode : ExprNode
     {
-        public RecordAccessNode(ExprNode record, IdentNode field) : base()
+        public RecordAccessNode(Lexeme lexeme, ExprNode record, IdentNode field) : base(lexeme)
         {
             Record = record;
             Field = field;
@@ -93,7 +93,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
     public class ArrayAccessNode : ExprNode
     {
-        public ArrayAccessNode(ExprNode arrayIdent, List<ExprNode> accessExprs) : base()
+        public ArrayAccessNode(Lexeme lexeme, ExprNode arrayIdent, List<ExprNode> accessExprs) : base(lexeme)
         {
             ArrayIdent = arrayIdent;
             AccessExprs = accessExprs;

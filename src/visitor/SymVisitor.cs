@@ -308,7 +308,7 @@ namespace PascalCompiler.Visitor
                 var headerParam = symProc.Params[i] as SymParameter;
 
                 if (!callParam.SymType.IsEquivalent(headerParam!.Type))
-                    throw new SemanticException(callParam.Lexeme.Pos, $"call doesn't match header");
+                    throw new SemanticException(node.Lexeme.Pos, $"call doesn't match header");
             }
 
             if (symProc is SymFunc)
@@ -571,30 +571,41 @@ namespace PascalCompiler.Visitor
                 throw new SemanticException(node.Right.Lexeme.Pos, $"procedure {node.Right} has no return type");
 
             if (node.Left.SymType == SymStack.SymDouble && node.Right.SymType == SymStack.SymInt)
-            {
                 node.Right = new CastNode(node.Right) { SymType = SymStack.SymDouble };
-                return true;
-            }
 
             var left = node.Left.SymType;
             var right = node.Right.SymType;
 
-            if (!left.IsEquivalent(right))
-                throw new SemanticException(node.Right.Lexeme.Pos,
-                    $"incompatible types: got '{right}' expected '{left}'");
-
             switch (node.Lexeme.Value)
             {
                 case Token.ADD_ASSIGN:
+                    if (!IsOverloaded(left, right, SymStack.SymInt, SymStack.SymDouble) &&
+                        !IsOverloaded(left, right, SymStack.SymChar, SymStack.SymString))
+                        throw new SemanticException(node.Right.Lexeme.Pos,
+                            $"operator is not overloaded '{left}' {node} '{right}'");
+
+                    if (node.Left.SymType == SymStack.SymString && node.Right.SymType == SymStack.SymChar)
+                        node.Right = new CastNode(node.Right) { SymType = SymStack.SymString };
+
+                    break;
                 case Token.SUB_ASSIGN:
                 case Token.MUL_ASSIGN:
                 case Token.DIV_ASSIGN:
-                    if (left != SymStack.SymInt && left != SymStack.SymDouble)
+                    if (!IsOverloaded(left, right, SymStack.SymInt, SymStack.SymDouble))
                         throw new SemanticException(node.Right.Lexeme.Pos,
-                          $"incompatible types: got '{right}' expected '{left}'");
+                            $"operator is not overloaded '{left}' {node} '{right}'");
 
-                    return true;
+                    if (node.Right.SymType == SymStack.SymInt && node.Lexeme == Token.DIV_ASSIGN)
+                        node.Right = new CastNode(node.Right) { SymType = SymStack.SymDouble };
+
+                    break;
             }
+
+            right = node.Right.SymType;
+
+            if (!left.IsEquivalent(right))
+                throw new SemanticException(node.Right.Lexeme.Pos,
+                          $"incompatible types: got '{right}' expected '{left}'");
 
             return true;
         }
@@ -756,8 +767,8 @@ namespace PascalCompiler.Visitor
                 var oldParam = oldCallable.Params[i] as SymParameter;
                 var newParam = newCallable.Params[i] as SymParameter;
 
-                bool namesIsSame = oldParam!.Name != newParam!.Name,
-                    modifiersIsSame = oldParam.Modifier != newParam.Modifier,
+                bool namesIsSame = oldParam!.Name == newParam!.Name,
+                    modifiersIsSame = oldParam.Modifier == newParam.Modifier,
                     typesIsSame = oldParam.Type.IsEquivalent(newParam.Type);
 
                 if (namesIsSame && modifiersIsSame && typesIsSame) continue;

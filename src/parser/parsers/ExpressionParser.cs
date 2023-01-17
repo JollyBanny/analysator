@@ -127,7 +127,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 {
                     NextLexeme();
 
-                    left = new ArrayAccessNode(left, ParseParamsList());
+                    left = new ArrayAccessNode(left.Lexeme, left, ParseParamsList());
 
                     Require<Token>(true, Token.RBRACK);
 
@@ -136,7 +136,7 @@ namespace PascalCompiler.SyntaxAnalyzer
                 else if (lexeme == Token.DOT)
                 {
                     NextLexeme();
-                    left = new RecordAccessNode(left, ParseIdent());
+                    left = new RecordAccessNode(left.Lexeme, left, ParseIdent());
 
                     lexeme = _currentLexeme;
                 }
