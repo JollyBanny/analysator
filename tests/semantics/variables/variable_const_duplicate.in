@@ -1,5 +1,5 @@
-const a : integer;
-const a : string;
+const a = 10;
+const a = 'string';
 
 begin
 end.

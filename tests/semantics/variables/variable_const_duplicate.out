@@ -1,1 +1,1 @@
-[Line: 1; Column: 18]	'=' expected but ';' found
+[Line: 2; Column: 7]	Duplicate identifier a
