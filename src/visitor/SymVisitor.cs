@@ -307,8 +307,15 @@ namespace PascalCompiler.Visitor
 
                 var headerParam = symProc.Params[i] as SymParameter;
 
+                if (callParam.SymType == SymStack.SymInt && headerParam!.Type == SymStack.SymDouble)
+                    callParam = new CastNode(callParam) { SymType = SymStack.SymDouble };
+                if (callParam.SymType == SymStack.SymChar && headerParam!.Type == SymStack.SymString)
+                    callParam = new CastNode(callParam) { SymType = SymStack.SymString };
+
                 if (!callParam.SymType.IsEquivalent(headerParam!.Type))
                     throw new SemanticException(node.Lexeme.Pos, $"call doesn't match header");
+
+                node.Args[i] = callParam;
             }
 
             if (symProc is SymFunc)
@@ -335,6 +342,9 @@ namespace PascalCompiler.Visitor
             foreach (var arg in node.Args)
             {
                 arg.Accept(this);
+
+                if (arg.IsLValue is false)
+                    throw new SemanticException(node.Lexeme.Pos, "variable identifier expected");
 
                 if (!ReadableTypes.Contains(arg.SymType))
                     throw new SemanticException(node.Lexeme.Pos, $"{arg.SymType} is not readable type");
