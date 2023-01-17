@@ -474,6 +474,9 @@ namespace PascalCompiler.Visitor
 
                 node.Block.Accept(this);
 
+                if (node.Header.Type is not null)
+                    node.Header.symCallable.Locals.Remove(node.Header.Name.ToString());
+
                 _inScope = false;
                 node.Header.symCallable.Locals = _symStack.Pop();
                 node.Header.symCallable.Block = node.Block as StmtNode;
@@ -501,7 +504,10 @@ namespace PascalCompiler.Visitor
                 new SymFunc(node.Name.ToString(), new SymTable(), locals, node.Type.SymType);
 
             if (symCallable is SymFunc symFunc)
+            {
                 _symStack.AddVar("result", symFunc.ReturnType);
+                _symStack.AddVar(node.Name.ToString(), symFunc.ReturnType);
+            }
 
             foreach (var param in node.ParamsList)
             {
