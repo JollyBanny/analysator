@@ -141,7 +141,8 @@ namespace PascalCompiler.Visitor
                 case Token.OR:
                 case Token.XOR:
                     {
-                        if (!IsOverloaded(left, right, SymStack.SymBoolean))
+                        if (!IsOverloaded(left, right, SymStack.SymBoolean) &&
+                            !IsOverloaded(left, right, SymStack.SymInt))
                             throw new SemanticException(node.Lexeme.Pos,
                                 $"operator is not overloaded '{left}' {node} '{right}'");
 
