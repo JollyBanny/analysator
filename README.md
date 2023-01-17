@@ -14,7 +14,6 @@ Mode
 | Flag | Description                      |
 | ---- | -------------------------------- |
 |  -l  | Run lexical analysis             |
-|  -sp | Run simple syntax parser         |
 |  -p  | Run syntax parser                |
 |  -s  | Run parser with semantics cheker |
 

@@ -39,7 +39,6 @@ namespace PascalCompiler
             Console.ResetColor();
             Console.WriteLine(
                 " -l [option] \t\t run lexical analysis\n" +
-                " -sp [option] \t\t run simple_parser analysis\n" +
                 " -p [option] \t\t run parser analysis\n" +
                 " -s [option] \t\t run parser analysis with semantics tests\n");
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -73,7 +72,7 @@ namespace PascalCompiler
 
         static bool ValidateArgs(string[] args, string mode, string[] options, string path)
         {
-            if (!new string[] { "-l", "-sp", "-p", "-s" }.Contains(mode))
+            if (!new string[] { "-l", "-p", "-s" }.Contains(mode))
             {
                 WrongArgs("Invalid mode");
                 return false;
