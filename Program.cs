@@ -1,10 +1,10 @@
-﻿using PascalCompiler.LexicalAnalyzer;
+﻿using PascalCompiler.Enums;
+using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SimpleSyntaxAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
-using PascalCompiler.Enums;
+using PascalCompiler.Visitor;
 
 using System.Globalization;
-using PascalCompiler.Visitor;
 
 namespace PascalCompiler
 {

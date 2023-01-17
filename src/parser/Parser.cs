@@ -37,122 +37,109 @@ namespace PascalCompiler.SyntaxAnalyzer
             var global = _symStack.Pop();
             var builtins = _symStack.Pop();
 
-            PrintLine();
             PrintTable("builtins", builtins);
-            PrintLine();
             PrintTable("global", global);
         }
 
         private void PrintTable(string tableName, SymTable table, string indent = "")
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            PrintRow(indent, tableName);
-            Console.ResetColor();
+            PrintLine(PTPos.Start, indent);
+            PrintRow(indent, PTPos.Center, tableName);
 
             foreach (DictionaryEntry item in table)
-                switch (item.Value)
+            {
+                var sym = item.Value;
+                var ptpos = sym == table.Last() ? PTPos.End : PTPos.Center;
+
+                switch (sym)
                 {
                     case SymAliasType aliasType:
-                        PrintRow(indent, "AliasType", $"{item.Key}", $"{aliasType.Origin}");
-                        break;
-                    case SymArrayType arrayType:
-                        PrintRow(indent, "ArrayType", $"{item.Key}", $"{arrayType.ElemType}");
-                        break;
-                    case SymRecordType recordType:
-                        PrintRow(indent, "RecordType", $"{item.Key}");
-                        PrintLine();
-                        PrintLine(indent + "".PadLeft(4));
-                        PrintTable($"{item.Key} fields:", recordType.Table, indent + "".PadLeft(4));
+                        PrintRow(indent, ptpos, "AliasType", aliasType.Name, aliasType.Origin.ToString());
                         break;
                     case SymType symType:
-                        PrintRow(indent, "Type", $"{symType}");
+                        PrintRow(indent, ptpos, "Type", symType.ToString());
                         break;
                     case SymParameter symParam:
-                        PrintRow(indent, "Parameter", symParam.Name, $"{symParam.Type}", symParam.Modifier);
+                        PrintRow(indent, ptpos, "Parameter", symParam.Name, symParam.Type.ToString(), symParam.Modifier);
                         break;
                     case SymConstant symConst:
-                        PrintRow(indent, "Constant", symConst.Name, $"{symConst.Type}");
+                        PrintRow(indent, ptpos, "Constant", symConst.Name, symConst.Type.ToString());
                         break;
                     case SymVar symVar:
-                        PrintRow(indent, "Var", symVar.Name, $"{symVar.Type}");
+                        PrintRow(indent, ptpos, "Var", symVar.Name, symVar.Type.ToString());
                         break;
                     case SymProc symProc:
                         if (symProc is SymFunc symFunc)
-                        {
-                            symProc.Locals.Remove(symProc.Name);
-                            PrintRow(indent, "Function", symProc.Name, $"{symFunc.ReturnType}");
-                        }
+                            PrintRow(indent, ptpos, "Function", symProc.Name, symFunc.ReturnType.ToString());
                         else
-                            PrintRow(indent, "Procedure", symProc.Name);
+                            PrintRow(indent, ptpos, "Procedure", symProc.Name);
 
-                        PrintLine(indent + "".PadLeft(4));
                         PrintTable($"{symProc.Name} params:", symProc.Params, indent + "".PadLeft(4));
                         PrintTable($"{symProc.Name} locals:", symProc.Locals, indent + "".PadLeft(4));
+                        Console.WriteLine();
                         break;
                 }
+            }
         }
 
-        private void PrintLine(string indent = "")
+        private void PrintLine(PTPos ptpos, string indent = "")
         {
-            var tableWidth = 60;
-            Console.WriteLine(indent + new string('-', tableWidth));
+            var tableWidth = 120;
+            var line = ptpos switch
+            {
+                PTPos.Start => $"┌{new string('─', tableWidth - 2)}┐",
+                PTPos.Center => $"├{new string('─', tableWidth - 2)}┤",
+                PTPos.End => $"└{new string('─', tableWidth - 2)}┘",
+                _ => ""
+            };
+
+            if (ptpos == PTPos.Start)
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+            else
+                Console.ResetColor();
+
+            Console.WriteLine(indent + line);
         }
 
-        private void PrintRow(string indent, params string[] columns)
+        private void PrintRow(string indent, PTPos ptpos, params string[] columns)
         {
-            var tableWidth = 60;
-            int width = (tableWidth - columns.Length) / columns.Length;
-            string row = "|";
+            var width = columns.Length switch
+            {
+                2 => new int[] { 20, 99 },
+                3 => new int[] { 20, 30, 69 },
+                4 => new int[] { 20, 30, 59, 10 },
+                _ => new int[] { 119 }
+            };
 
-            foreach (string column in columns)
-                row += AlignCentre(column, width) + "|";
+            var row = "│";
+            for (var i = 0; i < columns.Length; i++)
+                row += columns[i].PadLeft(columns[i].Length + 2).PadRight(width[i] - 1) + "│";
 
             Console.WriteLine(indent + row);
-            PrintLine(indent);
+            PrintLine(ptpos, indent);
         }
 
-        private string AlignCentre(string text, int width)
-        {
-            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
-
-            if (string.IsNullOrEmpty(text))
-                return new string(' ', width);
-            else
-                return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
-        }
-
-        private void NextLexeme()
-        {
-            _currentLexeme = _lexer.GetLexeme();
-        }
+        private void NextLexeme() => _currentLexeme = _lexer.GetLexeme();
 
         private void Require<T>(bool getNext, params T[] tokens)
         {
             foreach (var token in tokens)
                 if (_currentLexeme.Equals(token))
                 {
-                    if (getNext)
-                        NextLexeme();
+                    if (getNext) NextLexeme();
                     return;
                 }
 
-            if (tokens[0] is Token)
-            {
-                Token tok = (Token)(object)tokens[0]!;
-                throw ExpectedException(tok.Stringify()!, _currentLexeme.Source);
-            }
+            var expectedArg = tokens[0] is Token ?
+                ((Token)(object)tokens[0]!).Stringify() : tokens[0]!.ToString()!;
 
-            throw ExpectedException(tokens[0]!.ToString()!, _currentLexeme.Source);
+            throw ExpectedException(expectedArg, _currentLexeme.Source);
         }
 
-        private SyntaxException ExpectedException(string expected, string found)
-        {
-            return new SyntaxException(_lexer.Cursor, $"'{expected}' expected but '{found}' found");
-        }
+        private SyntaxException ExpectedException(string expected, string found) =>
+            new SyntaxException(_lexer.Cursor, $"'{expected}' expected but '{found}' found");
 
-        private SyntaxException FatalException(string msg)
-        {
-            return new SyntaxException(_lexer.Cursor, msg);
-        }
+        private SyntaxException FatalException(string msg) =>
+            new SyntaxException(_lexer.Cursor, msg);
     }
 }

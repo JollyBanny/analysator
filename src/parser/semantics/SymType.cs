@@ -103,12 +103,9 @@ namespace PascalCompiler.Semantics
 
         public SymType GetBase()
         {
-            var type = Origin;
-
-            while (type is SymAliasType)
-                type = (type as SymAliasType)!.Origin;
-
-            return type;
+            for (var type = Origin; true; type = (type as SymAliasType)!.Origin)
+                if (type is not SymAliasType)
+                    return type;
         }
 
         public override bool IsEquivalent(SymType other) => GetBase().IsEquivalent(other);
@@ -123,25 +120,27 @@ namespace PascalCompiler.Semantics
 
         public SymTable Table { get; }
 
-        public override bool IsEquivalent(SymRecordType other)
+        public Dictionary<string, string> StringTable
         {
-            if (Table.Count != other.Table.Count)
-                return false;
-
-            foreach (DictionaryEntry field in Table)
+            get
             {
-                var item = field.Value as SymParameter;
-                var otherItem = other.Table[field.Key.ToString()!] as SymVar;
+                var dictionary = new Dictionary<string, string>();
 
-                if (otherItem is null)
-                    return false;
+                foreach (DictionaryEntry field in Table)
+                {
+                    var item = (field.Value as SymVar)!;
+                    dictionary.Add(item.Name, item.Type.ToString());
+                }
 
-                if (item?.Type.IsEquivalent(otherItem.Type) is false)
-                    return false;
+                return dictionary;
             }
-
-            return true;
         }
+
+        public override bool IsEquivalent(SymRecordType other) =>
+            StringTable.Count == other.StringTable.Count && !StringTable.Except(other.StringTable).Any();
+
+        public override string ToString() =>
+            $"{{ {string.Join(", ", StringTable.Select(kv => kv.Key + ": " + kv.Value))} }}";
     }
 
     public class SymArrayType : SymType
@@ -163,31 +162,27 @@ namespace PascalCompiler.Semantics
                 var count = 1;
 
                 while (type is SymArrayType arrayType)
-                    (count, type) = (count + 1, arrayType);
+                    (count, type) = (count + 1, arrayType.ElemType);
 
                 return count;
             }
         }
 
-        public override bool IsEquivalent(SymArrayType other)
+        public SymType Origin
         {
-            if (DimensionsCount != other.DimensionsCount)
-                return false;
-
-            var type = ElemType;
-            var otherType = other.ElemType;
-
-            for (int i = 1; i < DimensionsCount; i++)
+            get
             {
-                type = (type as SymArrayType)!.ElemType;
-                otherType = (otherType as SymArrayType)!.ElemType;
+                for (var type = ElemType; true; type = (type as SymArrayType)!.ElemType)
+                    if (type is not SymArrayType)
+                        return type;
             }
-
-            if (!type.IsEquivalent(otherType))
-                return false;
-
-            return true;
         }
+
+        public override bool IsEquivalent(SymArrayType other) =>
+            DimensionsCount == other.DimensionsCount && Origin.IsEquivalent(other.Origin);
+
+        public override string ToString() =>
+            string.Concat(Enumerable.Repeat("array of ", DimensionsCount)) + Origin;
     }
 
     public class SymConformatArrayType : SymType

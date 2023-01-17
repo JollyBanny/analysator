@@ -1,5 +1,12 @@
 namespace PascalCompiler.Enums
 {
+    public enum PTPos
+    {
+        Start,
+        Center,
+        End,
+    }
+
     public enum TokenType
     {
         EOF,
