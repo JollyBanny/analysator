@@ -43,9 +43,12 @@ namespace PascalCompiler.SyntaxAnalyzer
 
         private void PrintTable(string tableName, SymTable table, string indent = "")
         {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             PrintLine(TableLinePos.Start, indent);
-            PrintRow(indent, TableLinePos.Center, null, tableName);
+            PrintRow(indent, null, tableName);
+            Console.ResetColor();
 
+            PrintLine(TableLinePos.Center, indent);
             foreach (DictionaryEntry item in table)
             {
                 var linePos = item.Value == table.Last() ? TableLinePos.End : TableLinePos.Center;
@@ -53,13 +56,15 @@ namespace PascalCompiler.SyntaxAnalyzer
                 switch (item.Value)
                 {
                     case SymProc symProc:
-                        PrintRow(indent, linePos, symProc);
+                        PrintRow(indent, symProc);
+                        PrintLine(linePos, indent);
 
                         PrintTable($"{symProc.Name} params:", symProc.Params, indent + "".PadLeft(4));
                         PrintTable($"{symProc.Name} locals:", symProc.Locals, indent + "".PadLeft(4));
                         break;
                     default:
-                        PrintRow(indent, linePos, item.Value as Symbol);
+                        PrintRow(indent, item.Value as Symbol);
+                        PrintLine(linePos, indent);
                         break;
 
                 }
@@ -72,13 +77,10 @@ namespace PascalCompiler.SyntaxAnalyzer
             var line = new string('─', tableWidth - 2);
             var template = linePos == TableLinePos.Start ? @"┌{0}┐" : linePos == TableLinePos.End ? @"└{0}┘" : @"├{0}┤";
 
-            if (linePos == TableLinePos.Start) Console.ForegroundColor = ConsoleColor.DarkGray;
-            else Console.ResetColor();
-
             Console.WriteLine(indent + string.Format(template, line));
         }
 
-        private void PrintRow(string indent, TableLinePos linePos, Symbol? sym, string title = "")
+        private void PrintRow(string indent, Symbol? sym, string title = "")
         {
             var columns = sym switch
             {
@@ -105,7 +107,6 @@ namespace PascalCompiler.SyntaxAnalyzer
                 row += columns[i].PadLeft(columns[i].Length + 2).PadRight(width[i] - 1) + "│";
 
             Console.WriteLine(indent + row);
-            PrintLine(linePos, indent);
         }
 
         private void NextLexeme() => _currentLexeme = _lexer.GetLexeme();
