@@ -10,9 +10,12 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             SymType = null!;
             IsLValue = false;
+            IsConstValue = false;
         }
 
         public bool IsLValue { get; set; }
+
+        public bool IsConstValue { get; set; }
 
         public SymType SymType { get; set; }
 
@@ -25,6 +28,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         {
             Expr = expr;
             IsLValue = expr.IsLValue;
+            IsConstValue = expr.IsConstValue;
         }
 
         public ExprNode Expr { get; }
@@ -187,6 +191,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
     {
         protected ConstantNode(Lexeme lexeme) : base(lexeme)
         {
+            IsConstValue = true;
         }
     }
 

@@ -174,6 +174,9 @@ namespace PascalCompiler.Visitor
             if (left == SymStack.SymDouble && right == SymStack.SymInt)
                 node.Right = new CastNode(node.Right) { SymType = SymStack.SymDouble };
 
+            if (node.Left.IsConstValue && node.Right.IsConstValue)
+                node.IsConstValue = true;
+
             return true;
         }
 
@@ -400,6 +403,9 @@ namespace PascalCompiler.Visitor
             _symStack.CheckDuplicate(node.Ident);
             node.Expr.Accept(this);
             node.Type?.Accept(this);
+
+            if(node.Expr.IsConstValue is false)
+                throw new SemanticException(node.Expr.Lexeme.Pos, "illegal expression");
 
             if (node.Type is not null)
             {
