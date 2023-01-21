@@ -6,16 +6,16 @@ namespace PascalCompiler.AsmGenerator
 
     public class Library : AsmPart
     {
-        public Library(AccessModifier modifier, string name)
+        public Library(Instruction instruction, string name)
         {
-            Modifier = modifier;
+            Instruction = instruction;
             Name = name;
         }
 
-        public AccessModifier Modifier { get; }
+        public Instruction Instruction { get; }
         public string Name { get; }
 
-        public override string ToString() => $"{Modifier} _{Name}";
+        public override string ToString() => $"{Instruction} _{Name}";
     }
 
     public class Label : AsmPart
@@ -28,5 +28,21 @@ namespace PascalCompiler.AsmGenerator
         public string Name { get; }
 
         public override string ToString() => $"_{Name}:";
+    }
+
+    public class Data : AsmPart
+    {
+        public Data(Instruction instruction, string label, object value)
+        {
+            Instruction = instruction;
+            Label = label;
+            Value = value;
+        }
+
+        public Instruction Instruction { get; }
+        public string Label { get; }
+        public object Value { get; }
+
+        public override string ToString() => $"{Label}: {Instruction} {Value}";
     }
 }

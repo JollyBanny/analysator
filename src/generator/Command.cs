@@ -21,20 +21,28 @@ namespace PascalCompiler.AsmGenerator
         {
             Value = value;
             SetOffset = false;
-            OperandFlag = OperandFlag.NONE;
         }
 
-        public Operand(object value, OperandFlag flag)
+        public Operand(object value, params OperandFlag[] flag)
         {
             Value = value;
             SetOffset = false;
-            OperandFlag = flag;
+
+            if (flag.Contains(OperandFlag.INDIRECT))
+                OperandFlag = OperandFlag.INDIRECT;
+            if (flag.Contains(OperandFlag.WORD))
+                SizeFlag = OperandFlag.WORD;
+            if (flag.Contains(OperandFlag.WORD))
+                SizeFlag = OperandFlag.DWORD;
+            if (flag.Contains(OperandFlag.QWORD))
+                SizeFlag = OperandFlag.QWORD;
         }
 
         private object Value { get; set; }
         private bool SetOffset { get; set; }
         private int Offset { get; set; }
         private OperandFlag OperandFlag { get; set; }
+        private OperandFlag SizeFlag { get; set; }
 
         public static Operand operator +(Operand operand, int offset)
         {
@@ -54,13 +62,14 @@ namespace PascalCompiler.AsmGenerator
         {
             var result = Value.ToString()!;
 
-            if (SetOffset is true)
+            if (SetOffset)
                 result = $"[{result} {(Offset >= 0 ? "+" : "-")} {Math.Abs(Offset)}]";
 
-            if (OperandFlag == OperandFlag.INDERECT)
+            if (OperandFlag == OperandFlag.INDIRECT)
                 result = $"[{result}]";
-            else if (OperandFlag != OperandFlag.NONE)
-                result = $"{OperandFlag} {result}";
+
+            if (SizeFlag != OperandFlag.NONE)
+                result = $"{SizeFlag} {result}";
 
             return result;
         }

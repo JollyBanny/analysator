@@ -2,19 +2,17 @@ namespace PascalCompiler.AsmGenerator
 {
     public enum OperandFlag
     {
-        INDERECT,
+        NONE,
+        INDIRECT,
         WORD,
         DWORD,
         QWORD,
-        NONE,
     }
 
     public enum Instruction
     {
-        MUL,
-        DIV,
-
-        PUSH, POP, CDQ,
+        EXTERN, GLOBAL,
+        PUSH, POP, CDQ, DD, DQ,
         ADD, SUB, IMUL, IDIV, NEG, INC, DEC,
         OR, XOR, AND, NOT, SHL, SHR,
         MOV,
@@ -38,12 +36,5 @@ namespace PascalCompiler.AsmGenerator
         CL,
         XMM0,
         XMM1,
-
-    }
-
-    public enum AccessModifier
-    {
-        EXTERN,
-        GLOBAL,
     }
 }

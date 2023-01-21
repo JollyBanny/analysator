@@ -17,9 +17,9 @@ namespace PascalCompiler.Visitor
         public Generator Visit(FullProgramNode node)
         {
 
-            _g.GenLibrary(AccessModifier.GLOBAL, "main");
-            _g.GenLibrary(AccessModifier.EXTERN, "printf");
-            _g.GenLibrary(AccessModifier.EXTERN, "scanf");
+            _g.AddModule(Instruction.GLOBAL, "main");
+            _g.AddModule(Instruction.EXTERN, "printf");
+            _g.AddModule(Instruction.EXTERN, "scanf");
 
             node.Header?.Accept(this);
             node.Block.Accept(this);
@@ -57,10 +57,10 @@ namespace PascalCompiler.Visitor
 
             if (node.Left.SymType is SymDoubleType)
             {
-                _g.GenCommand(Instruction.MOVSD,
-                    new(Register.XMM1), new Operand(Register.ESP, OperandFlag.QWORD) + 8);
-                _g.GenCommand(Instruction.MOVSD,
-                    new(Register.XMM0), new Operand(Register.ESP, OperandFlag.QWORD) + 0);
+                _g.GenCommand(Instruction.MOVSD, new(Register.XMM1),
+                    new Operand(Register.ESP, OperandFlag.QWORD) + 8);
+                _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                    new Operand(Register.ESP, OperandFlag.QWORD) + 0);
 
                 _g.GenCommand(Instruction.ADD, new(Register.ESP), new(16));
 
@@ -100,10 +100,8 @@ namespace PascalCompiler.Visitor
                 }
 
                 _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
-                _g.GenCommand(Instruction.MOVSD,
-                    new Operand(Register.ESP, OperandFlag.QWORD) + 0, new(Register.XMM1));
-
-                _g.GenCommand(Instruction.PUSH, new(Register.ESP));
+                _g.GenCommand(Instruction.MOVSD, new Operand(Register.ESP, OperandFlag.QWORD) + 0,
+                    new(Register.XMM0));
             }
             else
             {
@@ -226,6 +224,12 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(ConstDoubleLiteral node)
         {
+            var newConst = _g.AddConstant(double.Parse(node.Lexeme.Value.ToString()!));
+            _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                new(newConst, OperandFlag.INDIRECT, OperandFlag.QWORD));
+            _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
+            _g.GenCommand(Instruction.MOVSD, new(Register.ESP, OperandFlag.INDIRECT, OperandFlag.QWORD),
+                new(Register.XMM0));
             return _g;
         }
 
