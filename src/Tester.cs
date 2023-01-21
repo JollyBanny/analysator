@@ -44,7 +44,7 @@ namespace PascalCompiler
             return true;
         }
 
-        static private bool ParserTest(string inFile, string outFile, string mode)
+        static private bool ParserTest(string inFile, string outFile, bool withSemantics)
         {
             var expected = File.ReadAllText(outFile);
             var found = new StringWriter();
@@ -60,7 +60,7 @@ namespace PascalCompiler
 
                     syntaxTree.Accept(new PrintVisitor()).PrintTree();
 
-                    if (mode == "-s")
+                    if (withSemantics)
                     {
                         Console.WriteLine();
                         _parser.PrintTables();
@@ -83,26 +83,26 @@ namespace PascalCompiler
         }
 
         static private bool ParserTest(string inFile, string outFile) =>
-            ParserTest(inFile, outFile, "-p");
+            ParserTest(inFile, outFile, false);
 
         static private bool SemanticTest(string inFile, string outFile) =>
-            ParserTest(inFile, outFile, "-s");
+            ParserTest(inFile, outFile, true);
 
-        static public void RunTests(string mode)
+        static public void RunTests(CompilerFlag mode)
         {
             Func<string, string, bool> TestFile = mode switch
             {
-                "-l" => LexerTest,
-                "-p" => ParserTest,
-                "-s" => SemanticTest,
+                CompilerFlag.Lexer => LexerTest,
+                CompilerFlag.Parser => ParserTest,
+                CompilerFlag.Semantics => SemanticTest,
                 _ => LexerTest,
             };
 
             var path = "./tests" + mode switch
             {
-                "-l" => "/lexer",
-                "-p" => "/parser",
-                "-s" => "/semantics",
+                CompilerFlag.Lexer => "/lexer",
+                CompilerFlag.Parser => "/parser",
+                CompilerFlag.Semantics => "/semantics",
                 _ => "/lexer",
             };
 

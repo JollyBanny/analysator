@@ -27,6 +27,20 @@ namespace PascalCompiler
         public T Second;
     }
 
+    public struct ProgramConfig
+    {
+        public ProgramConfig(CompilerFlag mode, CompilerFlag option, string filePath)
+        {
+            Mode = mode;
+            Option = option;
+            FilePath = filePath;
+        }
+
+        public CompilerFlag Mode { get; }
+        public CompilerFlag Option { get; }
+        public string FilePath { get; }
+    }
+
     class Program
     {
         static void WrongArgs(string message)
@@ -47,65 +61,46 @@ namespace PascalCompiler
             Console.WriteLine(
                 " -t, --test \t\t run analyzer tests\n" +
                 " -f, --file <path> \t run alanyzer with file");
-            return;
         }
 
-        static string GetPath(string[] args, int optionsCount)
+        static ProgramConfig ParseArguments(string[] args)
         {
-            var _ = args.Skip(1 + optionsCount);
-            if (_.Count() > 0) return _.First();
-            else return "";
-        }
-
-        static string[] GetOptions(string[] args)
-        {
-            var options = new List<string>();
-            foreach (var option in args.Skip(1))
+            CompilerFlag mode = args[0] switch
             {
-                if (option.StartsWith("--") || option.StartsWith("-"))
-                    options.Add(option);
-                else
-                    break;
-            }
-            return options.ToArray();
-        }
+                "-l" or "--lexer" => CompilerFlag.Lexer,
+                "-p" or "--parser" => CompilerFlag.Parser,
+                "-s" or "--semantics" => CompilerFlag.Semantics,
+                "-g" or "--generator" => CompilerFlag.Generator,
+                _ => CompilerFlag.Invalid,
+            };
 
-        static bool ValidateArgs(string[] args, string mode, string[] options, string path)
-        {
-            if (!new string[] { "-l", "-p", "-s" }.Contains(mode))
-            {
-                WrongArgs("Invalid mode");
-                return false;
-            }
+            if (mode == CompilerFlag.Invalid)
+                throw new Exception("Invalid mode");
 
-            string[] availableOptions = { "--test", "--file", "-t", "-f" };
-            var _ = options.Where(o => availableOptions.Contains(o));
-            if (_.Count() != options.Count())
+            CompilerFlag option = args[1] switch
             {
-                WrongArgs("Invalid option");
-                return false;
+                "-t" or "--test" => CompilerFlag.Test,
+                "-f" or "--file" => CompilerFlag.File,
+                _ => CompilerFlag.Invalid,
+            };
+
+            if (option == CompilerFlag.Invalid)
+                throw new Exception("Invalid option");
+
+            var path = "";
+            if (option == CompilerFlag.File)
+            {
+                path = args[2];
+                if (!File.Exists(path))
+                    throw new Exception($"Invalid path {path}");
             }
 
-            if (options.Contains("--file") || options.Contains("-f") || options.Length == 0)
-            {
-                if (path == string.Empty)
-                {
-                    WrongArgs("Path argument is missing");
-                    return false;
-                }
-                else if (!File.Exists(path))
-                {
-                    WrongArgs($"Invalid path {path}");
-                    return false;
-                }
-            }
-
-            return true;
+            return new ProgramConfig(mode, option, path);
         }
 
         static public void RunLexer(string path)
         {
-            Lexer _lexer = path == string.Empty ? new Lexer() : new Lexer(path);
+            Lexer _lexer = new Lexer(path);
             while (true)
             {
                 try
@@ -122,15 +117,36 @@ namespace PascalCompiler
             }
         }
 
-        static public void RunParser(string path)
+        static public void RunParser(string path, bool withSemantics)
         {
             try
             {
-                Parser _parser = path == string.Empty ? new Parser() : new Parser(path);
+                Parser _parser = new Parser(path);
                 var syntaxTree = _parser.Parse();
                 syntaxTree.Accept(new SymVisitor(_parser._symStack));
                 syntaxTree.Accept(new PrintVisitor()).PrintTree();
-                _parser.PrintTables();
+
+                if (withSemantics)
+                    _parser.PrintTables();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        static public void RunGenerator(string path)
+        {
+            try
+            {
+                Parser _parser = new Parser(path);
+
+                var syntaxTree = _parser.Parse();
+                syntaxTree.Accept(new SymVisitor(_parser._symStack));
+
+                var generator = syntaxTree.Accept(new AsmVisitor(_parser._symStack));
+                generator.PrintProgram();
+                generator.RunProgram();
             }
             catch (Exception e)
             {
@@ -143,39 +159,36 @@ namespace PascalCompiler
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            if (args.Length == 0)
+            ProgramConfig programConfig = new ProgramConfig();
+
+            try
             {
-                WrongArgs("No arguments");
-                return;
+                if (args.Length == 0)
+                    throw new Exception("No arguments");
+
+                programConfig = ParseArguments(args);
+            }
+            catch (Exception e)
+            {
+                WrongArgs(e.Message);
             }
 
-            string mode = args[0];
-            var options = GetOptions(args);
-            string path = GetPath(args, options.Count());
-            if (!ValidateArgs(args, mode, options, path))
-                return;
-
-            switch (mode)
-            {
-                case "-p":
-                case "-s":
-                    if (options.Count() > 0 &&
-                        (options.Contains("--test") || options.Contains("-t")))
-                        Tester.RunTests(mode);
-                    else
-                        RunParser(path);
-                    break;
-                case "-l":
-                    if (options.Count() > 0 &&
-                        (options.Contains("--test") || options.Contains("-t")))
-                        Tester.RunTests(mode);
-                    else
-                        RunLexer(path);
-                    break;
-                default:
-                    Console.WriteLine("Unknown argument");
-                    break;
-            }
+            if (programConfig.Option == CompilerFlag.Test)
+                Tester.RunTests(programConfig.Mode);
+            else
+                switch (programConfig.Mode)
+                {
+                    case CompilerFlag.Lexer:
+                        RunParser(programConfig.FilePath, programConfig.Mode == CompilerFlag.Semantics);
+                        break;
+                    case CompilerFlag.Parser:
+                    case CompilerFlag.Semantics:
+                        RunParser(programConfig.FilePath, programConfig.Mode == CompilerFlag.Semantics);
+                        break;
+                    case CompilerFlag.Generator:
+                        RunGenerator(programConfig.FilePath);
+                        break;
+                }
         }
     }
 }

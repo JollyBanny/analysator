@@ -1,5 +1,5 @@
-using PascalCompiler.Enums;
 using PascalCompiler.Exceptions;
+using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.Semantics;
 using PascalCompiler.SyntaxAnalyzer.Nodes;
 
@@ -404,7 +404,7 @@ namespace PascalCompiler.Visitor
             node.Expr.Accept(this);
             node.Type?.Accept(this);
 
-            if(node.Expr.IsConstValue is false)
+            if (node.Expr.IsConstValue is false)
                 throw new SemanticException(node.Expr.Lexeme.Pos, "illegal expression");
 
             if (node.Type is not null)
