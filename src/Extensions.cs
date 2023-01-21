@@ -1,5 +1,4 @@
 using System.Globalization;
-using PascalCompiler.Enums;
 using PascalCompiler.LexicalAnalyzer;
 
 namespace PascalCompiler.Extensions
