@@ -16,6 +16,7 @@ Mode
 |  -l, --lexer      | Run lexical analysis             |
 |  -p, --parser     | Run syntax parser                |
 |  -s, --semantics  | Run parser with semantics cheker |
+|  -g, --generator  | Run code generator               |
 
 Option
 | Flag       | Arguments           | Description            |
