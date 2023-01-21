@@ -11,11 +11,11 @@ dotnet run -- <mode> <option>
 ```
 
 Mode
-| Flag | Description                      |
-| ---- | -------------------------------- |
-|  -l  | Run lexical analysis             |
-|  -p  | Run syntax parser                |
-|  -s  | Run parser with semantics cheker |
+| Flag              | Description                      |
+| ----------------- | -------------------------------- |
+|  -l, --lexer      | Run lexical analysis             |
+|  -p, --parser     | Run syntax parser                |
+|  -s, --semantics  | Run parser with semantics cheker |
 
 Option
 | Flag       | Arguments           | Description            |
