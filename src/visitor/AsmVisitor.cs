@@ -58,9 +58,9 @@ namespace PascalCompiler.Visitor
             if (node.Left.SymType is SymDoubleType)
             {
                 _g.GenCommand(Instruction.MOVSD, new(Register.XMM1),
-                    new Operand(Register.ESP, OperandFlag.QWORD) + 8);
-                _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
                     new Operand(Register.ESP, OperandFlag.QWORD) + 0);
+                _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                    new Operand(Register.ESP, OperandFlag.QWORD) + 8);
 
                 _g.GenCommand(Instruction.ADD, new(Register.ESP), new(16));
 
@@ -70,12 +70,13 @@ namespace PascalCompiler.Visitor
                         _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1));
                         break;
                     case Token.SUB:
-                        _g.GenCommand(Instruction.SUB, new(Register.EAX), new(Register.EBX));
+                        _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1));
                         break;
                     case Token.MUL:
-                        _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(Register.EBX));
+                        _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1));
                         break;
-                    case Token.DIV:
+                    case Token.O_DIV:
+                        _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1));
                         break;
                     case Token.EQUAL:
                         GenerateIntCmp(Instruction.SETE);
@@ -119,7 +120,7 @@ namespace PascalCompiler.Visitor
                     case Token.MUL:
                         _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(Register.EBX));
                         break;
-                    case Token.O_DIV:
+                    case Token.DIV:
                     case Token.MOD:
                         _g.GenCommand(Instruction.CDQ);
                         _g.GenCommand(Instruction.IDIV, new(Register.EBX));
@@ -199,7 +200,10 @@ namespace PascalCompiler.Visitor
             foreach (var arg in node.Args)
                 arg.Accept(this);
 
-            _g.GenCommand(Instruction.PUSH, new("msg"));
+            if (node.Args[0].SymType is SymDoubleType)
+                _g.GenCommand(Instruction.PUSH, new("double_template"));
+            else
+                _g.GenCommand(Instruction.PUSH, new("integer_template"));
             _g.GenCommand(Instruction.CALL, new("_printf"));
             _g.GenCommand(Instruction.ADD, new(Register.ESP), new(12));
 

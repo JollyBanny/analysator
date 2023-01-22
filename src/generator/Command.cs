@@ -32,7 +32,7 @@ namespace PascalCompiler.AsmGenerator
                 OperandFlag = OperandFlag.INDIRECT;
             if (flag.Contains(OperandFlag.WORD))
                 SizeFlag = OperandFlag.WORD;
-            if (flag.Contains(OperandFlag.WORD))
+            if (flag.Contains(OperandFlag.DWORD))
                 SizeFlag = OperandFlag.DWORD;
             if (flag.Contains(OperandFlag.QWORD))
                 SizeFlag = OperandFlag.QWORD;

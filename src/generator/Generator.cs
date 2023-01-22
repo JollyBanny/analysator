@@ -60,7 +60,8 @@ namespace PascalCompiler.AsmGenerator
             foreach (var command in DataParts)
                 Console.WriteLine(command);
 
-            Console.WriteLine("msg : db \"%f\", 0xA, 0");
+            Console.WriteLine("double_template : db \"%f\", 0xA, 0");
+            Console.WriteLine("integer_template : db \"%d\", 0xA, 0");
 
             // write to asm file
             var testWritter = new StreamWriter("./tests/asm/program.asm");
