@@ -120,6 +120,12 @@ namespace PascalCompiler.Visitor
                             throw new SemanticException(node.Lexeme.Pos,
                                 $"operator is not overloaded '{left}' {node} '{right}'");
 
+                        if (node.Left.SymType is SymIntegerType)
+                        {
+                            node.Left = new CastNode(node.Left) { SymType = SymStack.SymDouble };
+                            left = node.Left.SymType;
+                        }
+
                         node.SymType = SymStack.SymDouble;
                         break;
                     }

@@ -45,8 +45,10 @@ program
             ├──── Call statement
             │     └──── writeln
             │           └──── /
-            │                 ├──── 10
-            │                 └──── 10
+            │                 ├──── cast to double
+            │                 │     └──── 10
+            │                 └──── cast to double
+            │                       └──── 10
             ├──── Call statement
             │     └──── writeln
             │           └──── *
@@ -65,8 +67,10 @@ program
             ├──── Call statement
             │     └──── writeln
             │           └──── /
-            │                 ├──── a
-            │                 └──── 10
+            │                 ├──── cast to double
+            │                 │     └──── a
+            │                 └──── cast to double
+            │                       └──── 10
             ├──── Call statement
             │     └──── writeln
             │           └──── *
@@ -85,8 +89,10 @@ program
             ├──── Call statement
             │     └──── writeln
             │           └──── /
-            │                 ├──── a
-            │                 └──── b
+            │                 ├──── cast to double
+            │                 │     └──── a
+            │                 └──── cast to double
+            │                       └──── b
             ├──── Call statement
             │     └──── writeln
             │           └──── *
@@ -106,12 +112,14 @@ program
             │     └──── writeln
             │           └──── +
             │                 ├──── /
-            │                 │     ├──── -
-            │                 │     │     └──── +
-            │                 │     │           ├──── pow
-            │                 │     │           │     └──── a
-            │                 │     │           └──── 2
-            │                 │     └──── 2
+            │                 │     ├──── cast to double
+            │                 │     │     └──── -
+            │                 │     │           └──── +
+            │                 │     │                 ├──── pow
+            │                 │     │                 │     └──── a
+            │                 │     │                 └──── 2
+            │                 │     └──── cast to double
+            │                 │           └──── 2
             │                 └──── cast to double
             │                       └──── -
             │                             └──── -
