@@ -12,7 +12,7 @@ namespace PascalCompiler.AsmGenerator
     public enum Instruction
     {
         EXTERN, GLOBAL,
-        PUSH, POP, CDQ, DD, DQ,
+        PUSH, POP, CDQ, DB, DD, DQ, RESD, RESQ,
         ADD, SUB, IMUL, IDIV, NEG, INC, DEC,
         OR, XOR, AND, NOT, SHL, SHR,
         MOV,

@@ -6,16 +6,24 @@ namespace PascalCompiler.AsmGenerator
     public class Generator
     {
         private int _constantCounter = 0;
+        private int _labelCounter = 0;
 
         public Generator(SymStack stack)
         {
             HeaderParts = new List<AsmPart>();
+            BDataParts = new List<AsmPart>();
             CodeParts = new List<AsmPart>();
             DataParts = new List<AsmPart>();
             SymStack = stack;
+
+            GenConstant("double_minus", -1.0);
+            GenConstant("integer_template", $"\"%d\", 0xA, 0");
+            GenConstant("double_template", $"\"%f\", 0xA, 0");
+            GenConstant("char_template", $"\"%c\", 0xA, 0");
         }
 
         public List<AsmPart> HeaderParts { get; }
+        public List<AsmPart> BDataParts { get; }
         public List<AsmPart> CodeParts { get; }
         public List<AsmPart> DataParts { get; }
         public SymStack SymStack { get; }
@@ -29,17 +37,37 @@ namespace PascalCompiler.AsmGenerator
         public void GenCommand(Instruction instruction, Operand operand1, Operand operand2) =>
             CodeParts.Add(new Command(instruction, operand1, operand2));
 
+        public string GenLabel()
+        {
+            _labelCounter++;
+            CodeParts.Add(new Label($"label_${_labelCounter}"));
+            return $"label_${_labelCounter}";
+        }
+
         public void GenLabel(string labelName) => CodeParts.Add(new Label(labelName));
+
+        public string GenConstant(object value)
+        {
+            _constantCounter++;
+            var instruction = value is double ? Instruction.DQ :
+                              value is int ? Instruction.DD : Instruction.DB;
+            DataParts.Add(new Data(instruction, $"const_val_{_constantCounter}", value));
+            return $"const_val_{_constantCounter}";
+        }
+
+        public string GenConstant(string label, object value)
+        {
+            var instruction = value is double ? Instruction.DQ :
+                              value is int ? Instruction.DD : Instruction.DB;
+            DataParts.Add(new Data(instruction, label, value));
+            return label;
+        }
+
+        public void GenVariable(string label, Instruction instruction) =>
+            BDataParts.Add(new Data(instruction, label, 1));
 
         public void AddModule(Instruction instruction, string libraryName) =>
             HeaderParts.Add(new Library(instruction, libraryName));
-
-        public string AddConstant(double value)
-        {
-            _constantCounter++;
-            DataParts.Add(new Data(Instruction.DQ, $"const_val_{_constantCounter}", value));
-            return $"const_val_{_constantCounter}";
-        }
 
         public void PrintProgram()
         {
@@ -48,6 +76,10 @@ namespace PascalCompiler.AsmGenerator
             Console.SetOut(found);
 
             foreach (var command in HeaderParts)
+                Console.WriteLine(command);
+
+            Console.WriteLine("SECTION .bss");
+            foreach (var command in BDataParts)
                 Console.WriteLine(command);
 
             Console.WriteLine("SECTION .text");
@@ -59,9 +91,6 @@ namespace PascalCompiler.AsmGenerator
 
             foreach (var command in DataParts)
                 Console.WriteLine(command);
-
-            Console.WriteLine("double_template : db \"%f\", 0xA, 0");
-            Console.WriteLine("integer_template : db \"%d\", 0xA, 0");
 
             // write to asm file
             var testWritter = new StreamWriter("./tests/asm/program.asm");

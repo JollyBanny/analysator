@@ -45,8 +45,10 @@ namespace PascalCompiler.AsmGenerator
 
         public override string ToString()
         {
+            var format = "0.000000000";
             var style = System.Globalization.CultureInfo.InvariantCulture;
-            var val = Instruction == Instruction.DQ ? ((double)Value).ToString("0.0", style) : Value;
+            var val = Instruction == Instruction.DQ ? ((double)Value).ToString(format, style) : Value;
+
             return $"{Label}: {Instruction} {val}";
         }
     }

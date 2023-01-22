@@ -34,10 +34,10 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(ProgramBlockNode node)
         {
+            _g.GenLabel("main");
+
             foreach (var decl in node.Decls)
                 decl.Accept(this);
-
-            _g.GenLabel("main");
 
             node.CompoundStmt.Accept(this);
 
@@ -70,21 +70,16 @@ namespace PascalCompiler.Visitor
 
                 switch (node.Lexeme.Value)
                 {
+                    case Token.ADD: _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.SUB: _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.MUL: _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.O_DIV: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
                     case Token.EQUAL: GenerateDoubleCmp(Instruction.SETE); break;
                     case Token.NOT_EQUAL: GenerateDoubleCmp(Instruction.SETNE); break;
                     case Token.MORE: GenerateDoubleCmp(Instruction.SETG); break;
                     case Token.LESS: GenerateDoubleCmp(Instruction.SETL); break;
                     case Token.MORE_EQUAL: GenerateDoubleCmp(Instruction.SETGE); break;
                     case Token.LESS_EQUAL: GenerateDoubleCmp(Instruction.SETLE); break;
-                    default:
-                        switch (node.Lexeme.Value)
-                        {
-                            case Token.ADD: _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1)); break;
-                            case Token.SUB: _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1)); break;
-                            case Token.MUL: _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1)); break;
-                            case Token.O_DIV: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
-                        }
-                        break;
                 }
 
                 switch (node.Lexeme.Value)
@@ -152,6 +147,30 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(UnaryOperNode node)
         {
+            node.Expr.Accept(this);
+
+            if (node.Lexeme == Token.ADD) return _g;
+            if (node.Expr.SymType is SymIntegerType)
+            {
+                _g.GenCommand(Instruction.POP, new(Register.EAX));
+                _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(-1));
+                _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+            }
+            else if (node.Expr.SymType is SymBooleanType)
+            {
+                _g.GenCommand(Instruction.POP, new(Register.EAX));
+                _g.GenCommand(Instruction.XOR, new(Register.EAX), new(1));
+                _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+            }
+            else
+            {
+                _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                    new(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT));
+                _g.GenCommand(Instruction.MULSD, new(Register.XMM0),
+                    new("double_minus", OperandFlag.QWORD, OperandFlag.INDIRECT));
+                _g.GenCommand(Instruction.MOVSD, new(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT),
+                    new(Register.XMM0));
+            }
             return _g;
         }
 
@@ -177,12 +196,20 @@ namespace PascalCompiler.Visitor
             foreach (var arg in node.Args)
                 arg.Accept(this);
 
-            if (node.Args[0].SymType is SymDoubleType)
-                _g.GenCommand(Instruction.PUSH, new("double_template"));
-            else
+            var symType = node.Args[0].SymType;
+
+            if (symType is SymIntegerType || symType is SymBooleanType)
                 _g.GenCommand(Instruction.PUSH, new("integer_template"));
+            else if (symType is SymDoubleType)
+                _g.GenCommand(Instruction.PUSH, new("double_template"));
+            else if (symType is SymCharType)
+                _g.GenCommand(Instruction.PUSH, new("char_template"));
+
+            var size = symType is SymIntegerType || symType is SymBooleanType ? 8 :
+                       symType is SymDoubleType ? 12 : 4;
+
             _g.GenCommand(Instruction.CALL, new("_printf"));
-            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(12));
+            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(size));
 
             return _g;
         }
@@ -194,6 +221,17 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(IdentNode node)
         {
+            _g.GenCommand(Instruction.MOV, new(Register.EAX), new($"var_{node.ToString()}", OperandFlag.INDIRECT));
+
+            if (node.SymType is SymDoubleType)
+            {
+                _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                       new(Register.EAX, OperandFlag.INDIRECT, OperandFlag.QWORD));
+                GenerateDoublePush(Register.XMM0);
+            }
+            else
+                _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+
             return _g;
         }
 
@@ -205,7 +243,7 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(ConstDoubleLiteral node)
         {
-            var newConst = _g.AddConstant(double.Parse(node.Lexeme.Value.ToString()!));
+            var newConst = _g.GenConstant(double.Parse(node.Lexeme.Value.ToString()!));
             _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
                 new(newConst, OperandFlag.INDIRECT, OperandFlag.QWORD));
             _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
@@ -216,21 +254,28 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(ConstCharLiteral node)
         {
+            _g.GenCommand(Instruction.PUSH, new($"\'{node.Lexeme.Value}\'"));
             return _g;
         }
 
         public Generator Visit(ConstStringLiteral node)
         {
+            var newConst = _g.GenConstant($"\"{node.Lexeme.Value}\", 0xA, 0");
+            _g.GenCommand(Instruction.PUSH, new(newConst));
             return _g;
         }
 
         public Generator Visit(ConstBooleanLiteral node)
         {
+            _g.GenCommand(Instruction.PUSH, new(node.Lexeme == Token.TRUE ? 1 : 0, OperandFlag.DWORD));
             return _g;
         }
 
         public Generator Visit(DeclsPartNode node)
         {
+            foreach (var decl in node.Decls)
+                decl.Accept(this);
+
             return _g;
         }
 
@@ -241,6 +286,20 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(VarDeclNode node)
         {
+            foreach (var ident in node.IdentsList)
+            {
+                var instruction = ident.SymType is SymDoubleType ? Instruction.RESQ : Instruction.RESD;
+                _g.GenVariable($"var_{ident.ToString()}", instruction);
+
+                if (node.Expr is not null)
+                {
+                    node.Expr.Accept(this);
+
+                    _g.GenCommand(Instruction.POP, new(Register.EAX));
+                    _g.GenCommand(Instruction.MOV, new($"var_{ident.ToString()}", OperandFlag.INDIRECT),
+                        new(Register.EAX));
+                }
+            }
             return _g;
         }
 
@@ -374,6 +433,13 @@ namespace PascalCompiler.Visitor
             _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
             _g.GenCommand(Instruction.MOVSD,
                 new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT), new(register));
+        }
+
+        private void GenerateDoublePop(Register register)
+        {
+            _g.GenCommand(Instruction.MOVSD, new(register),
+                new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT));
+            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(8));
         }
     }
 }
