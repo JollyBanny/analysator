@@ -18,10 +18,13 @@ namespace PascalCompiler.AsmGenerator
         MOV,
         CMP,
         SETE, SETNE, SETL, SETG, SETLE, SETGE,
+        SETA, SETB, SETAE, SETBE,
         CALL, RET,
 
         ADDSD, SUBSD, MULSD, DIVSD,
         MOVSD,
+        COMISD,
+        CVTSI2SD,
     }
 
     public enum Register

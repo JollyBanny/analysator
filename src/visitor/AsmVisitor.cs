@@ -47,6 +47,10 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(CastNode node)
         {
+            node.Expr.Accept(this);
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.CVTSI2SD, new(Register.XMM0), new(Register.EAX));
+            GenerateDoublePush(Register.XMM0);
             return _g;
         }
 
@@ -58,51 +62,48 @@ namespace PascalCompiler.Visitor
             if (node.Left.SymType is SymDoubleType)
             {
                 _g.GenCommand(Instruction.MOVSD, new(Register.XMM1),
-                    new Operand(Register.ESP, OperandFlag.QWORD) + 0);
+                    new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT) + 0);
                 _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
-                    new Operand(Register.ESP, OperandFlag.QWORD) + 8);
+                    new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT) + 8);
 
                 _g.GenCommand(Instruction.ADD, new(Register.ESP), new(16));
 
                 switch (node.Lexeme.Value)
                 {
-                    case Token.ADD:
-                        _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1));
-                        break;
-                    case Token.SUB:
-                        _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1));
-                        break;
-                    case Token.MUL:
-                        _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1));
-                        break;
-                    case Token.O_DIV:
-                        _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1));
-                        break;
-                    case Token.EQUAL:
-                        GenerateIntCmp(Instruction.SETE);
-                        break;
-                    case Token.NOT_EQUAL:
-                        GenerateIntCmp(Instruction.SETNE);
-                        break;
-                    case Token.MORE:
-                        GenerateIntCmp(Instruction.SETG);
-                        break;
-                    case Token.LESS:
-                        GenerateIntCmp(Instruction.SETL);
-                        break;
-                    case Token.MORE_EQUAL:
-                        GenerateIntCmp(Instruction.SETGE);
-                        break;
-                    case Token.LESS_EQUAL:
-                        GenerateIntCmp(Instruction.SETLE);
-                        break;
+                    case Token.EQUAL: GenerateDoubleCmp(Instruction.SETE); break;
+                    case Token.NOT_EQUAL: GenerateDoubleCmp(Instruction.SETNE); break;
+                    case Token.MORE: GenerateDoubleCmp(Instruction.SETG); break;
+                    case Token.LESS: GenerateDoubleCmp(Instruction.SETL); break;
+                    case Token.MORE_EQUAL: GenerateDoubleCmp(Instruction.SETGE); break;
+                    case Token.LESS_EQUAL: GenerateDoubleCmp(Instruction.SETLE); break;
                     default:
+                        switch (node.Lexeme.Value)
+                        {
+                            case Token.ADD: _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1)); break;
+                            case Token.SUB: _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1)); break;
+                            case Token.MUL: _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1)); break;
+                            case Token.O_DIV: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
+                        }
                         break;
                 }
 
-                _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
-                _g.GenCommand(Instruction.MOVSD, new Operand(Register.ESP, OperandFlag.QWORD) + 0,
-                    new(Register.XMM0));
+                switch (node.Lexeme.Value)
+                {
+                    case Token.EQUAL:
+                    case Token.NOT_EQUAL:
+                    case Token.MORE:
+                    case Token.LESS:
+                    case Token.MORE_EQUAL:
+                    case Token.LESS_EQUAL:
+                        _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+                        break;
+                    default:
+                        _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
+                        _g.GenCommand(Instruction.MOVSD,
+                            new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT),
+                            new(Register.XMM0));
+                        break;
+                }
             }
             else
             {
@@ -111,15 +112,9 @@ namespace PascalCompiler.Visitor
 
                 switch (node.Lexeme.Value)
                 {
-                    case Token.ADD:
-                        _g.GenCommand(Instruction.ADD, new(Register.EAX), new(Register.EBX));
-                        break;
-                    case Token.SUB:
-                        _g.GenCommand(Instruction.SUB, new(Register.EAX), new(Register.EBX));
-                        break;
-                    case Token.MUL:
-                        _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(Register.EBX));
-                        break;
+                    case Token.ADD: _g.GenCommand(Instruction.ADD, new(Register.EAX), new(Register.EBX)); break;
+                    case Token.SUB: _g.GenCommand(Instruction.SUB, new(Register.EAX), new(Register.EBX)); break;
+                    case Token.MUL: _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(Register.EBX)); break;
                     case Token.DIV:
                     case Token.MOD:
                         _g.GenCommand(Instruction.CDQ);
@@ -138,33 +133,15 @@ namespace PascalCompiler.Visitor
                         _g.GenCommand(Instruction.MOV, new(Register.ECX), new(Register.EBX));
                         _g.GenCommand(instruction, new(Register.EAX), new(Register.CL));
                         break;
-                    case Token.AND:
-                        _g.GenCommand(Instruction.AND, new(Register.EAX), new(Register.EBX));
-                        break;
-                    case Token.OR:
-                        _g.GenCommand(Instruction.OR, new(Register.EAX), new(Register.EBX));
-                        break;
-                    case Token.XOR:
-                        _g.GenCommand(Instruction.XOR, new(Register.EAX), new(Register.EBX));
-                        break;
-                    case Token.EQUAL:
-                        GenerateIntCmp(Instruction.SETE);
-                        break;
-                    case Token.NOT_EQUAL:
-                        GenerateIntCmp(Instruction.SETNE);
-                        break;
-                    case Token.MORE:
-                        GenerateIntCmp(Instruction.SETG);
-                        break;
-                    case Token.LESS:
-                        GenerateIntCmp(Instruction.SETL);
-                        break;
-                    case Token.MORE_EQUAL:
-                        GenerateIntCmp(Instruction.SETGE);
-                        break;
-                    case Token.LESS_EQUAL:
-                        GenerateIntCmp(Instruction.SETLE);
-                        break;
+                    case Token.AND: _g.GenCommand(Instruction.AND, new(Register.EAX), new(Register.EBX)); break;
+                    case Token.OR: _g.GenCommand(Instruction.OR, new(Register.EAX), new(Register.EBX)); break;
+                    case Token.XOR: _g.GenCommand(Instruction.XOR, new(Register.EAX), new(Register.EBX)); break;
+                    case Token.EQUAL: GenerateIntCmp(Instruction.SETE); break;
+                    case Token.NOT_EQUAL: GenerateIntCmp(Instruction.SETNE); break;
+                    case Token.MORE: GenerateIntCmp(Instruction.SETG); break;
+                    case Token.LESS: GenerateIntCmp(Instruction.SETL); break;
+                    case Token.MORE_EQUAL: GenerateIntCmp(Instruction.SETGE); break;
+                    case Token.LESS_EQUAL: GenerateIntCmp(Instruction.SETLE); break;
                 }
 
                 _g.GenCommand(Instruction.PUSH, new(Register.EAX));
@@ -387,9 +364,16 @@ namespace PascalCompiler.Visitor
         private void GenerateDoubleCmp(Instruction cmpInstruction)
         {
             _g.GenCommand(Instruction.XOR, new(Register.ECX), new(Register.ECX));
-            _g.GenCommand(Instruction.CMP, new(Register.EAX), new(Register.EBX));
-            _g.GenCommand(cmpInstruction, new(Register.EAX), new(Register.EBX));
-            _g.GenCommand(Instruction.MOV, new(Register.EAX), new(Register.EBX));
+            _g.GenCommand(Instruction.COMISD, new(Register.XMM0), new(Register.XMM1));
+            _g.GenCommand(cmpInstruction, new(Register.CL));
+            _g.GenCommand(Instruction.MOV, new(Register.EAX), new(Register.ECX));
+        }
+
+        private void GenerateDoublePush(Register register)
+        {
+            _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
+            _g.GenCommand(Instruction.MOVSD,
+                new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT), new(register));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace PascalCompiler.AsmGenerator
             SetOffset = false;
 
             if (flag.Contains(OperandFlag.INDIRECT))
-                OperandFlag = OperandFlag.INDIRECT;
+                IsIndirect = true;
             if (flag.Contains(OperandFlag.WORD))
                 SizeFlag = OperandFlag.WORD;
             if (flag.Contains(OperandFlag.DWORD))
@@ -41,7 +41,7 @@ namespace PascalCompiler.AsmGenerator
         private object Value { get; set; }
         private bool SetOffset { get; set; }
         private int Offset { get; set; }
-        private OperandFlag OperandFlag { get; set; }
+        private bool IsIndirect { get; set; }
         private OperandFlag SizeFlag { get; set; }
 
         public static Operand operator +(Operand operand, int offset)
@@ -63,9 +63,9 @@ namespace PascalCompiler.AsmGenerator
             var result = Value.ToString()!;
 
             if (SetOffset)
-                result = $"[{result} {(Offset >= 0 ? "+" : "-")} {Math.Abs(Offset)}]";
+                result = $"{result} {(Offset >= 0 ? "+" : "-")} {Math.Abs(Offset)}";
 
-            if (OperandFlag == OperandFlag.INDIRECT)
+            if (IsIndirect is true)
                 result = $"[{result}]";
 
             if (SizeFlag != OperandFlag.NONE)

@@ -43,6 +43,11 @@ namespace PascalCompiler.AsmGenerator
         public string Label { get; }
         public object Value { get; }
 
-        public override string ToString() => $"{Label}: {Instruction} {Value}";
+        public override string ToString()
+        {
+            var style = System.Globalization.CultureInfo.InvariantCulture;
+            var val = Instruction == Instruction.DQ ? ((double)Value).ToString("0.0", style) : Value;
+            return $"{Label}: {Instruction} {val}";
+        }
     }
 }
