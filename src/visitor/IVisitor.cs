@@ -57,58 +57,58 @@ namespace PascalCompiler.Visitor
         T Visit(ConformatArrayTypeNode node);
     }
 
-    public interface IGenVisitor<T>
+    public interface IGenVisitor
     {
         // program nodes visit
-        T Visit(FullProgramNode node, bool withResult);
-        T Visit(ProgramHeaderNode node, bool withResult);
-        T Visit(ProgramBlockNode node, bool withResult);
+        void Visit(FullProgramNode node, bool withResult);
+        void Visit(ProgramHeaderNode node, bool withResult);
+        void Visit(ProgramBlockNode node, bool withResult);
 
         // expression nodes visit
-        T Visit(BinOperNode node, bool withResult);
-        T Visit(CastNode node, bool withResult);
-        T Visit(UnaryOperNode node, bool withResult);
-        T Visit(RecordAccessNode node, bool withResult);
-        T Visit(ArrayAccessNode node, bool withResult);
-        T Visit(UserCallNode node, bool withResult);
-        T Visit(WriteCallNode node, bool withResult);
-        T Visit(ReadCallNode node, bool withResult);
+        void Visit(BinOperNode node, bool withResult);
+        void Visit(CastNode node, bool withResult);
+        void Visit(UnaryOperNode node, bool withResult);
+        void Visit(RecordAccessNode node, bool withResult);
+        void Visit(ArrayAccessNode node, bool withResult);
+        void Visit(UserCallNode node, bool withResult);
+        void Visit(WriteCallNode node, bool withResult);
+        void Visit(ReadCallNode node, bool withResult);
 
-        T Visit(IdentNode node, bool withResult);
-        T Visit(ConstIntegerLiteral node, bool withResult);
-        T Visit(ConstDoubleLiteral node, bool withResult);
-        T Visit(ConstCharLiteral node, bool withResult);
-        T Visit(ConstStringLiteral node, bool withResult);
-        T Visit(ConstBooleanLiteral node, bool withResult);
+        void Visit(IdentNode node, bool withResult);
+        void Visit(ConstIntegerLiteral node, bool withResult);
+        void Visit(ConstDoubleLiteral node, bool withResult);
+        void Visit(ConstCharLiteral node, bool withResult);
+        void Visit(ConstStringLiteral node, bool withResult);
+        void Visit(ConstBooleanLiteral node, bool withResult);
 
         // declaration nodes visit
-        T Visit(DeclsPartNode node, bool withResult);
-        T Visit(ConstDeclNode node, bool withResult);
-        T Visit(VarDeclNode node, bool withResult);
-        T Visit(TypeDeclNode node, bool withResult);
-        T Visit(CallDeclNode node, bool withResult);
-        T Visit(CallHeaderNode node, bool withResult);
-        T Visit(FormalParamNode node, bool withResult);
-        T Visit(SubroutineBlockNode node, bool withResult);
-        T Visit(KeywordNode node, bool withResult);
+        void Visit(DeclsPartNode node, bool withResult);
+        void Visit(ConstDeclNode node, bool withResult);
+        void Visit(VarDeclNode node, bool withResult);
+        void Visit(TypeDeclNode node, bool withResult);
+        void Visit(CallDeclNode node, bool withResult);
+        void Visit(CallHeaderNode node, bool withResult);
+        void Visit(FormalParamNode node, bool withResult);
+        void Visit(SubroutineBlockNode node, bool withResult);
+        void Visit(KeywordNode node, bool withResult);
 
         // statement nodes visit
-        T Visit(CompoundStmtNode node, bool withResult);
-        T Visit(EmptyStmtNode node, bool withResult);
-        T Visit(CallStmtNode node, bool withResult);
-        T Visit(AssignStmtNode node, bool withResult);
-        T Visit(IfStmtNode node, bool withResult);
-        T Visit(WhileStmtNode node, bool withResult);
-        T Visit(RepeatStmtNode node, bool withResult);
-        T Visit(ForStmtNode node, bool withResult);
-        T Visit(ForRangeNode node, bool withResult);
+        void Visit(CompoundStmtNode node, bool withResult);
+        void Visit(EmptyStmtNode node, bool withResult);
+        void Visit(CallStmtNode node, bool withResult);
+        void Visit(AssignStmtNode node, bool withResult);
+        void Visit(IfStmtNode node, bool withResult);
+        void Visit(WhileStmtNode node, bool withResult);
+        void Visit(RepeatStmtNode node, bool withResult);
+        void Visit(ForStmtNode node, bool withResult);
+        void Visit(ForRangeNode node, bool withResult);
 
         // type nodes visit
-        T Visit(SimpleTypeNode node, bool withResult);
-        T Visit(ArrayTypeNode node, bool withResult);
-        T Visit(SubrangeTypeNode node, bool withResult);
-        T Visit(RecordTypeNode node, bool withResult);
-        T Visit(RecordFieldNode node, bool withResult);
-        T Visit(ConformatArrayTypeNode node, bool withResult);
+        void Visit(SimpleTypeNode node, bool withResult);
+        void Visit(ArrayTypeNode node, bool withResult);
+        void Visit(SubrangeTypeNode node, bool withResult);
+        void Visit(RecordTypeNode node, bool withResult);
+        void Visit(RecordFieldNode node, bool withResult);
+        void Visit(ConformatArrayTypeNode node, bool withResult);
     }
 }

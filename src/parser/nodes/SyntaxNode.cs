@@ -11,6 +11,6 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public abstract T Accept<T>(IVisitor<T> visitor);
 
-        public abstract T Accept<T>(IGenVisitor<T> visitor, bool withResult);
+        public abstract void Accept(IGenVisitor visitor, bool withResult);
     }
 }

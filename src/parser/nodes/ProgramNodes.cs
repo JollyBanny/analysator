@@ -21,7 +21,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
 
-        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
+        public override void Accept(IGenVisitor visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program";
     }
@@ -37,7 +37,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
 
-        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
+        public override void Accept(IGenVisitor visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program header";
     }
@@ -55,7 +55,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
 
-        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
+        public override void Accept(IGenVisitor visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program block";
     }
