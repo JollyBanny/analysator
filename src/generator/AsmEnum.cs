@@ -11,10 +11,11 @@ namespace PascalCompiler.AsmGenerator
     {
         EXTERN, GLOBAL,
         PUSH, POP, CDQ, DB, DD, DQ, RESD, RESQ,
-        ADD, SUB, IMUL, IDIV, NEG, INC, DEC,
+        ADD, SUB, IMUL, IDIV,
         OR, XOR, AND, NOT, SHL, SHR,
         MOV,
         CMP,
+        JE, JNE, JL, JG, JLE, JGE, JMP,
         SETE, SETNE, SETL, SETG, SETLE, SETGE,
         SETA, SETB, SETAE, SETBE,
         CALL, RET,
@@ -27,15 +28,10 @@ namespace PascalCompiler.AsmGenerator
 
     public enum Register
     {
-        AX,
-        BX,
-        EAX,
-        EBX,
-        ECX,
-        EDX,
+        AX, BX,
+        EAX, EBX, ECX, EDX,
         ESP,
         CL,
-        XMM0,
-        XMM1,
+        XMM0, XMM1,
     }
 }

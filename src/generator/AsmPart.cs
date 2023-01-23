@@ -27,7 +27,7 @@ namespace PascalCompiler.AsmGenerator
 
         public string Name { get; }
 
-        public override string ToString() => $"_{Name}:";
+        public override string ToString() => $"{Name}:";
     }
 
     public class Data : AsmPart

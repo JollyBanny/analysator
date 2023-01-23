@@ -33,7 +33,7 @@ namespace PascalCompiler.Visitor
 
         public void Visit(ProgramBlockNode node, bool withResult)
         {
-            _g.GenLabel("main");
+            _g.GenLabel("_main");
 
             foreach (var decl in node.Decls)
                 decl.Accept(this, true);
@@ -298,29 +298,20 @@ namespace PascalCompiler.Visitor
             return;
         }
 
-        public void Visit(TypeDeclNode node, bool withResult)
-        {
-            return;
-        }
+        public void Visit(TypeDeclNode node, bool withResult) { return; }
 
-        public void Visit(CallDeclNode node, bool withResult)
-        {
-            return;
-        }
+        public void Visit(CallDeclNode node, bool withResult) { return; }
 
-        public void Visit(CallHeaderNode node, bool withResult)
-        {
-            return;
-        }
+        public void Visit(CallHeaderNode node, bool withResult) { return; }
 
-        public void Visit(FormalParamNode node, bool withResult)
-        {
-            return;
-        }
+        public void Visit(FormalParamNode node, bool withResult) { return; }
 
         public void Visit(SubroutineBlockNode node, bool withResult)
         {
-            return;
+            foreach (var decl in node.Decls)
+                decl.Accept(this, true);
+
+            node.CompoundStmt.Accept(this, true);
         }
 
         public void Visit(KeywordNode node, bool withResult)
@@ -332,8 +323,6 @@ namespace PascalCompiler.Visitor
         {
             foreach (var stmt in node.Statements)
                 stmt.Accept(this, withResult);
-
-            return;
         }
 
         public void Visit(EmptyStmtNode node, bool withResult) { return; }
@@ -341,7 +330,6 @@ namespace PascalCompiler.Visitor
         public void Visit(CallStmtNode node, bool withResult)
         {
             node.Expression.Accept(this, withResult);
-            return;
         }
 
         public void Visit(AssignStmtNode node, bool withResult)
@@ -388,24 +376,114 @@ namespace PascalCompiler.Visitor
             }
         }
 
-        public void Visit(IfStmtNode node, bool withResult) { return; }
+        public void Visit(IfStmtNode node, bool withResult)
+        {
+            var ifLabel = _g.AddLabel("if_start");
+            var elseLabel = _g.AddLabel("if_else");
+            var endLabel = _g.AddLabel("if_end");
 
-        public void Visit(WhileStmtNode node, bool withResult) { return; }
+            node.Condition.Accept(this, false);
 
-        public void Visit(RepeatStmtNode node, bool withResult) { return; }
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.CMP, new(Register.EAX), new(0));
+
+            if (node.ElsePart is not null)
+                _g.GenCommand(Instruction.JE, new(elseLabel));
+            else
+                _g.GenCommand(Instruction.JE, new(endLabel));
+
+            _g.GenLabel(ifLabel);
+            node.IfPart.Accept(this, true);
+            _g.GenCommand(Instruction.JMP, new(endLabel));
+
+            if (node.ElsePart is not null)
+            {
+                _g.GenLabel(elseLabel);
+                node.ElsePart.Accept(this, true);
+                _g.GenCommand(Instruction.JMP, new(endLabel));
+            }
+
+            _g.GenLabel(endLabel);
+        }
+
+        public void Visit(WhileStmtNode node, bool withResult)
+        {
+            var startLabel = _g.AddLabel("while_start");
+            var endLabel = _g.AddLabel("while_end");
+
+            _g.GenLabel(startLabel);
+
+            node.Condition.Accept(this, false);
+
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.CMP, new(Register.EAX), new(0));
+            _g.GenCommand(Instruction.JE, new(endLabel));
+
+            node.Statement.Accept(this, true);
+            _g.GenCommand(Instruction.JMP, new(startLabel));
+
+            _g.GenLabel(endLabel);
+        }
+
+        public void Visit(RepeatStmtNode node, bool withResult)
+        {
+            var startLabel = _g.AddLabel("repeat_start");
+            var endLabel = _g.AddLabel("repeat_end");
+
+            _g.GenLabel(startLabel);
+
+            node.Condition.Accept(this, false);
+
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.CMP, new(Register.EAX), new(1));
+            _g.GenCommand(Instruction.JE, new(endLabel));
+
+            foreach (var stmt in node.Statements)
+                stmt.Accept(this, true);
+
+            _g.GenCommand(Instruction.JMP, new(startLabel));
+
+            _g.GenLabel(endLabel);
+        }
 
         public void Visit(ForStmtNode node, bool withResult)
         {
-            node.ForRange.StartValue.Accept(this, withResult);
+            var startLabel = _g.AddLabel("for_start");
+            var endLabel = _g.AddLabel("for_end");
+
+            node.ForRange.StartValue.Accept(this, false);
+
             _g.GenCommand(Instruction.POP, new(Register.EAX));
-            _g.GenCommand(Instruction.MOV, new($"var_{node.CtrlIdent}", OperandFlag.INDIRECT), new(Register.ECX));
+            _g.GenCommand(Instruction.MOV, new($"var_{node.CtrlIdent}", OperandFlag.INDIRECT), new(Register.EAX));
 
-            var label = _g.GenLabel();
+            _g.GenLabel(startLabel);
 
-            node.Statement.Accept(this, withResult);
+            node.CtrlIdent.Accept(this, false);
+            node.ForRange.FinalValue.Accept(this, true);
 
+            _g.GenCommand(Instruction.POP, new(Register.EBX));
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
 
-            return;
+            if (node.ForRange.Lexeme == Token.TO)
+                GenerateIntCmp(Instruction.SETLE);
+            else
+                GenerateIntCmp(Instruction.SETGE);
+
+            _g.GenCommand(Instruction.CMP, new(Register.EAX), new(0));
+            _g.GenCommand(Instruction.JE, new(endLabel));
+
+            node.Statement.Accept(this, false);
+
+            node.CtrlIdent.Accept(this, true);
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+
+            if (node.ForRange.Lexeme == Token.TO)
+                _g.GenCommand(Instruction.ADD, new(Register.EAX, OperandFlag.INDIRECT, OperandFlag.DWORD), new(1));
+            else
+                _g.GenCommand(Instruction.SUB, new(Register.EAX, OperandFlag.INDIRECT, OperandFlag.DWORD), new(1));
+
+            _g.GenCommand(Instruction.JMP, new(startLabel));
+            _g.GenLabel(endLabel);
         }
 
         public void Visit(ForRangeNode node, bool withResult) { return; }

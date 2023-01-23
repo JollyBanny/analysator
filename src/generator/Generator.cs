@@ -37,28 +37,16 @@ namespace PascalCompiler.AsmGenerator
         public void GenCommand(Instruction instruction, Operand operand1, Operand operand2) =>
             CodeParts.Add(new Command(instruction, operand1, operand2));
 
-        public string GenLabel()
-        {
-            _labelCounter++;
-            CodeParts.Add(new Label($"label_${_labelCounter}"));
-            return $"label_${_labelCounter}";
-        }
-
-        public void GenLabel(string labelName) => CodeParts.Add(new Label(labelName));
-
         public string GenConstant(object value)
         {
-            _constantCounter++;
-            var instruction = value is double ? Instruction.DQ :
-                              value is int ? Instruction.DD : Instruction.DB;
-            DataParts.Add(new Data(instruction, $"const_val_{_constantCounter}", value));
+            var instruction = value is double ? Instruction.DQ : value is int ? Instruction.DD : Instruction.DB;
+            DataParts.Add(new Data(instruction, $"const_val_{++_constantCounter}", value));
             return $"const_val_{_constantCounter}";
         }
 
         public string GenConstant(string label, object value)
         {
-            var instruction = value is double ? Instruction.DQ :
-                              value is int ? Instruction.DD : Instruction.DB;
+            var instruction = value is double ? Instruction.DQ : value is int ? Instruction.DD : Instruction.DB;
             DataParts.Add(new Data(instruction, label, value));
             return label;
         }
@@ -67,6 +55,17 @@ namespace PascalCompiler.AsmGenerator
         {
             BDataParts.Add(new Data(instruction, $"var_{label}", value));
             return $"var_{label}";
+        }
+
+        public void GenLabel(string label)
+        {
+            CodeParts.Add(new Label(label));
+        }
+
+        public string AddLabel(string labelName)
+        {
+            _labelCounter++;
+            return $"label_{_labelCounter}_{labelName}";
         }
 
         public void AddModule(Instruction instruction, string libraryName) =>
