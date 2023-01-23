@@ -120,13 +120,13 @@ namespace PascalCompiler.Visitor
                         break;
                     case Token.O_SHL:
                     case Token.SHL:
+                        _g.GenCommand(Instruction.MOV, new(Register.ECX), new(Register.EBX));
+                        _g.GenCommand(Instruction.SHL, new(Register.EAX), new(Register.CL));
+                        break;
                     case Token.O_SHR:
                     case Token.SHR:
-                        var instruction = node.Lexeme == Token.SHL || node.Lexeme == Token.O_SHL ?
-                            Instruction.SHL : Instruction.SHR;
-
                         _g.GenCommand(Instruction.MOV, new(Register.ECX), new(Register.EBX));
-                        _g.GenCommand(instruction, new(Register.EAX), new(Register.CL));
+                        _g.GenCommand(Instruction.SHR, new(Register.EAX), new(Register.CL));
                         break;
                     case Token.AND: _g.GenCommand(Instruction.AND, new(Register.EAX), new(Register.EBX)); break;
                     case Token.OR: _g.GenCommand(Instruction.OR, new(Register.EAX), new(Register.EBX)); break;
@@ -187,7 +187,6 @@ namespace PascalCompiler.Visitor
         public Generator Visit(UserCallNode node)
         {
             _g.GenCommand(Instruction.CALL, new(node.Lexeme.Value));
-
             return _g;
         }
 
@@ -328,10 +327,7 @@ namespace PascalCompiler.Visitor
             return _g;
         }
 
-        public Generator Visit(KeywordNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(KeywordNode node) { return _g; }
 
         public Generator Visit(CompoundStmtNode node)
         {
@@ -341,10 +337,7 @@ namespace PascalCompiler.Visitor
             return _g;
         }
 
-        public Generator Visit(EmptyStmtNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(EmptyStmtNode node) { return _g; }
 
         public Generator Visit(CallStmtNode node)
         {
@@ -354,63 +347,47 @@ namespace PascalCompiler.Visitor
 
         public Generator Visit(AssignStmtNode node)
         {
+            node.Left.Accept(this);
+            _g.GenCommand(Instruction.POP, new(Register.ECX));
+
+            node.Right.Accept(this);
+            _g.GenCommand(Instruction.POP, new(Register.EBX));
+
+            switch (node.Lexeme.Value)
+            {
+                case Token.ADD_ASSIGN: _g.GenCommand(Instruction.ADD, new(Register.ECX), new(Register.EBX)); break;
+                case Token.SUB_ASSIGN: _g.GenCommand(Instruction.SUB, new(Register.ECX), new(Register.EBX)); break;
+                case Token.MUL_ASSIGN: _g.GenCommand(Instruction.IMUL, new(Register.ECX), new(Register.EBX)); break;
+                default: _g.GenCommand(Instruction.MOV, new(Register.ECX), new(Register.EBX)); break;
+            }
+
+            if (node.Left is IdentNode ident)
+                _g.GenCommand(Instruction.MOV, new($"var_{ident}", OperandFlag.INDIRECT), new(Register.ECX));
+
             return _g;
         }
 
-        public Generator Visit(IfStmtNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(IfStmtNode node) { return _g; }
 
-        public Generator Visit(WhileStmtNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(WhileStmtNode node) { return _g; }
 
-        public Generator Visit(RepeatStmtNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(RepeatStmtNode node) { return _g; }
 
-        public Generator Visit(ForStmtNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(ForStmtNode node) { return _g; }
 
-        public Generator Visit(ForRangeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(ForRangeNode node) { return _g; }
 
-        public Generator Visit(SimpleTypeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(SimpleTypeNode node) { return _g; }
 
-        public Generator Visit(ArrayTypeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(ArrayTypeNode node) { return _g; }
 
-        public Generator Visit(SubrangeTypeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(SubrangeTypeNode node) { return _g; }
 
-        public Generator Visit(RecordTypeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(RecordTypeNode node) { return _g; }
 
-        public Generator Visit(RecordFieldNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(RecordFieldNode node) { return _g; }
 
-        public Generator Visit(ConformatArrayTypeNode node)
-        {
-            return _g;
-        }
+        public Generator Visit(ConformatArrayTypeNode node) { return _g; }
 
         private void GenerateIntCmp(Instruction cmpInstruction)
         {

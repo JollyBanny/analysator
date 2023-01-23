@@ -69,7 +69,7 @@ namespace PascalCompiler.AsmGenerator
         public void AddModule(Instruction instruction, string libraryName) =>
             HeaderParts.Add(new Library(instruction, libraryName));
 
-        public void PrintProgram()
+        public void GenerateProgram()
         {
             // create string writer
             var found = new StringWriter();
@@ -104,10 +104,24 @@ namespace PascalCompiler.AsmGenerator
             Console.SetOut(originOutput);
         }
 
-        public void RunProgram()
+        public void CompileProgram()
         {
+            GenerateProgram();
+
             var process = new Process();
             process.StartInfo.FileName = "./tests/asm/compile.bat";
+            process.Start();
+            process.WaitForExit();
+            process.Close();
+        }
+
+        public void RunProgram()
+        {
+            GenerateProgram();
+            CompileProgram();
+
+            var process = new Process();
+            process.StartInfo.FileName = "./tests/asm/program.exe";
             process.Start();
             process.WaitForExit();
             process.Close();
