@@ -1,6 +1,7 @@
 ﻿using PascalCompiler.Enums;
 using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
+using PascalCompiler.AsmGenerator;
 using PascalCompiler.Visitor;
 
 using System.Globalization;
@@ -163,7 +164,8 @@ namespace PascalCompiler
                 var syntaxTree = _parser.Parse();
                 syntaxTree.Accept(new SymVisitor(_parser._symStack));
 
-                var generator = syntaxTree.Accept(new AsmVisitor(_parser._symStack));
+                var generator = new Generator(_parser._symStack);
+                syntaxTree.Accept(new AsmVisitor(generator), false);
 
                 switch (generateMode)
                 {

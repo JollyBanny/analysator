@@ -63,8 +63,11 @@ namespace PascalCompiler.AsmGenerator
             return label;
         }
 
-        public void GenVariable(string label, Instruction instruction) =>
-            BDataParts.Add(new Data(instruction, label, 1));
+        public string GenVariable(string label, Instruction instruction, object value)
+        {
+            BDataParts.Add(new Data(instruction, $"var_{label}", value));
+            return $"var_{label}";
+        }
 
         public void AddModule(Instruction instruction, string libraryName) =>
             HeaderParts.Add(new Library(instruction, libraryName));

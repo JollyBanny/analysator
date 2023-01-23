@@ -4,9 +4,7 @@ namespace PascalCompiler.AsmGenerator
     {
         NONE,
         INDIRECT,
-        WORD,
-        DWORD,
-        QWORD,
+        BYTE, WORD, DWORD, QWORD,
     }
 
     public enum Instruction
