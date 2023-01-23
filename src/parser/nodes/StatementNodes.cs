@@ -17,10 +17,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<StmtNode> Statements { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "Compound statement";
     }
@@ -30,10 +29,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public EmptyStmtNode() : base()
         { }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "Empty statement";
     }
@@ -47,10 +45,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public ExprNode Expression { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "Call statement";
     }
@@ -66,10 +63,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Left { get; }
         public ExprNode Right { get; set; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Source;
     }
@@ -88,10 +84,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public StmtNode IfPart { get; }
         public StmtNode? ElsePart { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -107,10 +102,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public StmtNode Statement { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -126,10 +120,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode Condition { get; }
         public List<StmtNode> Statements { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -148,10 +141,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ForRangeNode ForRange { get; }
         public StmtNode Statement { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -167,10 +159,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode StartValue { get; }
         public ExprNode FinalValue { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }

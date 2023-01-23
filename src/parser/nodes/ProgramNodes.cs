@@ -19,10 +19,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ProgramNode? Header { get; }
         public ProgramNode Block { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program";
     }
@@ -36,10 +35,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public IdentNode ProgramName { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program header";
     }
@@ -55,10 +53,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<SyntaxNode> Decls { get; }
         public StmtNode CompoundStmt { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => "program block";
     }

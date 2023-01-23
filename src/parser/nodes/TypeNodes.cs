@@ -23,10 +23,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public SyntaxNode TypeIdent { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => TypeIdent is IdentNode ?
             Lexeme.Value.ToString()!.ToLower() : Lexeme.Value.ToString()!;
@@ -43,10 +42,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public SubrangeTypeNode Range { get; }
         public TypeNode Type { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -62,10 +60,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public ExprNode LeftBound { get; }
         public ExprNode RightBound { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Source;
     }
@@ -79,10 +76,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public List<RecordFieldNode> FieldsList { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }
@@ -98,10 +94,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public List<IdentNode> IdentsList { get; }
         public TypeNode Type { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Source;
     }
@@ -115,10 +110,9 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
 
         public TypeNode Type { get; }
 
-        public override T Accept<T>(IVisitor<T> visitor)
-        {
-            return visitor.Visit(this);
-        }
+        public override T Accept<T>(IVisitor<T> visitor) => visitor.Visit(this);
+
+        public override T Accept<T>(IGenVisitor<T> visitor, bool withResult) => visitor.Visit(this, withResult);
 
         public override string ToString() => Lexeme.Value.ToString()!;
     }

@@ -10,5 +10,7 @@ namespace PascalCompiler.SyntaxAnalyzer.Nodes
         public Lexeme Lexeme { get; }
 
         public abstract T Accept<T>(IVisitor<T> visitor);
+
+        public abstract T Accept<T>(IGenVisitor<T> visitor, bool withResult);
     }
 }
