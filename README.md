@@ -11,12 +11,19 @@ dotnet run -- <mode> <option>
 ```
 
 Mode
-| Flag              | Description                      |
-| ----------------- | -------------------------------- |
-|  -l, --lexer      | Run lexical analysis             |
-|  -p, --parser     | Run syntax parser                |
-|  -s, --semantics  | Run parser with semantics cheker |
-|  -g, --generator  | Run code generator               |
+| Flag                                      | Description                      |
+| ----------------------------------------- | -------------------------------- |
+|  -l, --lexer                              | Run lexical analysis             |
+|  -p, --parser                             | Run syntax parser                |
+|  -s, --semantics                          | Run parser with semantics cheker |
+|  -g, --generator &#60;generator mode&#60; | Run code generator               |
+
+Generator mode
+| Flag             | Description                            |
+| ---------------- | -------------------------------------- |
+| -gen, --generate | Generate NASM code and stop            |
+| -comp, --compile | Generate NASM code and compile it      |
+| -exec, --execute | Generate NASM code, compile and run it |
 
 Option
 | Flag       | Arguments           | Description            |

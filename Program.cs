@@ -29,14 +29,16 @@ namespace PascalCompiler
 
     public struct ProgramConfig
     {
-        public ProgramConfig(CompilerFlag mode, CompilerFlag option, string filePath)
+        public ProgramConfig(CompilerFlag mode, CompilerFlag generatorMode, CompilerFlag option, string filePath)
         {
             Mode = mode;
+            GeneratorMode = generatorMode;
             Option = option;
             FilePath = filePath;
         }
 
         public CompilerFlag Mode { get; }
+        public CompilerFlag GeneratorMode { get; }
         public CompilerFlag Option { get; }
         public string FilePath { get; }
     }
@@ -48,16 +50,29 @@ namespace PascalCompiler
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"[ERROR] {message}\n");
             Console.ResetColor();
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Mode:");
             Console.ResetColor();
+
             Console.WriteLine(
-                " -l [option] \t\t run lexical analysis\n" +
-                " -p [option] \t\t run parser analysis\n" +
-                " -s [option] \t\t run parser analysis with semantics tests\n");
+                " -l | --lexer      \t  <run mode>                   \t  run lexical analysis\n" +
+                " -p | --parser     \t  <run mode>                   \t  run parser analysis\n" +
+                " -s | --semantics  \t  <run mode>                   \t  run parser analysis with semantics tests\n" +
+                " -g | --generator  \t  <generator mode> <run mode>  \t  run code generator\n");
+
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Options:");
+            Console.WriteLine("Generator mode:");
             Console.ResetColor();
+            Console.WriteLine(
+                " -gen  | --generate    \t  generate NASM code and stop\n" +
+                " -comp | --compile     \t  generate NASM code and compile it\n" +
+                " -exec | --execute     \t  generate NASM code, compile and run it\n");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Run mode:");
+            Console.ResetColor();
+
             Console.WriteLine(
                 " -t, --test \t\t run analyzer tests\n" +
                 " -f, --file <path> \t run alanyzer with file");
@@ -65,37 +80,41 @@ namespace PascalCompiler
 
         static ProgramConfig ParseArguments(string[] args)
         {
-            CompilerFlag mode = args[0] switch
+            var argPos = 0;
+
+            CompilerFlag mode = args[argPos] switch
             {
                 "-l" or "--lexer" => CompilerFlag.Lexer,
                 "-p" or "--parser" => CompilerFlag.Parser,
                 "-s" or "--semantics" => CompilerFlag.Semantics,
                 "-g" or "--generator" => CompilerFlag.Generator,
-                _ => CompilerFlag.Invalid,
+                _ => throw new Exception("Invalid mode"),
             };
+            ++argPos;
 
-            if (mode == CompilerFlag.Invalid)
-                throw new Exception("Invalid mode");
+            CompilerFlag generatorMode = args[argPos] switch
+            {
+                "-gen" or "--generate" when mode == CompilerFlag.Generator => CompilerFlag.Generate,
+                "-comp" or "--compile" when mode == CompilerFlag.Generator => CompilerFlag.Compile,
+                "-exec" or "--execute" when mode == CompilerFlag.Generator => CompilerFlag.Execute,
+                { } when mode == CompilerFlag.Generator => throw new Exception("Invalid generator mode"),
+                _ => CompilerFlag.Invalid
+            };
+            argPos = generatorMode == CompilerFlag.Invalid ? argPos : ++argPos;
 
-            CompilerFlag option = args[1] switch
+            CompilerFlag option = args[argPos] switch
             {
                 "-t" or "--test" => CompilerFlag.Test,
                 "-f" or "--file" => CompilerFlag.File,
-                _ => CompilerFlag.Invalid,
+                _ => throw new Exception("Invalid option"),
             };
+            ++argPos;
 
-            if (option == CompilerFlag.Invalid)
-                throw new Exception("Invalid option");
+            var path = option == CompilerFlag.File ? args[argPos] : "";
+            if (option == CompilerFlag.File && !File.Exists(path))
+                throw new Exception($"Invalid path {path}");
 
-            var path = "";
-            if (option == CompilerFlag.File)
-            {
-                path = args[2];
-                if (!File.Exists(path))
-                    throw new Exception($"Invalid path {path}");
-            }
-
-            return new ProgramConfig(mode, option, path);
+            return new ProgramConfig(mode, generatorMode, option, path);
         }
 
         static public void RunLexer(string path)
@@ -135,7 +154,7 @@ namespace PascalCompiler
             }
         }
 
-        static public void RunGenerator(string path)
+        static public void RunGenerator(string path, CompilerFlag generateMode)
         {
             try
             {
@@ -145,8 +164,14 @@ namespace PascalCompiler
                 syntaxTree.Accept(new SymVisitor(_parser._symStack));
 
                 var generator = syntaxTree.Accept(new AsmVisitor(_parser._symStack));
-                generator.PrintProgram();
-                generator.RunProgram();
+
+                switch (generateMode)
+                {
+                    case CompilerFlag.Generate: generator.GenerateProgram(); break;
+                    case CompilerFlag.Compile: generator.CompileProgram(); break;
+                    case CompilerFlag.Execute: generator.RunProgram(); break;
+                    default: generator.RunProgram(); break;
+                };
             }
             catch (Exception e)
             {
@@ -186,7 +211,7 @@ namespace PascalCompiler
                         RunParser(programConfig.FilePath, programConfig.Mode == CompilerFlag.Semantics);
                         break;
                     case CompilerFlag.Generator:
-                        RunGenerator(programConfig.FilePath);
+                        RunGenerator(programConfig.FilePath, programConfig.GeneratorMode);
                         break;
                 }
         }

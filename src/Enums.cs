@@ -14,6 +14,10 @@ namespace PascalCompiler.Enums
         Semantics,
         Generator,
 
+        Generate,
+        Compile,
+        Execute,
+
         File,
         Test,
 
