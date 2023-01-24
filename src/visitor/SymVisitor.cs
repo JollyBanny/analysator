@@ -425,7 +425,9 @@ namespace PascalCompiler.Visitor
                         $"incompatible types: got '{node.Expr.SymType}' expected '{node.Type.SymType}'");
             }
 
-            _symStack.AddConst(node.Ident.ToString(), node.Expr.SymType);
+            node.Ident.SymVar = _symStack.AddConst(node.Ident.ToString(), node.Expr.SymType) as SymConstant;
+            node.Ident.SymType = node.Ident.SymVar!.Type;
+
             return true;
         }
 

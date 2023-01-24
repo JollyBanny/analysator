@@ -272,7 +272,18 @@ namespace PascalCompiler.Visitor
 
         public void Visit(ConstDeclNode node, bool withResult)
         {
-            return;
+            var instruction = node.Ident.SymType is SymDoubleType ? Instruction.RESQ : Instruction.RESD;
+            var newVar = _g.GenVariable(node.Ident.ToString(), instruction, 1);
+
+            node.Expr.Accept(this, true);
+
+            if (node.Ident.SymType is SymDoubleType)
+            {
+                GenerateDoublePop(Register.XMM0);
+                _g.GenCommand(Instruction.MOVSD, new(newVar, OperandFlag.INDIRECT, OperandFlag.QWORD), new(Register.XMM0));
+            }
+            else
+                _g.GenCommand(Instruction.POP, new(newVar, OperandFlag.DWORD, OperandFlag.INDIRECT));
         }
 
         public void Visit(VarDeclNode node, bool withResult)
@@ -295,7 +306,6 @@ namespace PascalCompiler.Visitor
                         _g.GenCommand(Instruction.POP, new(newVar, OperandFlag.DWORD, OperandFlag.INDIRECT));
                 }
             }
-            return;
         }
 
         public void Visit(TypeDeclNode node, bool withResult) { return; }
