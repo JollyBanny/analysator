@@ -17,9 +17,6 @@ namespace PascalCompiler.AsmGenerator
             SymStack = stack;
 
             GenConstant("double_minus", -1.0);
-            GenConstant("integer_template", $"\"%d\", 0xA, 0");
-            GenConstant("double_template", $"\"%f\", 0xA, 0");
-            GenConstant("char_template", $"\"%c\", 0xA, 0");
         }
 
         public List<AsmPart> HeaderParts { get; }

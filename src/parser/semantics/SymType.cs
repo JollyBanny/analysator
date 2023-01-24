@@ -5,9 +5,12 @@ namespace PascalCompiler.Semantics
 {
     public abstract class SymType : Symbol
     {
-        protected SymType(string ident) : base(ident)
+        protected SymType(string ident, int size = 0) : base(ident)
         {
+            Size = size;
         }
+
+        public int Size { get; }
 
         public virtual bool IsEquivalent(SymType other)
         {
@@ -49,7 +52,7 @@ namespace PascalCompiler.Semantics
 
     public class SymIntegerType : SymType
     {
-        public SymIntegerType() : base("integer")
+        public SymIntegerType() : base("integer", 4)
         {
         }
 
@@ -58,7 +61,7 @@ namespace PascalCompiler.Semantics
 
     public class SymDoubleType : SymType
     {
-        public SymDoubleType() : base("double")
+        public SymDoubleType() : base("double", 8)
         {
         }
 
@@ -67,7 +70,7 @@ namespace PascalCompiler.Semantics
 
     public class SymCharType : SymType
     {
-        public SymCharType() : base("char")
+        public SymCharType() : base("char", 4)
         {
         }
 
@@ -76,7 +79,7 @@ namespace PascalCompiler.Semantics
 
     public class SymStringType : SymType
     {
-        public SymStringType() : base("string")
+        public SymStringType() : base("string", 4)
         {
         }
 
@@ -85,7 +88,7 @@ namespace PascalCompiler.Semantics
 
     public class SymBooleanType : SymType
     {
-        public SymBooleanType() : base("boolean")
+        public SymBooleanType() : base("boolean", 4)
         {
         }
 

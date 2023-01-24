@@ -19,6 +19,7 @@ namespace PascalCompiler.Visitor
             _g.AddModule(Instruction.GLOBAL, "main");
             _g.AddModule(Instruction.EXTERN, "printf");
             _g.AddModule(Instruction.EXTERN, "scanf");
+            _g.AddModule(Instruction.EXTERN, "malloc");
 
             node.Block.Accept(this, withResult);
 
@@ -173,7 +174,35 @@ namespace PascalCompiler.Visitor
 
         public void Visit(ArrayAccessNode node, bool withResult)
         {
-            return;
+            var type = node.SymType is SymArrayType arrType ? arrType.Origin : node.SymType;
+            var size = node.SymType is SymArrayType arrType_ ?
+                arrType_.DimensionsCount * type.Size : type.Size;
+
+            node.ArrayIdent.Accept(this, true);
+            node.AccessExprs[0].Accept(this, false);
+
+            _g.GenCommand(Instruction.POP, new(Register.EBX));
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.IMUL, new(Register.EBX),
+                new(size, OperandFlag.DWORD));
+            _g.GenCommand(Instruction.ADD, new(Register.EAX), new(Register.EBX));
+
+            if (withResult)
+                _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+            else
+            {
+                if (type is SymDoubleType)
+                {
+                    _g.GenCommand(Instruction.MOVSD, new(Register.XMM0),
+                        new(Register.EAX, OperandFlag.INDIRECT, OperandFlag.QWORD));
+                    _g.GenCommand(Instruction.SUB, new(Register.ESP), new(8));
+                    _g.GenCommand(Instruction.MOVSD, new(Register.ESP, OperandFlag.INDIRECT, OperandFlag.QWORD),
+                        new(Register.XMM0));
+                }
+                else
+                    _g.GenCommand(Instruction.PUSH, new(Register.EAX, OperandFlag.INDIRECT, OperandFlag.DWORD));
+
+            }
         }
 
         public void Visit(UserCallNode node, bool withResult)
@@ -191,14 +220,15 @@ namespace PascalCompiler.Visitor
             {
                 arg.Accept(this, false);
 
-                totalSize += arg.SymType is SymDoubleType ? 8 : 4;
+                totalSize += arg.SymType.Size;
 
                 stringFormat = (arg.SymType is SymIntegerType || arg.SymType is SymBooleanType ? "%d" :
                                 arg.SymType is SymDoubleType ? "%f" :
                                 arg.SymType is SymStringType ? "%s" : "%c") + stringFormat;
             }
 
-            var newConst = _g.GenConstant($"\"{stringFormat}\", 0xA, 0");
+            var newLine = node.NewLine is true ? "10, " : "";
+            var newConst = _g.GenConstant($"\"{stringFormat}\",{newLine} 0");
             totalSize += 4;
 
             _g.GenCommand(Instruction.PUSH, new(newConst));
@@ -206,10 +236,7 @@ namespace PascalCompiler.Visitor
             _g.GenCommand(Instruction.ADD, new(Register.ESP), new(totalSize));
         }
 
-        public void Visit(ReadCallNode node, bool withResult)
-        {
-            return;
-        }
+        public void Visit(ReadCallNode node, bool withResult) { return; }
 
         public void Visit(IdentNode node, bool withResult)
         {
@@ -279,6 +306,9 @@ namespace PascalCompiler.Visitor
             var instruction = node.Ident.SymType is SymDoubleType ? Instruction.RESQ : Instruction.RESD;
             var newVar = _g.GenVariable(node.Ident.ToString(), instruction, 1);
 
+            if (node.Ident.SymVar is not null && node.Ident.SymType is SymArrayType)
+                GenerateArray(node.Ident.SymVar);
+
             node.Expr.Accept(this, true);
 
             if (node.Ident.SymType is SymDoubleType)
@@ -297,6 +327,9 @@ namespace PascalCompiler.Visitor
                 var instruction = ident.SymType is SymDoubleType ? Instruction.RESQ : Instruction.RESD;
                 var newVar = _g.GenVariable(ident.ToString(), instruction, 1);
 
+                if (ident.SymVar is not null && ident.SymType is SymArrayType)
+                    GenerateArray(ident.SymVar);
+
                 if (node.Expr is not null)
                 {
                     node.Expr.Accept(this, true);
@@ -312,8 +345,6 @@ namespace PascalCompiler.Visitor
             }
         }
 
-        public void Visit(TypeDeclNode node, bool withResult) { return; }
-
         public void Visit(CallDeclNode node, bool withResult) { return; }
 
         public void Visit(CallHeaderNode node, bool withResult) { return; }
@@ -328,18 +359,11 @@ namespace PascalCompiler.Visitor
             node.CompoundStmt.Accept(this, true);
         }
 
-        public void Visit(KeywordNode node, bool withResult)
-        {
-            return;
-        }
-
         public void Visit(CompoundStmtNode node, bool withResult)
         {
             foreach (var stmt in node.Statements)
                 stmt.Accept(this, withResult);
         }
-
-        public void Visit(EmptyStmtNode node, bool withResult) { return; }
 
         public void Visit(CallStmtNode node, bool withResult)
         {
@@ -350,7 +374,25 @@ namespace PascalCompiler.Visitor
         {
             node.Right.Accept(this, false);
 
-            if (node.Left.SymType is SymIntegerType)
+            if (node.Left.SymType is SymDoubleType)
+            {
+                node.Left.Accept(this, false);
+
+                GenerateDoublePop(Register.XMM0);
+                GenerateDoublePop(Register.XMM1);
+
+                switch (node.Lexeme.Value)
+                {
+                    case Token.ASSIGN: _g.GenCommand(Instruction.MOVSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.ADD_ASSIGN: _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.SUB_ASSIGN: _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.MUL_ASSIGN: _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1)); break;
+                    case Token.DIV_ASSIGN: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
+                }
+
+                _g.GenCommand(Instruction.MOVSD, new(Register.EAX, OperandFlag.QWORD, OperandFlag.INDIRECT), new(Register.XMM0));
+            }
+            else
             {
                 node.Left.Accept(this, true);
 
@@ -369,24 +411,6 @@ namespace PascalCompiler.Visitor
                         _g.GenCommand(Instruction.IMUL, new(Register.EBX));
                         _g.GenCommand(Instruction.MOV, new(Register.ECX, OperandFlag.INDIRECT, OperandFlag.DWORD), new(Register.EAX)); break;
                 }
-            }
-            else
-            {
-                node.Left.Accept(this, false);
-
-                GenerateDoublePop(Register.XMM0);
-                GenerateDoublePop(Register.XMM1);
-
-                switch (node.Lexeme.Value)
-                {
-                    case Token.ASSIGN: _g.GenCommand(Instruction.MOVSD, new(Register.XMM0), new(Register.XMM1)); break;
-                    case Token.ADD_ASSIGN: _g.GenCommand(Instruction.ADDSD, new(Register.XMM0), new(Register.XMM1)); break;
-                    case Token.SUB_ASSIGN: _g.GenCommand(Instruction.SUBSD, new(Register.XMM0), new(Register.XMM1)); break;
-                    case Token.MUL_ASSIGN: _g.GenCommand(Instruction.MULSD, new(Register.XMM0), new(Register.XMM1)); break;
-                    case Token.DIV_ASSIGN: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
-                }
-
-                _g.GenCommand(Instruction.MOVSD, new(Register.EAX, OperandFlag.QWORD, OperandFlag.INDIRECT), new(Register.XMM0));
             }
         }
 
@@ -514,6 +538,12 @@ namespace PascalCompiler.Visitor
 
         public void Visit(ConformatArrayTypeNode node, bool withResult) { return; }
 
+        public void Visit(KeywordNode node, bool withResult) { return; }
+
+        public void Visit(EmptyStmtNode node, bool withResult) { return; }
+
+        public void Visit(TypeDeclNode node, bool withResult) { return; }
+
         private void GenerateIntCmp(Instruction cmpInstruction)
         {
             _g.GenCommand(Instruction.XOR, new(Register.ECX), new(Register.ECX));
@@ -542,6 +572,22 @@ namespace PascalCompiler.Visitor
             _g.GenCommand(Instruction.MOVSD, new(register),
                 new Operand(Register.ESP, OperandFlag.QWORD, OperandFlag.INDIRECT));
             _g.GenCommand(Instruction.ADD, new(Register.ESP), new(8));
+        }
+
+        public void GenerateArray(SymVar sym)
+        {
+            var type = (sym.Type as SymArrayType)!;
+            type.Range.First.Accept(this, false);
+            type.Range.Second.Accept(this, false);
+
+            _g.GenCommand(Instruction.POP, new(Register.EBX));
+            _g.GenCommand(Instruction.POP, new(Register.EAX));
+            _g.GenCommand(Instruction.IMUL, new(Register.EAX), new(type.Origin.Size * type.DimensionsCount, OperandFlag.DWORD));
+            _g.GenCommand(Instruction.PUSH, new(Register.EAX));
+            _g.GenCommand(Instruction.CALL, new("_malloc"));
+            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(4));
+            _g.GenCommand(Instruction.MOV, new($"var_{sym.Name}", OperandFlag.INDIRECT), new(Register.EAX));
+
         }
     }
 }

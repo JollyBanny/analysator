@@ -2,6 +2,7 @@ using PascalCompiler.LexicalAnalyzer;
 using PascalCompiler.SyntaxAnalyzer;
 using PascalCompiler.Enums;
 using PascalCompiler.Visitor;
+using PascalCompiler.AsmGenerator;
 
 namespace PascalCompiler
 {
@@ -82,6 +83,37 @@ namespace PascalCompiler
             return true;
         }
 
+        static private bool GeneratorTest(string inFile, string outFile)
+        {
+            var expected = File.ReadAllText(outFile);
+            var found = new StringWriter();
+
+            Console.SetOut(found);
+
+            try
+            {
+                Parser _parser = new Parser(inFile);
+                var syntaxTree = _parser.Parse();
+                syntaxTree.Accept(new SymVisitor(_parser._symStack));
+                var generator = new Generator(_parser._symStack);
+                syntaxTree.Accept(new AsmVisitor(generator), false);
+                generator.RunProgram();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            var originOutput = new StreamWriter(Console.OpenStandardOutput());
+            originOutput.AutoFlush = true;
+            Console.SetOut(originOutput);
+
+            if (!CompareAnswers(inFile, expected, found.ToString()))
+                return false;
+
+            return true;
+        }
+
         static private bool ParserTest(string inFile, string outFile) =>
             ParserTest(inFile, outFile, false);
 
@@ -95,6 +127,7 @@ namespace PascalCompiler
                 CompilerFlag.Lexer => LexerTest,
                 CompilerFlag.Parser => ParserTest,
                 CompilerFlag.Semantics => SemanticTest,
+                CompilerFlag.Generator => GeneratorTest,
                 _ => LexerTest,
             };
 
@@ -103,6 +136,7 @@ namespace PascalCompiler
                 CompilerFlag.Lexer => "/lexer",
                 CompilerFlag.Parser => "/parser",
                 CompilerFlag.Semantics => "/semantics",
+                CompilerFlag.Generator => "/asm",
                 _ => "/lexer",
             };
 
