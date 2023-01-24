@@ -71,10 +71,10 @@ namespace PascalCompiler.Visitor
                     case Token.O_DIV: _g.GenCommand(Instruction.DIVSD, new(Register.XMM0), new(Register.XMM1)); break;
                     case Token.EQUAL: GenerateDoubleCmp(Instruction.SETE); break;
                     case Token.NOT_EQUAL: GenerateDoubleCmp(Instruction.SETNE); break;
-                    case Token.MORE: GenerateDoubleCmp(Instruction.SETG); break;
-                    case Token.LESS: GenerateDoubleCmp(Instruction.SETL); break;
-                    case Token.MORE_EQUAL: GenerateDoubleCmp(Instruction.SETGE); break;
-                    case Token.LESS_EQUAL: GenerateDoubleCmp(Instruction.SETLE); break;
+                    case Token.MORE: GenerateDoubleCmp(Instruction.SETA); break;
+                    case Token.LESS: GenerateDoubleCmp(Instruction.SETB); break;
+                    case Token.MORE_EQUAL: GenerateDoubleCmp(Instruction.SETAE); break;
+                    case Token.LESS_EQUAL: GenerateDoubleCmp(Instruction.SETBE); break;
                 }
 
                 switch (node.Lexeme.Value)
@@ -183,23 +183,27 @@ namespace PascalCompiler.Visitor
 
         public void Visit(WriteCallNode node, bool withResult)
         {
+            var totalSize = 0;
+            var stringFormat = "";
+
+            node.Args.Reverse();
             foreach (var arg in node.Args)
+            {
                 arg.Accept(this, false);
 
-            var symType = node.Args[0].SymType;
+                totalSize += arg.SymType is SymDoubleType ? 8 : 4;
 
-            if (symType is SymIntegerType || symType is SymBooleanType)
-                _g.GenCommand(Instruction.PUSH, new("integer_template"));
-            else if (symType is SymDoubleType)
-                _g.GenCommand(Instruction.PUSH, new("double_template"));
-            else if (symType is SymCharType)
-                _g.GenCommand(Instruction.PUSH, new("char_template"));
+                stringFormat = (arg.SymType is SymIntegerType || arg.SymType is SymBooleanType ? "%d" :
+                                arg.SymType is SymDoubleType ? "%f" :
+                                arg.SymType is SymStringType ? "%s" : "%c") + stringFormat;
+            }
 
-            var size = symType is SymIntegerType || symType is SymBooleanType ? 8 :
-                       symType is SymDoubleType ? 12 : 4;
+            var newConst = _g.GenConstant($"\"{stringFormat}\", 0xA, 0");
+            totalSize += 4;
 
+            _g.GenCommand(Instruction.PUSH, new(newConst));
             _g.GenCommand(Instruction.CALL, new("_printf"));
-            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(size));
+            _g.GenCommand(Instruction.ADD, new(Register.ESP), new(totalSize));
         }
 
         public void Visit(ReadCallNode node, bool withResult)
@@ -223,9 +227,9 @@ namespace PascalCompiler.Visitor
             }
             else
             {
-                var size = node.SymType is SymStringType || node.SymType is SymCharType ? OperandFlag.WORD :
-                        node.SymType is SymIntegerType || node.SymType is SymBooleanType ? OperandFlag.DWORD :
-                        OperandFlag.BYTE;
+                var size = node.SymType is SymCharType ? OperandFlag.WORD :
+                            node.SymType is SymStringType || node.SymType is SymIntegerType ||
+                            node.SymType is SymBooleanType ? OperandFlag.DWORD : OperandFlag.BYTE;
 
                 if (withResult)
                     _g.GenCommand(Instruction.PUSH, new($"var_{node.ToString()}"));
@@ -256,7 +260,7 @@ namespace PascalCompiler.Visitor
 
         public void Visit(ConstStringLiteral node, bool withResult)
         {
-            _g.GenCommand(Instruction.PUSH, new(_g.GenConstant($"\"{node.Lexeme.Value}\", 0xA, 0")));
+            _g.GenCommand(Instruction.PUSH, new(_g.GenConstant($"\"{node.Lexeme.Value}\", 0")));
         }
 
         public void Visit(ConstBooleanLiteral node, bool withResult)
