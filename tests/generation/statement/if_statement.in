@@ -1,0 +1,13 @@
+var a: integer = 1; b: integer = 10; c: integer = 20;
+
+begin
+    if(a > b) then
+        writeln('a bigger than b')
+    else
+        writeln('b bigger than a');
+
+    if(c > b) then
+        writeln('c bigger than b')
+    else
+        writeln('b bigger than c');
+end.

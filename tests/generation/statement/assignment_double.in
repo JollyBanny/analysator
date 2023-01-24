@@ -1,0 +1,15 @@
+var a : double = 0;
+
+begin
+    writeln(a);
+    a := 10;
+    writeln(a);
+    a += 10;
+    writeln(a);
+    a -= 10;
+    writeln(a);
+    a *= 10;
+    writeln(a);
+    a /= 10;
+    writeln(a);
+end.

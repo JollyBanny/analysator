@@ -1,0 +1,11 @@
+var a : double = 10;
+var b : double = 20;
+
+begin
+    writeln(a = b);
+    writeln(a <> b);
+    writeln(a > b);
+    writeln(a < b);
+    writeln(a >= b);
+    writeln(a <= b);
+end.

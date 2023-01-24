@@ -1,0 +1,13 @@
+var a : integer = 0;
+
+begin
+    writeln(a);
+    a := 10;
+    writeln(a);
+    a += 10;
+    writeln(a);
+    a -= 10;
+    writeln(a);
+    a *= 10;
+    writeln(a);
+end.

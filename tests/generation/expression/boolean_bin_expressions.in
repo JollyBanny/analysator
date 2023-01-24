@@ -1,0 +1,8 @@
+var a : boolean =  true;
+var b : boolean =  false;
+
+begin
+    writeln(a or b);
+    writeln(a xor b);
+    writeln(a and b);
+end.

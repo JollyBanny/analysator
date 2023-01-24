@@ -1,0 +1,13 @@
+var a : array [1..2] of array [1..2] of array [1..2] of integer;
+var b : array [1..2] of array [1..2] of array [1..2] of double;
+var c : array [1..2] of array [1..2] of array [1..2] of string;
+
+begin
+    a[1, 1, 1] := 1;
+    b[1, 1, 1] := 1;
+    c[1, 1, 1] := 'super string';
+
+    writeln(a[1, 1, 1]);
+    writeln(b[1, 1, 1]);
+    writeln(c[1, 1, 1]);
+end.

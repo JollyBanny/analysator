@@ -1,0 +1,10 @@
+var a : string;
+
+begin
+    a := 'Hello';
+    write(a);
+    a := ', ';
+    write(a);
+    a := 'world!';
+    write(a);
+end.

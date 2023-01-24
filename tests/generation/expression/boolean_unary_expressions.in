@@ -1,0 +1,7 @@
+var a : boolean = true;
+var b : boolean = false;
+
+begin
+    writeln(not a);
+    writeln(not b);
+end.

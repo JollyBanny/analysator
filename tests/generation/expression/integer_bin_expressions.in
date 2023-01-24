@@ -1,0 +1,19 @@
+var a : integer = 10;
+var b : integer = 20;
+var c : integer = 12;
+var x : integer = 1;
+var y : integer = 0;
+
+begin
+    writeln(a - b);
+    writeln(a + b);
+    writeln(b div a);
+    writeln(c mod a);
+    writeln(a * b);
+
+    writeln(x shr 1);
+    writeln(x shl 1);
+    writeln(x xor y);
+    writeln(x and y);
+    writeln(x or y);
+end.

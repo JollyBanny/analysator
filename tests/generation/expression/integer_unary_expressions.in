@@ -1,0 +1,6 @@
+var a : integer = 10;
+
+begin
+    writeln(+a);
+    writeln(-a);
+end.

@@ -1,0 +1,12 @@
+var a : double = 10;
+var b : double = 20;
+var c : double = 12;
+var x : double = 1;
+var y : double = 0;
+
+begin
+    writeln(a - b);
+    writeln(b + a);
+    writeln(c / a);
+    writeln(a * b);
+end.

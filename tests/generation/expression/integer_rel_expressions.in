@@ -1,0 +1,11 @@
+var a : integer = 10;
+var b : integer = 20;
+
+begin
+    writeln(a = b);
+    writeln(a <> b);
+    writeln(a > b);
+    writeln(a < b);
+    writeln(a >= b);
+    writeln(a <= b);
+end.

@@ -1,0 +1,5 @@
+const a = 20; b : double = 13.37; c = 'super string';
+
+begin
+    writeln(a, ' ', b, ' ', c);
+end.

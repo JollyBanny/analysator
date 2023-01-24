@@ -1,0 +1,6 @@
+var a : double = 10.0;
+
+begin
+    writeln(+a);
+    writeln(-a);
+end.

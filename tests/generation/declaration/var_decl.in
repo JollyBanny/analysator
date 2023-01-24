@@ -1,0 +1,5 @@
+var a: integer = 20; b : double = 13.37; c: string = 'super string';
+
+begin
+    writeln(a, ' ', b, ' ', c);
+end.
