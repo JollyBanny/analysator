@@ -37,3 +37,7 @@ Option
 dotnet run -- -l --test
 dotnet run -- -l --file .\tests\lexer\01_EOF.in
 ```
+
+## Dependencies
+- NASM compiler for code compilation (nasm -> obj)
+- GCC compiler for code compilation (obj -> exe)
