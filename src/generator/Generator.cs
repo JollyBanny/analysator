@@ -114,16 +114,20 @@ namespace PascalCompiler.AsmGenerator
             process.Close();
         }
 
-        public void RunProgram()
+        public string RunProgram()
         {
             GenerateProgram();
             CompileProgram();
 
             var process = new Process();
             process.StartInfo.FileName = "./tests/asm/program.exe";
+            process.StartInfo.RedirectStandardOutput = true;
             process.Start();
+            var output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             process.Close();
+
+            return output;
         }
     }
 }

@@ -171,8 +171,10 @@ namespace PascalCompiler
                 {
                     case CompilerFlag.Generate: generator.GenerateProgram(); break;
                     case CompilerFlag.Compile: generator.CompileProgram(); break;
-                    case CompilerFlag.Execute: generator.RunProgram(); break;
-                    default: generator.RunProgram(); break;
+                    case CompilerFlag.Execute:
+                        var output = generator.RunProgram();
+                        Console.WriteLine(output);
+                        break;
                 };
             }
             catch (Exception e)

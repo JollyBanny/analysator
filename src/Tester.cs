@@ -86,9 +86,7 @@ namespace PascalCompiler
         static private bool GeneratorTest(string inFile, string outFile)
         {
             var expected = File.ReadAllText(outFile);
-            var found = new StringWriter();
-
-            Console.SetOut(found);
+            var found = "";
 
             try
             {
@@ -97,16 +95,12 @@ namespace PascalCompiler
                 syntaxTree.Accept(new SymVisitor(_parser._symStack));
                 var generator = new Generator(_parser._symStack);
                 syntaxTree.Accept(new AsmVisitor(generator), false);
-                generator.RunProgram();
+                found = generator.RunProgram();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                found = e.Message;
             }
-
-            var originOutput = new StreamWriter(Console.OpenStandardOutput());
-            originOutput.AutoFlush = true;
-            Console.SetOut(originOutput);
 
             if (!CompareAnswers(inFile, expected, found.ToString()))
                 return false;
