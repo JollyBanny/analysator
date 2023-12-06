@@ -99,6 +99,7 @@ namespace PascalCompiler
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 found = e.Message;
             }
 
@@ -130,7 +131,7 @@ namespace PascalCompiler
                 CompilerFlag.Lexer => "/lexer",
                 CompilerFlag.Parser => "/parser",
                 CompilerFlag.Semantics => "/semantics",
-                CompilerFlag.Generator => "/asm",
+                CompilerFlag.Generator => "/generation",
                 _ => "/lexer",
             };
 

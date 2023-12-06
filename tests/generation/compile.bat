@@ -1,4 +1,4 @@
 @echo off
 
-nasm -fwin32 .\tests\asm\program.asm -o .\tests\asm\program.obj
-gcc -m32 .\tests\asm\program.obj -o .\tests\asm\program.exe
+nasm -fwin32 .\tests\generation\program.asm -o .\tests\generation\program.obj
+gcc -m32 .\tests\generation\program.obj -o .\tests\generation\program.exe

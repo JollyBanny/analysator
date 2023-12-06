@@ -92,7 +92,7 @@ namespace PascalCompiler.AsmGenerator
                 Console.WriteLine(command);
 
             // write to asm file
-            var testWritter = new StreamWriter("./tests/asm/program.asm");
+            var testWritter = new StreamWriter("./tests/generation/program.asm");
             testWritter.AutoFlush = true;
             testWritter.Write(found);
             testWritter.Close();
@@ -108,7 +108,7 @@ namespace PascalCompiler.AsmGenerator
             GenerateProgram();
 
             var process = new Process();
-            process.StartInfo.FileName = "./tests/asm/compile.bat";
+            process.StartInfo.FileName = "./tests/generation/compile.bat";
             process.Start();
             process.WaitForExit();
             process.Close();
@@ -120,7 +120,7 @@ namespace PascalCompiler.AsmGenerator
             CompileProgram();
 
             var process = new Process();
-            process.StartInfo.FileName = "./tests/asm/program.exe";
+            process.StartInfo.FileName = "./tests/generation/program.exe";
             process.StartInfo.RedirectStandardOutput = true;
             process.Start();
             var output = process.StandardOutput.ReadToEnd();
